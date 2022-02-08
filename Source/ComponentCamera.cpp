@@ -289,29 +289,3 @@ void ComponentCamera::OnClick(float pos_x, float pos_y)
 	
 	App->scene->TestGameObjectSelection(latest_ray);
 }
-
-void ComponentCamera::DrawInspector() 
-{
-
-	if (ImGui::CollapsingHeader("Component Camera"), ImGuiTreeNodeFlags_DefaultOpen)
-	{
-		//if (ImGui::Checkbox("Viewport Camera", &active_camera)) {}
-		
-		if (ImGui::Checkbox("Frustum Culling", &frustum_culling)) {}
-
-		//Set FOV
-		float Inspector_FOV = GetFOV();
-		if (ImGui::SliderFloat("FOV", &Inspector_FOV, 30, 120, "%0.2f", ImGuiSliderFlags_None)) { SetFOV(Inspector_FOV); }
-		
-		//Set NearPlane
-		float NearPlane = GetNearPlane(); 
-		if (ImGui::DragFloat("Near plane", &NearPlane)) { SetNearPlane(NearPlane); }
-		
-		//Set FarPlane
-		float FarPlane = GetFarPlane();
-		if (ImGui::DragFloat("Far plane", &FarPlane)) { SetFarPlane(FarPlane); }
-
-		//Add Toggle for frustum draw?
-
-	}
-}

@@ -274,6 +274,15 @@
     <ClCompile Include="SkyBox.cpp">
       <Filter>Tools</Filter>
     </ClCompile>
+    <ClCompile Include="Window.cpp">
+      <Filter>Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="WindowInspector.cpp">
+      <Filter>Editor\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="WindowMainMenu.cpp">
+      <Filter>Editor\Windows</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Dependencies\ImGui\imconfig.h">
@@ -1021,6 +1030,15 @@
       <Filter>Tools</Filter>
     </ClInclude>
     <ClInclude Include="resource1.h" />
+    <ClInclude Include="Window.h">
+      <Filter>Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="WindowMainMenu.h">
+      <Filter>Editor\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="WindowInspector.h">
+      <Filter>Editor\Windows</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Dependencies">
@@ -1104,6 +1122,9 @@
     <Filter Include="Dependencies\ImGui\ColorTextEditor">
       <UniqueIdentifier>{3697a8b6-e6df-4af7-8072-4537f7010e3f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Editor\Windows">
+      <UniqueIdentifier>{78def855-347e-4c03-a8a2-d061e45b2a63}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="Dependencies\MathGeoLib\include\Geometry\KDTree.inl">
@@ -1156,12 +1177,6 @@
     <ResourceCompile Include="AnotherSmallEngine.rc" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="icon1.ico" />
-    <Image Include="icon2.ico" />
-    <Image Include="..\..\descarga.png" />
-    <Image Include="..\..\descarga.ico" />
-    <Image Include="..\..\ASE_Icon.ico" />
-    <Image Include="icon3.ico" />
     <Image Include="..\Output\Assets\Icons\ASE_Icon.ico" />
   </ItemGroup>
 </Project>

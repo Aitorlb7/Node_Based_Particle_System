@@ -30,8 +30,6 @@ public:
 
 	virtual void CleanUp() {};
 
-	virtual void DrawInspector() {};
-
 	virtual void OnUpdateTransform(const float4x4& global, const float4x4& parent_global = float4x4::identity);
 
 	Component(GameObject* owner) : active(true), owner(owner), type(ComponentType::Error) {};

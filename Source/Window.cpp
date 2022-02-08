@@ -12,14 +12,12 @@ Window::~Window()
 {
 }
 
-bool Window::Draw(ImGuiIO& io)
+void Window::Draw()
 {
-	return true;
 }
 
-bool Window::CleanUp()
+void Window::CleanUp()
 {
-	return true;
 }
 
 void Window::Enable()

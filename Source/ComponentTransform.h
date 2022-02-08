@@ -15,7 +15,6 @@ class ComponentTransform : public Component {
 public:
 	bool updatedtransform = false;
 
-private:
 	float3		local_position;
 	float3		local_scale;
 	Quat		local_rotation;
@@ -31,6 +30,8 @@ private:
 
 	float4x4	local_transform;
 	float4x4	global_transform;
+
+private:
 	
 	bool updateGlobalTrans = false;
 
@@ -40,7 +41,6 @@ public:
 	void Enable() override;
 	void Update() override;
 	void Disable() override;
-	void DrawInspector() override;
 	void CleanUp() override;
 	Component* GetComponent(ComponentType type);
 
@@ -78,11 +78,8 @@ public:
 	ComponentTransform(GameObject* parent, float3 position, float3 scale, Quat rotation);
 	ComponentTransform(GameObject* owner, float3 position, float3 scale, Quat rotation, float3 globalPosition, float3 globalScale, Quat globalRotation);
 	~ComponentTransform();
+
 	void UpdateLocalTransform();
-
-
-private:
-	//void UpdateLocalTransform();
 	void UpdateGlobalTransform();
 	void UpdateTRS();
 	void UpdateEulerAngles();

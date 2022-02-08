@@ -19,7 +19,6 @@ public:
 	void Enable() override;
 	void Update() override;
 	void Disable() override;
-	void DrawInspector() override;
 	void CleanUp() override;
 
 	ResourceMesh* GetMesh() const { return mesh; };

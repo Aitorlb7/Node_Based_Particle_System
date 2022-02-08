@@ -2,7 +2,6 @@
 // Microsoft Visual C++ generated include file.
 // Used by AnotherSmallEngine.rc
 //
-#define IDI_ICON1                       101
 #define IDI_ICON2                       100
 
 // Next default values for new objects

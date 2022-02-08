@@ -164,21 +164,3 @@ void ComponentTransform::SetLocalTransform(float4x4 new_matrix)
 	UpdateGlobalTransform();
 	updatedtransform = true;
 }
-
-void ComponentTransform::DrawInspector()
-{
-	if (ImGui::CollapsingHeader("Component Transform"), ImGuiTreeNodeFlags_DefaultOpen)
-	{
-		ImGui::Text("Local");
-		if (ImGui::DragFloat3("Local Position", (float*)&local_position, 0.02f, 0.0f, 0.0f, "%.2f", ImGuiSliderFlags_None)) { UpdateLocalTransform(); }
-		if (ImGui::DragFloat3("Local Scale", (float*)&local_scale, 0.02f, 0.0f, 0.0f, "%.2f", ImGuiSliderFlags_None)) { UpdateLocalTransform(); }
-		if (ImGui::DragFloat3("Local Rotation", (float*)&local_eulerRotation, 0.08f, 0.0f, 0.0f, "%.2f", ImGuiSliderFlags_None)) { SetLocalEulerRotation(local_eulerRotation); }
-
-		ImGui::Separator();
-
-		ImGui::Text("Global");
-		if (ImGui::DragFloat3("Global Position", (float*)&global_position, 0.02f, 0.0f, 0.0f, "%.2f", ImGuiSliderFlags_None)) { UpdateLocalTransform(); }
-		if (ImGui::DragFloat3("Global Scale", (float*)&global_scale, 0.02f, 0.0f, 0.0f, "%.2f", ImGuiSliderFlags_None)) { UpdateLocalTransform(); }
-		if (ImGui::DragFloat3("Global Rotation", (float*)&global_eulerRotation, 0.08f, 0.0f, 0.0f, "%.2f", ImGuiSliderFlags_None)) { SetGlobalEulerRotation(global_eulerRotation); }
-	}
-}

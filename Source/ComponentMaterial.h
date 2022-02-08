@@ -18,8 +18,7 @@ private:
 public:
 	void Enable() override;
 	void Update() override;
-	void Disable() override;
-	void DrawInspector() override; 
+	void Disable() override; 
 	void CleanUp() override;
 
 	inline ResourceMaterial* GetMaterial() const { return rMaterial; }

@@ -12,8 +12,8 @@ public:
 	Window(const char* name, bool isActive = true);
 	virtual ~Window();
 
-	virtual bool	Draw(ImGuiIO& io);
-	virtual bool	CleanUp();
+	virtual void	Draw();
+	virtual void	CleanUp();
 
 	void Enable();
 	void Disable();
@@ -26,7 +26,7 @@ public:
 	void SetIsHovered();
 	void SetIsClicked(const bool& setTo);
 
-private:
+public:
 	const char* name;
 	bool isActive = true;
 	bool isHovered = false;

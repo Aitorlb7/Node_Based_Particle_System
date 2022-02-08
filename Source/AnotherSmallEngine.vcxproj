@@ -341,6 +341,9 @@
     <ClInclude Include="ResourceTexture.h" />
     <ClInclude Include="SkyBox.h" />
     <ClInclude Include="Timer.h" />
+    <ClInclude Include="Window.h" />
+    <ClInclude Include="WindowInspector.h" />
+    <ClInclude Include="WindowMainMenu.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
@@ -434,6 +437,9 @@
     <ClCompile Include="ResourceTexture.cpp" />
     <ClCompile Include="SkyBox.cpp" />
     <ClCompile Include="Timer.cpp" />
+    <ClCompile Include="Window.cpp" />
+    <ClCompile Include="WindowInspector.cpp" />
+    <ClCompile Include="WindowMainMenu.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Dependencies\Assimp\include\color4.inl" />
@@ -456,13 +462,7 @@
     <ResourceCompile Include="AnotherSmallEngine.rc" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="..\..\ASE_Icon.ico" />
-    <Image Include="..\..\descarga.ico" />
-    <Image Include="..\..\descarga.png" />
     <Image Include="..\Output\Assets\Icons\ASE_Icon.ico" />
-    <Image Include="icon1.ico" />
-    <Image Include="icon2.ico" />
-    <Image Include="icon3.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
