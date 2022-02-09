@@ -27,6 +27,8 @@ WindowInspector::~WindowInspector()
 
 void WindowInspector::Draw()
 {
+	if (!isActive) return;
+
 	ImGui::Begin("Inspector", &isActive);
 
 	if (App->scene->selected_object != nullptr)

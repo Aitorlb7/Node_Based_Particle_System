@@ -24,6 +24,8 @@ WindowAssetExplorer::~WindowAssetExplorer()
 
 void WindowAssetExplorer::Draw()
 {
+	if (!isActive) return;
+
 	AssetExplorerWindow();
 }
 

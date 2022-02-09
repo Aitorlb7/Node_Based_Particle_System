@@ -27,6 +27,8 @@ WindowConfiguration::~WindowConfiguration()
 
 void WindowConfiguration::Draw()
 {
+	if (!isActive) return;
+
 	ImGui::Begin("Configuration", &isActive);
 
 	if (ImGui::CollapsingHeader("Application"))
