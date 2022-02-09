@@ -23,14 +23,9 @@ public:
 	void DrawMaterial(ComponentMaterial* component);
 	void DrawCamera(ComponentCamera* component);
 
-	void CallTextEditor(ResourceMaterial* resource);
-
 	void CleanUp() override;
 
 private:
 	ResourceShader* shaderToRecompile = nullptr;
 	bool enableObject = true;
-
-	TextEditor editor;
-	std::string fileToEdit;
 };

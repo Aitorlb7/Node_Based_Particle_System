@@ -342,8 +342,13 @@
     <ClInclude Include="SkyBox.h" />
     <ClInclude Include="Timer.h" />
     <ClInclude Include="Window.h" />
+    <ClInclude Include="WindowAbout.h" />
+    <ClInclude Include="WindowAssetExplorer.h" />
+    <ClInclude Include="WindowConfiguration.h" />
+    <ClInclude Include="WindowConsole.h" />
+    <ClInclude Include="WindowHirearchy.h" />
     <ClInclude Include="WindowInspector.h" />
-    <ClInclude Include="WindowMainMenu.h" />
+    <ClInclude Include="WindowPlay.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
@@ -438,8 +443,13 @@
     <ClCompile Include="SkyBox.cpp" />
     <ClCompile Include="Timer.cpp" />
     <ClCompile Include="Window.cpp" />
+    <ClCompile Include="WindowAbout.cpp" />
+    <ClCompile Include="WindowAssetExplorer.cpp" />
+    <ClCompile Include="WindowConfiguration.cpp" />
+    <ClCompile Include="WindowConsole.cpp" />
+    <ClCompile Include="WindowHirearchy.cpp" />
     <ClCompile Include="WindowInspector.cpp" />
-    <ClCompile Include="WindowMainMenu.cpp" />
+    <ClCompile Include="WindowPlay.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Dependencies\Assimp\include\color4.inl" />

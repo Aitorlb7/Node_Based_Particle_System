@@ -75,18 +75,7 @@ public:
 	std::vector<std::string> log_record;
 	GameObject* childObject = nullptr;
 
-	PathNode assetsFolder;
-	PathNode currentFolder;
 
-	uint updateTime = 5;
-	Timer updateTimer;
-
-	ResourceTexture* modelIcon = nullptr;
-	ResourceTexture* defaultIcon = nullptr;
-	ResourceTexture* folderIcon = nullptr;
-	ResourceTexture* returnIcon = nullptr;
-
-	ResourceShader* shaderToRecompile = nullptr;
 
 	Resource* scene = nullptr;
 	ResourceScene* sceneToLoad = nullptr;
@@ -99,13 +88,11 @@ public:
 	PathNode previousFolder;
 	uint32 Hovered_UID = 0;
 
-	Resource* resource = nullptr;
-	ResourceTexture* textureIcon = nullptr;
+
 
 	TextEditor editor;
 	std::string fileToEdit;
 
-	uint iconSize = 80;
 
 	char title[25];
 	char label[32];
@@ -149,7 +136,7 @@ public:
 
 	bool enableObject = true;
 
-	bool textureIconLoaded = false;
+	
 
 	bool allowSaveOrLoad = false;
 

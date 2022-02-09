@@ -280,7 +280,22 @@
     <ClCompile Include="WindowInspector.cpp">
       <Filter>Editor\Windows</Filter>
     </ClCompile>
-    <ClCompile Include="WindowMainMenu.cpp">
+    <ClCompile Include="WindowAbout.cpp">
+      <Filter>Editor\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="WindowAssetExplorer.cpp">
+      <Filter>Editor\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="WindowConfiguration.cpp">
+      <Filter>Editor\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="WindowConsole.cpp">
+      <Filter>Editor\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="WindowHirearchy.cpp">
+      <Filter>Editor\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="WindowPlay.cpp">
       <Filter>Editor\Windows</Filter>
     </ClCompile>
   </ItemGroup>
@@ -1033,10 +1048,25 @@
     <ClInclude Include="Window.h">
       <Filter>Editor</Filter>
     </ClInclude>
-    <ClInclude Include="WindowMainMenu.h">
+    <ClInclude Include="WindowInspector.h">
       <Filter>Editor\Windows</Filter>
     </ClInclude>
-    <ClInclude Include="WindowInspector.h">
+    <ClInclude Include="WindowPlay.h">
+      <Filter>Editor\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="WindowAbout.h">
+      <Filter>Editor\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="WindowAssetExplorer.h">
+      <Filter>Editor\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="WindowConfiguration.h">
+      <Filter>Editor\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="WindowConsole.h">
+      <Filter>Editor\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="WindowHirearchy.h">
       <Filter>Editor\Windows</Filter>
     </ClInclude>
   </ItemGroup>
