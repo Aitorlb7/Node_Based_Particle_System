@@ -12,6 +12,10 @@ Window::~Window()
 {
 }
 
+void Window::Start()
+{
+}
+
 void Window::Draw()
 {
 }
@@ -32,7 +36,7 @@ void Window::Disable()
 
 const char* Window::GetName() const
 {
-	return nullptr;
+	return name;
 }
 
 void Window::SetIsHovered()

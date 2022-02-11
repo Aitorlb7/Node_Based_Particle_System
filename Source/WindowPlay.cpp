@@ -13,6 +13,10 @@ WindowPlay::~WindowPlay()
 {
 }
 
+void WindowPlay::Start()
+{
+}
+
 void WindowPlay::Draw()
 {
 	if (!isActive) return;

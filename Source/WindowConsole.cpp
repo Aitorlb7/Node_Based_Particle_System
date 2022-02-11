@@ -8,6 +8,10 @@ WindowConsole::~WindowConsole()
 {
 }
 
+void WindowConsole::Start()
+{
+}
+
 void WindowConsole::Draw()
 {
 	if (!isActive) return;
@@ -40,6 +44,16 @@ void WindowConsole::Draw()
 	ImGui::End();
 }
 
+
+void WindowConsole::AddLog(std::string text) {
+
+	if (&log_record != NULL) {
+		log_record.push_back(text);
+		scrollDown = true;
+	}
+}
+
 void WindowConsole::CleanUp()
 {
+	log_record.clear();
 }

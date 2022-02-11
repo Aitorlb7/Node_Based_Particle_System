@@ -25,6 +25,10 @@ WindowInspector::~WindowInspector()
 {
 }
 
+void WindowInspector::Start()
+{
+}
+
 void WindowInspector::Draw()
 {
 	if (!isActive) return;

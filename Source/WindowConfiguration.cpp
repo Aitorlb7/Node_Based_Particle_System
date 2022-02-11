@@ -25,6 +25,16 @@ WindowConfiguration::~WindowConfiguration()
 {
 }
 
+void WindowConfiguration::Start()
+{
+	window_width = App->window->width;
+	window_height = App->window->height;
+
+	brightness = SDL_GetWindowBrightness(App->window->window);
+	SDL_GetVersion(&version);
+	fpsCap = App->GetFpsCap();
+}
+
 void WindowConfiguration::Draw()
 {
 	if (!isActive) return;

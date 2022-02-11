@@ -1,5 +1,6 @@
 #include "Window.h"
 #include "PathNode.h"
+#include "Timer.h"
 
 class ResourceTexture;
 class Resource;
@@ -10,6 +11,8 @@ public:
 
 	WindowAssetExplorer(bool isActive);
 	~WindowAssetExplorer();
+
+	void Start() override;
 
 	void Draw() override;
 

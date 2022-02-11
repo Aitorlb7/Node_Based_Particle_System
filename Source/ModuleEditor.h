@@ -19,6 +19,15 @@ class ResourceShader;
 class ResourceMaterial;
 class ResourceScene;
 
+class Window;
+class WindowAbout;
+class WindowAssetExplorer;
+class WindowConfiguration;
+class WindowConsole;
+class WindowHirearchy;
+class WindowInspector;
+class WindowPlay;
+
 class ModuleEditor : public Module 
 {
 public:
@@ -31,25 +40,16 @@ public:
 	update_status PostUpdate(float dt);
 	bool CleanUp() override;
 
+	void AddWindow(Window* window);
+
 	void DrawGUI();
-	void UpdateAssetExplorer();
 
 	void Docking();
 	void RequestBrowser(const char*);
 	bool MainMenuBar();
-	void AboutWindow();
-	void ConfigurationWindow();
-	void ConsoleWindow();
-	void AddLog(string text);
-	void InspectorWindow();
-	void HierarchyWindow();
-	void DrawHierarchyLevel(GameObject* rootObject);
+
 	void SetupStyleFromHue();
-	void PlayPauseWindow();
-	void LoadIcons();
-	void AssetExplorerWindow();
-	void AssetsTree(PathNode& assetFolder);
-	void AssetsExplorer(PathNode& assetFolder);
+
 	void DropTargetWindow();
 	void TextEditorWindow();
 
@@ -57,25 +57,28 @@ public:
 
 	void GUIisHovered();
 
-	const char* GetSystemCaps();
-
-	int GetBudget();
-	int GetUsage();
-	int GetAvailable();
-	int GetReserved();
 
 
 public:
-	//SDL_Window* window;
-	//SDL_WindowFlags window_flags;
 
-	SDL_version version;
-	std::string Caps;
+	WindowAbout* aboutWindow = nullptr;
+	WindowAssetExplorer* explorerWindow = nullptr;
+	WindowConfiguration* configWindow = nullptr;
+	WindowConsole* consoleWindow = nullptr;
+	WindowHirearchy* hirearchyWindow = nullptr;
+	WindowInspector* inspectorWindow = nullptr;
+	WindowPlay* playWindow = nullptr;
 
-	std::vector<std::string> log_record;
-	GameObject* childObject = nullptr;
+	Color frustumColor = Color(1.0f, 1.0f, 0.2f, 0.75f);
+	Color NormalColor = Color(.8f, .8f, 0.0f, 0.75f);
+	Color AABBColor = Color(1.0f, 0.2f, 0.2f, 0.75f);
+	Color OBBColor = Color(0.2f, 0.2f, 1.0f, 0.75f);
+	ImVec4 ExplorerIconsTint;
 
-
+	bool show_demo_window = false;
+	bool show_dropTarget_window = false;
+	bool show_texteditor_window = false;
+	bool show_saveeditor_popup = false;
 
 	Resource* scene = nullptr;
 	ResourceScene* sceneToLoad = nullptr;
@@ -84,67 +87,26 @@ public:
 	std::string selectedScene;
 	ImVec4 sceneTextColor = ImVec4(0.8, 0, 0, 1);
 
-	PathNode nextFolder;
-	PathNode previousFolder;
+	ResourceShader* shaderToRecompile = nullptr;
+
 	uint32 Hovered_UID = 0;
-
-
 
 	TextEditor editor;
 	std::string fileToEdit;
 
-
-	char title[25];
-	char label[32];
-	int window_width = 0;
-	int window_height = 0;
-	float brightness = 0;
-	int fpsCap = 0;
 	bool dockingWindow = true;
 
-	bool show_demo_window = false;
-	bool show_configuration_window = true;
-	bool show_about_window = false;
-	bool show_console_window = true;
-	bool show_hierarchy_window = true;
-	bool show_inspector_window = true;
-	bool show_dropTarget_window = false;
-	bool show_texteditor_window = false;
-	bool show_saveeditor_popup = false;
-
-	bool depthtest = false;
-	bool cullface = true;
-	bool lighting = true;
-	bool colormaterial = false;
-	bool texture2D = true;
-	bool cubemap = false;
-	bool polygonssmooth = false;
-
-	bool fullscreen = false;
-	bool resizable = true;
-	bool borderless = false;
-	bool full_desktop = false;
-
-	bool drawNormals = false;
-	bool drawWireframe = false;
-	bool drawCheckerTex = false;
-	bool drawTexture = true;
-
-	bool scrollDown = true;
 	bool GUIhovered = false;
 	bool isUserTyping = false; 
 
 	bool enableObject = true;
 
-	
-
 	bool allowSaveOrLoad = false;
 
-	Color frustumColor = Color(1.0f, 1.0f, 0.2f, 0.75f);
-	Color NormalColor = Color(.8f, .8f, 0.0f, 0.75f);
-	Color AABBColor = Color(1.0f, 0.2f, 0.2f, 0.75f);
-	Color OBBColor = Color(0.2f, 0.2f, 1.0f, 0.75f);
-	ImVec4 ExplorerIconsTint;
+
+private: 
+	std::vector<Window*> windows;
+
 };
 
 #endif //__ModuleEditor_H__

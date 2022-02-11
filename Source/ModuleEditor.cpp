@@ -12,6 +12,15 @@
 #include "ComponentMesh.h"
 #include "ComponentTransform.h"
 
+#include "Window.h"
+#include "WindowAbout.h"
+#include "WindowAssetExplorer.h"
+#include "WindowConfiguration.h"
+#include "WindowConsole.h"
+#include "WindowHirearchy.h"
+#include "WindowInspector.h"
+#include "WindowPlay.h"
+
 #include "ResourceScene.h"
 #include "ResourceMaterial.h"
 #include "ResourceShader.h"
@@ -44,6 +53,22 @@
 
 ModuleEditor::ModuleEditor(bool start_enabled) : Module(start_enabled)
 {
+	aboutWindow = new WindowAbout(false);
+	explorerWindow = new WindowAssetExplorer(true);
+	configWindow = new WindowConfiguration(false);
+	consoleWindow = new WindowConsole(true);
+	hirearchyWindow = new WindowHirearchy(true);
+	inspectorWindow = new WindowInspector(true);
+	playWindow = new WindowPlay(true);
+
+
+	AddWindow(aboutWindow);
+	AddWindow(explorerWindow);
+	AddWindow(configWindow);
+	AddWindow(consoleWindow);
+	AddWindow(hirearchyWindow);
+	AddWindow(inspectorWindow);
+	AddWindow(playWindow);
 
 }
 
@@ -62,24 +87,15 @@ bool ModuleEditor::Start()
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
 
 	ImFont* font = io.Fonts->AddFontFromFileTTF("Assets/Fonts/Roboto-Medium.ttf", 15);
-	//ImGui::PushFont(font);
 
 	ImGui::StyleColorsDark(); 
 	ImGui_ImplSDL2_InitForOpenGL(App->window->window, App->renderer3D->context);
 	ImGui_ImplOpenGL3_Init(NULL);
 
-	window_width = App->window->width;
-	window_height = App->window->height;
-	brightness = SDL_GetWindowBrightness(App->window->window);
-	SDL_GetVersion(&version);
-	fpsCap = App->GetFpsCap();
-
-	//Load the icons into TextureResource
-	LoadIcons();
-	UpdateAssetExplorer();
-	currentFolder = assetsFolder;
-
-	//ImGui::SaveIniSettingsToDisk()
+	std::vector<Window*>::iterator item = windows.begin();
+	for (item; item != windows.end(); ++item){ 
+		(*item)->Start();
+	}
 
 	editor.SetPalette(TextEditor::GetDarkPalette());
 
@@ -90,15 +106,10 @@ update_status ModuleEditor::PreUpdate(float dt)
 {
 	update_status ret = UPDATE_CONTINUE;
 
-
-
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplSDL2_NewFrame(App->window->window);
 	
 	ImGui::NewFrame();
-	
-
-
 
 	return ret;
 }
@@ -109,21 +120,17 @@ update_status ModuleEditor::Update(float dt)
 
 	Docking();
 
-	if (!MainMenuBar()) return UPDATE_STOP;
-	
-	SetupStyleFromHue(); //This is innovation, Marc
-	AboutWindow();
-	ConfigurationWindow();
-	ConsoleWindow();
+	if (!MainMenuBar()) return UPDATE_STOP;	
+	SetupStyleFromHue();
+
+	std::vector<Window*>::iterator item = windows.begin();
+	for (item; item != windows.end(); ++item){
+		(*item)->Draw();
+	}
+
 	if (show_demo_window) ImGui::ShowDemoWindow(&show_demo_window);
-	HierarchyWindow();
-	InspectorWindow();
-	AssetExplorerWindow();
 	DropTargetWindow();
-	PlayPauseWindow();
-	TextEditorWindow();
-	
-	
+	TextEditorWindow();	
 
 	GUIisHovered();
 	ImGui::End();
@@ -145,10 +152,19 @@ bool ModuleEditor::CleanUp()
 	ImGui_ImplSDL2_Shutdown();
 	ImGui::DestroyContext();
 
-	log_record.clear();
+	std::vector<Window*>::iterator item = windows.begin();
+	for (item; item != windows.end(); ++item) {
+		(*item)->CleanUp();
+	}
+	
 	SDL_DestroyWindow(App->window->window);
 	SDL_Quit();
 	return true;
+}
+
+void ModuleEditor::AddWindow(Window* window)
+{
+	windows.push_back(window);
 }
 
 void ModuleEditor::DrawGUI()
@@ -157,16 +173,7 @@ void ModuleEditor::DrawGUI()
 	ImGuiIO& io = ImGui::GetIO();
 	ImGui::Render();
 	glViewport(0, 0, (int)io.DisplaySize.x, (int)io.DisplaySize.y);
-	//ImGui::Render();
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-}
-
-void ModuleEditor::UpdateAssetExplorer()
-{
-	std::vector<std::string> ignore_ext;
-	ignore_ext.push_back("meta");
-	assetsFolder = App->fileSystem->GetAllFiles("Assets", nullptr, &ignore_ext);
-
 }
 
 void ModuleEditor::GUIisHovered()
@@ -302,215 +309,6 @@ void  ModuleEditor::SetupStyleFromHue()
 	style.Colors[ImGuiCol_NavHighlight] =			ImVec4(col_text.x, col_text.y, col_text.z, 0.62f);
 	style.Colors[ImGuiCol_NavWindowingHighlight] =	ImVec4(col_text.x, col_text.y, col_text.z, 0.62f);
 	style.Colors[ImGuiCol_NavWindowingDimBg] =		ImVec4(col_text.x, col_text.y, col_text.z, 0.62f);
-}
-
-void ModuleEditor::LoadIcons()
-{
-	modelIcon = new ResourceTexture();
-	defaultIcon = new ResourceTexture();
-	folderIcon = new ResourceTexture();
-	returnIcon = new ResourceTexture();
-
-	char* buffer = nullptr;
-	uint size = App->fileSystem->Load("Assets/Icons/FBX_Icon_x4.png", &buffer);
-	if (size > 0) Importer::TextureImporter::ImportTexture(modelIcon, buffer, size);
-	RELEASE_ARRAY(buffer);
-
-	size = 0;
-	size = App->fileSystem->Load("Assets/Icons/ASE_Icon_x4.png", &buffer);
-	if (size > 0) Importer::TextureImporter::ImportTexture(defaultIcon, buffer, size);
-	RELEASE_ARRAY(buffer);
-
-	size = 0;
-	size = App->fileSystem->Load("Assets/Icons/Folder_Icon_x4.png", &buffer);
-	if (size > 0) Importer::TextureImporter::ImportTexture(folderIcon, buffer, size);
-	RELEASE_ARRAY(buffer);
-
-	size = 0;
-	size = App->fileSystem->Load("Assets/Icons/Return_Icon_x1.png", &buffer);
-	if (size > 0) Importer::TextureImporter::ImportTexture(returnIcon, buffer, size);
-	RELEASE_ARRAY(buffer);
-}
-
-void ModuleEditor::AssetExplorerWindow()
-{
-	Timer timer;
-	timer.Start();
-	if (updateTimer.ReadSec() > updateTime)
-	{
-		UpdateAssetExplorer();
-		updateTimer.Start();
-	}
-	double time = timer.Read();
-	
-	ImGui::Begin("Assets Tree");
-	AssetsTree(assetsFolder);
-	ImGui::End();
-	ImGui::Begin("Assets Explorer");
-	AssetsExplorer(currentFolder);
-	ImGui::End();
-}
-
-void ModuleEditor::AssetsTree(PathNode& assetFolder)
-{
-	ImGuiTreeNodeFlags treeFlags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_DefaultOpen 
-		| ImGuiWindowFlags_AlwaysVerticalScrollbar | ImGuiTreeNodeFlags_SpanAvailWidth;
-	if (assetFolder.IsLastFolder()) treeFlags |= ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen;
-	if (currentFolder == assetFolder) treeFlags |= ImGuiTreeNodeFlags_Selected;
-
-	if (!assetFolder.isFile) //This way we only show folders in the Tree
-	{
-		if (ImGui::TreeNodeEx(assetFolder.localPath.c_str(), treeFlags, assetFolder.localPath.c_str()))
-		{
-			if (ImGui::IsItemClicked()) 
-			{
-				nextFolder = previousFolder;
-				currentFolder = assetFolder; 
-			}
-			if (!assetFolder.IsLastFolder())
-			{
-				for (uint i = 0; i < assetFolder.children.size(); i++)
-				{
-					AssetsTree(assetFolder.children[i]);
-				}
-				ImGui::TreePop();
-			}
-		}
-	}
-}
-
-void ModuleEditor::AssetsExplorer(PathNode& assetFolder)
-{
-	//if(assetFolder.path == "Assets") previousFolder = assetFolder;
-
-	nextFolder = previousFolder;
-
-	uint row = 0;
-	uint offset = 50;
-	uint column = (float)(ImGui::GetWindowWidth() / (float)(iconSize + offset)); // Window.w / Item.w
-	ImVec2 cursor = ImGui::GetCursorPos();
-	ImVec2 flipV = ImVec2(0.0f, 1.0f);
-	ImVec2 flipH = ImVec2(1.0f, 0.0f);
-
-	ImGui::Text(assetFolder.localPath.c_str());
-
-	ImGui::Separator();
-
-	ImGui::BeginChild(1);
-
-	
-	for(uint i = 0; i < assetFolder.children.size(); i++)
-	{
-		ImGui::PushID(i);
-
-		//Get Id from meta file and the Resource from that ID
-		std::string meta = assetFolder.children[i].path + ".meta";
-		char* buffer = nullptr;
-		uint size = App->fileSystem->Load(meta.c_str(), &buffer);
-		uint32 UID = 0;
-		
-
-		ImGui::SetCursorPosX((i - (row * column)) * (iconSize + offset) + offset);
-		ImGui::SetCursorPosY(row * (iconSize + offset));
-
-		if (size > 0)
-		{
-			UID = JsonConfig(buffer).GetNumber("UID");
-			resource = App->resources->GetResourceInMemory(UID);
-
-			textureIcon = (ResourceTexture*)resource;
-
-			if (textureIcon->id > MAX_TEXTURES) textureIconLoaded = false;
-
-			if(resource->type == ResourceType::Texture && !textureIconLoaded) App->resources->LoadResource(UID);
-			
-			
-
-			switch (resource->type)
-			{
-			case ResourceType::Model:
-				ImGui::ImageButton((ImTextureID)modelIcon->id, ImVec2(iconSize, iconSize), flipV, flipH, - 1, ImVec4(0, 0, 0, 0), ExplorerIconsTint);
-				break;
-			case ResourceType::Texture:
-				ImGui::ImageButton((ImTextureID)textureIcon->id, ImVec2(iconSize, iconSize), flipV, flipH);
-
-				break;
-			case ResourceType::Folder:
-				ImGui::ImageButton((ImTextureID)folderIcon->id, ImVec2(iconSize, iconSize), flipV, flipH, -1, ImVec4(0, 0, 0, 0), ExplorerIconsTint);
-
-				break;
-			default:
-				ImGui::ImageButton((ImTextureID)defaultIcon->id, ImVec2(iconSize, iconSize), flipV, flipH, -1, ImVec4(0, 0, 0, 0), ExplorerIconsTint);
-
-				break;
-			}
-
-			if (ImGui::IsItemHovered() && resource->type != ResourceType::Folder)
-			{
-				Hovered_UID = JsonConfig(buffer).GetNumber("UID");
-			}
-			RELEASE_ARRAY(buffer);
-		}
-		else
-		{
-			ImGui::ImageButton((ImTextureID)folderIcon->id, ImVec2(iconSize, iconSize), flipV, flipH, -1, ImVec4(0, 0, 0, 0), ExplorerIconsTint);
-		}
-
-
-
-	
-
-		if (ImGui::IsItemClicked() && !assetFolder.children[i].isFile)
-		{
-			nextFolder = assetFolder.children[i];
-		}
-
-		if (ImGui::IsItemClicked(ImGuiMouseButton_Right)) ImGui::OpenPopup("ImportPopUp");
-
-		if (ImGui::BeginPopup("ImportPopUp"))
-		{
-			ImGui::IsItemHovered();
-			if (ImGui::Selectable("Import Asset"))
-			{
-				App->resources->LoadResource(Hovered_UID);
-			}
-			ImGui::EndPopup();
-		}
-
-		if (ImGui::BeginDragDropSource())
-		{
-			show_dropTarget_window = true;
-			ImGui::SetDragDropPayload("Asset", &UID, sizeof(uint32));
-
-			switch (resource->type)
-			{
-			case ResourceType::Model:
-				ImGui::Image((ImTextureID)modelIcon->id, ImVec2(iconSize, iconSize), flipV, flipH);
-				break;
-			case ResourceType::Texture:
-				ImGui::Image((ImTextureID)textureIcon->id, ImVec2(iconSize, iconSize), flipV, flipH);
-				break;
-			case ResourceType::Shader:
-				ImGui::Image((ImTextureID)folderIcon->id, ImVec2(iconSize, iconSize), flipV, flipH);
-				break;
-			}
-			ImGui::EndDragDropSource();
-		}
-
-		ImGui::SetCursorPosX((i - (row * column)) * (iconSize + offset) + offset);
-		ImGui::SetCursorPosY(row * (iconSize + offset) + iconSize + offset/5);
-
-		ImGui::Text(assetFolder.children[i].localPath.c_str());
-
-		if ((i + 1) % column == 0) row++;
-
-		ImGui::PopID();
-	}
-
-	ImGui::EndChild();
-
-	if (nextFolder.path != "") assetFolder = nextFolder;
-	else textureIconLoaded = true;
 }
 
 void ModuleEditor::DropTargetWindow()
@@ -864,20 +662,14 @@ bool ModuleEditor::MainMenuBar()
 				ImGui::CloseCurrentPopup();
 			}
 			ImGui::EndPopup();
-
-			
-
-
-
-
 		}
 
 		if (ImGui::BeginMenu("View"))
 		{
-			if (ImGui::MenuItem("Configuration")) show_configuration_window = !show_configuration_window;
-			if (ImGui::MenuItem("Console")) show_console_window = !show_console_window;
-			if (ImGui::MenuItem("Hierarchy"))show_hierarchy_window = !show_hierarchy_window;
-			if (ImGui::MenuItem("Inspector"))show_inspector_window = !show_inspector_window;
+			if (ImGui::MenuItem("Configuration","",configWindow->isActive)) configWindow->Enable();
+			if (ImGui::MenuItem("Console", "", consoleWindow->isActive)) consoleWindow->Enable();
+			if (ImGui::MenuItem("Hierarchy", "", hirearchyWindow->isActive)) hirearchyWindow->Enable();
+			if (ImGui::MenuItem("Inspector", "", inspectorWindow->isActive)) inspectorWindow->Enable();
 
 			ImGui::EndMenu();
 		}
@@ -907,7 +699,7 @@ bool ModuleEditor::MainMenuBar()
 			if (ImGui::MenuItem("Documentation")) RequestBrowser("https://github.com/paufiol/AnotherSmallEngine/blob/master/README.md");
 			if (ImGui::MenuItem("Latest Release")) RequestBrowser("https://github.com/paufiol/AnotherSmallEngine");
 			if (ImGui::MenuItem("Report a bug")) RequestBrowser("https://github.com/paufiol/AnotherSmallEngine/issues");
-			if (ImGui::MenuItem("About")) show_about_window = !show_about_window;
+			if (ImGui::MenuItem("About", "", aboutWindow->isActive)) aboutWindow->Enable();
 			ImGui::EndMenu();
 		}
 		ImGui::EndMenuBar();
@@ -916,421 +708,8 @@ bool ModuleEditor::MainMenuBar()
 	}
 	return ret;
 }
-void ModuleEditor::AboutWindow()
-{
-	if (show_about_window) {
-		ImGui::Begin("About", &show_about_window);
-		ImGui::Text("ASE - Another Small Engine");
-		ImGui::Text("Engine developed for academic purpouses.");
-		ImGui::Text("By Pau Fiol & Aitor Luque");
-		sprintf(label, "Github Repository (Link)");
-		if (ImGui::Selectable(label, true))	RequestBrowser("https://github.com/paufiol/AnotherSmallEngine");
-		ImGui::Separator();
-		ImGui::Text("Libraries used:");
-		ImGui::BulletText("SDL");
-		ImGui::BulletText("Glew");
-		ImGui::BulletText("OpenGL");
-		ImGui::BulletText("ImGui");
-		ImGui::BulletText("MathGeoLib");
-		ImGui::BulletText("Assimp");
-		ImGui::Separator();
-		ImGui::Text("GNU License:");
-		sprintf(label, "Click here to see the full License");
-		if (ImGui::Selectable(label, true))	RequestBrowser("https://github.com/paufiol/AnotherSmallEngine/blob/master/LICENSE.txt");
-		
-		ImGui::End();
-	}
-}
-
-void ModuleEditor::ConfigurationWindow()
-{
-	if (show_configuration_window)
-	{
-		ImGui::Begin("Configuration", &show_configuration_window);
-		if (ImGui::CollapsingHeader("Application"))
-		{
-
-			ImGui::SliderInt("Max FPS", &fpsCap, 1, 60);
-			App->SetFpsCap(fpsCap);
-			ImGui::Text("Limit Framerate:");
-			ImGui::SameLine();
-			ImGui::TextColored(GREEN, "%d", fpsCap);
-
-			sprintf_s(title, 25, "Framerate %.1f", App->GetFps()[App->GetFps().size() - 1]);
-			ImGui::PlotHistogram("##framerate", &App->GetFps()[0], App->GetFps().size(), 0, title, 0.0f, 100.0f, ImVec2(310, 100));
-			sprintf_s(title, 25, "Milliseconds %0.1f", App->GetMs()[App->GetMs().size() - 1]);
-			ImGui::PlotHistogram("##milliseconds", &App->GetMs()[0], App->GetMs().size(), 0, title, 0.0f, 40.0f, ImVec2(310, 100));
-		}
-		if (ImGui::CollapsingHeader("Window"))
-		{
-			if (ImGui::Checkbox("Fullscreen", &fullscreen)) App->window->SetFullscreen(fullscreen);
-			if (ImGui::Checkbox("Borderless", &borderless)) App->window->SetBorderless(borderless);
-			if (ImGui::Checkbox("Full Desktop", &full_desktop)) App->window->SetFullscreenDesktop(full_desktop);
-
-			ImGui::Separator();
-			if(ImGui::SliderInt("Width", &window_width, 350, 1500, "%d")) SDL_SetWindowSize(App->window->window, window_width, window_height);
-			if(ImGui::SliderInt("Height", &window_height, 350, 1200, "%d")) SDL_SetWindowSize(App->window->window, window_width, window_height);
-			
-
-			ImGui::SliderFloat("Brightness", &brightness, 0, 1, "%.3f");
-			SDL_SetWindowBrightness(App->window->window, brightness);
-
-		}
-		if (ImGui::CollapsingHeader("Hardware"))
-		{
-			ImGui::Text("SDL Version:");
-			ImGui::SameLine();
-			ImGui::TextColored(GREEN, "%d.%d.%d", version.major, version.minor, version.patch);
-
-			ImGui::Separator();
-
-			ImGui::Text("CPUs: ");
-			ImGui::SameLine();
-			ImGui::TextColored(GREEN, "%d", SDL_GetCPUCount());
-
-			ImGui::Text("System RAM: ");
-			ImGui::SameLine();
-			ImGui::TextColored(GREEN, " %d Gb", SDL_GetSystemRAM());
-			ImGui::Separator();
-
-			ImGui::Text("Caps: ");
-			ImGui::SameLine();
-			ImGui::TextColored(GREEN, "%s", GetSystemCaps());
-			ImGui::Separator();
-
-			ImGui::Text("GPU: ");
-			ImGui::SameLine();
-			ImGui::TextColored(GREEN, "%s", glGetString(GL_RENDERER));
-
-			ImGui::Text("Brand: ");
-			ImGui::SameLine();
-			ImGui::TextColored(GREEN, "%s", glGetString(GL_VENDOR));
-
-			ImGui::Text("Version: ");
-			ImGui::SameLine();
-			ImGui::TextColored(GREEN, "%s", glGetString(GL_VERSION));
-
-			ImGui::Text("VRAM Budget:");
-			ImGui::SameLine();
-			ImGui::TextColored(GREEN, "%i Mb", GetBudget());
-
-			ImGui::Text("VRAM Usage:");
-			ImGui::SameLine();
-			ImGui::TextColored(GREEN, "%i Mb", GetUsage());
-
-			ImGui::Text("VRAM Available:");
-			ImGui::SameLine();
-			ImGui::TextColored(GREEN, "%i Mb", GetAvailable());
-
-			ImGui::Text("VRAM Reserved:");
-			ImGui::SameLine();
-			ImGui::TextColored(GREEN, "%i Mb", GetReserved());
-
-		}
-		if (ImGui::CollapsingHeader("OpenGL Settings")) {
-
-			if (ImGui::Checkbox("Depth Test", &depthtest)) {
-				App->renderer3D->SetDepthtest(depthtest);
-			}
-			if (ImGui::Checkbox("Cull Face", &cullface)) {
-				App->renderer3D->SetCullface(cullface);
-			}
-			if (ImGui::Checkbox("Lightning", &lighting)) {
-				App->renderer3D->SetLighting(lighting);
-			}
-			if (ImGui::Checkbox("Texture2D", &texture2D)) {
-				App->renderer3D->SetTexture2D(texture2D);
-			}
-			if (ImGui::Checkbox("Color Material", &colormaterial)) {
-				App->renderer3D->SetColormaterial(colormaterial);
-			}
-			if (ImGui::Checkbox("Cube Map", &cubemap)) {
-				App->renderer3D->SetCubemap(cubemap);
-			}
-			if (ImGui::Checkbox("Polygons smooth", &polygonssmooth)) {
-				App->renderer3D->SetPolygonssmooth(polygonssmooth);
-			}
-
-		}
-		if (ImGui::CollapsingHeader("Draw Settings"))
-		{
-			if (ImGui::Checkbox ("Draw Normals", &drawNormals)){}
-			if (ImGui::Checkbox ("Wireframe Mode", &drawWireframe)) {}
-			if (ImGui::Checkbox("Enable Checker Tex", &drawCheckerTex)) { drawTexture = false; }
-			if (ImGui::Checkbox("Enable Texture", &drawTexture)) { drawCheckerTex = false; }
-			if (ImGui::Checkbox("Draw Bounding Boxes", &App->renderer3D->drawboundingboxes)) { App->renderer3D->drawboundingboxes; }
-			if (ImGui::Checkbox("Current Camera Culling", &App->camera->currentCamera->frustum_culling)) {}
-		}
-		if (ImGui::CollapsingHeader("Camera Settings"))
-		{
-			float Inspector_FOV = App->camera->currentCamera->GetFOV();
-			if (ImGui::SliderFloat("FOV", &Inspector_FOV, 30, 120, "%0.2f", ImGuiSliderFlags_None)) 
-			{
-				App->camera->currentCamera->SetFOV(Inspector_FOV);
-			}
-			
-			float Inspector_NearPlane = App->camera->currentCamera->GetNearPlane();
-			if (ImGui::DragFloat("Near Plane", &Inspector_NearPlane))
-			{ 
-				App->camera->currentCamera->SetNearPlane(Inspector_NearPlane); 
-			}
-			
-			float Inspector_FarPlane = App->camera->currentCamera->GetFarPlane();
-			if (ImGui::DragFloat("Far Plane", &Inspector_FarPlane))
-			{ 
-				App->camera->currentCamera->SetFarPlane(Inspector_FarPlane); 
-			}
-
-			if(ImGui::Button("Change Current Camera"))
-			{
-				if (App->camera->currentCamera == App->camera->editorCamera) {
-					App->camera->currentCamera = App->camera->gameCamera;
-				}
-				else if (App->camera->currentCamera == App->camera->gameCamera) {
-					App->camera->currentCamera = App->camera->editorCamera;
-				}
-				else LOG("Something went wrong when swapping cameras");
-			}
-		}
-
-		ImGui::End();
-	}
-}
-
-void ModuleEditor::InspectorWindow()
-{
-	if (show_inspector_window)
-	{
-		ImGui::Begin("Inspector", &show_inspector_window);
-
-		if(App->scene->selected_object != nullptr)
-		{
-			ImGui::SetNextItemWidth(ImGui::GetWindowWidth() * 0.33f);
-			char tempName[64];
-			strcpy_s(tempName, App->scene->selected_object->name.c_str());
-			if (ImGui::InputText("Name", (char*)App->scene->selected_object->name.c_str(), 64, ImGuiInputTextFlags_EnterReturnsTrue))
-			{
-				App->scene->selected_object->SetName(tempName);
-			}
-			ImGui::Separator();
-
-			if (ImGui::Checkbox("Object Enabled", &enableObject))
-			{
-				enableObject ? App->scene->selected_object->Enable() : App->scene->selected_object->Disable();
-			}
-
-			ImGui::Text("Parent: ");
-			ImGui::SameLine();
-			if (App->scene->selected_object->parent != nullptr)
-			{
-				ImGui::TextColored(GREEN, "%s", App->scene->selected_object->parent->name.c_str());
-			}
-			else ImGui::Text("No Parent");
 
 
-			if (ImGui::Button("Delete Object"))
-			{
-				ImGui::OpenPopup("Delete Object", ImGuiPopupFlags_None);
-			}
-			if (ImGui::BeginPopupModal("Delete Object", NULL, ImGuiWindowFlags_AlwaysAutoResize))
-			{
-				ImGui::Text("This action cannot be undone!\n Are you sure? \n\n");
-				ImGui::Separator();
-
-				if (ImGui::Button("Delete", ImVec2(120, 0))) 
-				{ 
-					App->scene->DeleteGameObject(App->scene->selected_object);
-					ImGui::CloseCurrentPopup(); 
-				}
-				ImGui::SetItemDefaultFocus();
-				ImGui::SameLine();
-				if (ImGui::Button("Cancel", ImVec2(120, 0))) { ImGui::CloseCurrentPopup(); }
-				ImGui::EndPopup();
-			}
-
-			ImGui::Separator();
-			if (App->scene->selected_object != nullptr) {
-				for (uint m = 0; m < App->scene->selected_object->components.size(); m++)
-				{
-						App->scene->selected_object->components[m]->DrawInspector();
-				}
-			}
-
-			ImGui::Separator();
-
-			const char* items[] = { "Transform", "Mesh", "Texture", "Camera" };
-			static const char* current_item = NULL;
-			if (ImGui::BeginCombo("-", current_item))
-			{
-				for (int n = 0; n < IM_ARRAYSIZE(items); n++)
-				{
-					bool is_selected = (current_item == items[n]); // You can store your selection however you want, outside or inside your objects
-					if (ImGui::Selectable(items[n], is_selected))
-					{
-						current_item = items[n];
-					}
-					if (is_selected)
-					{
-						ImGui::SetItemDefaultFocus();   // You may set the initial focus when opening the combo (scrolling + for keyboard navigation support)	
-					}
-				}
-				ImGui::EndCombo();
-			}
-			ImGui::SameLine();
-			if (ImGui::Button("Add Component"))
-			{
-				if (strcmp(current_item, "Transform") == 0)
-				{
-					if (App->scene->selected_object->GetComponent(ComponentType::Transform) == nullptr)
-					{
-						ComponentTransform* newComponent = new ComponentTransform(App->scene->selected_object);
-						App->scene->selected_object->AddComponent(newComponent);
-					}
-					else
-					{
-						LOG("ERROR: Game Objects can not have repeated components");
-					}
-				}
-				else if (strcmp(current_item, "Mesh") == 0)
-				{
-					if (App->scene->selected_object->GetComponent(ComponentType::Mesh) == nullptr)
-					{
-						ComponentMesh* newComponent = new ComponentMesh(App->scene->selected_object);
-						App->scene->selected_object->AddComponent(newComponent);
-					}
-					else
-					{
-						LOG("ERROR: Game Objects can not have repeated components");
-					}
-				}
-				else if (strcmp(current_item, "Texture") == 0)
-				{
-					if (App->scene->selected_object->GetComponent(ComponentType::Material) == nullptr)
-					{
-						ComponentMaterial* newComponent = new ComponentMaterial(App->scene->selected_object);
-						App->scene->selected_object->AddComponent(newComponent);
-					}
-					else
-					{
-						LOG("ERROR: Game Objects can not have repeated components");
-					}
-				}
-				else if (strcmp(current_item, "Camera") == 0)
-				{
-					if (App->scene->selected_object->GetComponent(ComponentType::Camera) == nullptr)
-					{
-						ComponentCamera* newComponent = new ComponentCamera(App->scene->selected_object);
-						App->scene->selected_object->AddComponent(newComponent);
-					}
-					else
-					{
-						LOG("ERROR: Game Objects can not have repeated components");
-					}
-				}
-			}
-		}
-		ImGui::End();
-	}
-}
-
-void ModuleEditor::DrawHierarchyLevel(GameObject* rootObject)
-{
-	ImGuiTreeNodeFlags treeFlags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_SpanAvailWidth;
-	if(rootObject->children.empty()) treeFlags |= ImGuiTreeNodeFlags_Leaf ;
-	if (rootObject == App->scene->selected_object) treeFlags |= ImGuiTreeNodeFlags_Selected | ImGuiTreeNodeFlags_Framed;
-	ImGui::AlignTextToFramePadding();
-
-	if (ImGui::TreeNodeEx(rootObject->name.c_str(), treeFlags))
-	{
-		if (ImGui::IsItemClicked())						// To select Scene or the House needs to be opened
-		{
-			App->scene->SelectObject(rootObject);
-			rootObject->selected = true;
-		}
-		if (rootObject != App->scene->root_object)
-		{	
-			if (ImGui::BeginDragDropSource())
-			{
-				ImGui::SetDragDropPayload("Dragged_Object", rootObject, sizeof(GameObject));
-				childObject = rootObject;
-				ImGui::EndDragDropSource();
-			}
-			if (ImGui::BeginDragDropTarget())
-			{
-				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("Dragged_Object"))
-				{
-					rootObject->AddChildren(childObject);
-
-					childObject = nullptr;
-				}
-				
-				ImGui::EndDragDropTarget();
-			}
-		}
-			if (!rootObject->children.empty())
-			{
-				for (uint i = 0; i < rootObject->children.size(); ++i)
-				{
-					DrawHierarchyLevel(rootObject->children[i]);
-				}
-			}
-
-		ImGui::TreePop();	
-	}
-};
-
-void ModuleEditor::HierarchyWindow()
-{
-	if (show_hierarchy_window)
-	{
-		ImGui::Begin("Hierarchy", &show_hierarchy_window);
-		
-		DrawHierarchyLevel(App->scene->root_object);
-
-		ImGui::End();
-	}
-}
-
-
-void ModuleEditor::ConsoleWindow()
-{
-	if (show_console_window) {
-		ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0, 6));
-
-		ImGui::Begin("Console", &show_console_window);
-
-		for (int i = 0; i < log_record.size(); i++)
-		{
-			ImVec4 textColor = { 1.0f, 1.0f, 1.0f, 1.0f };
-
-			if (strstr(log_record[i].c_str(), "ERROR") != nullptr)
-			{
-				textColor = { 1.0f, 0.0f, 0.3f, 0.7f };
-			}
-
-			ImGui::PushStyleColor(ImGuiCol_Text, textColor);
-
-			ImGui::Text("%s", log_record[i].c_str());
-
-			ImGui::PopStyleColor();
-		}
-
-		ImGui::PopStyleVar();
-
-		if (scrollDown) ImGui::SetScrollHere(1.0f);
-		scrollDown = false;
-
-		ImGui::End();
-	}
-}
-
-void ModuleEditor::AddLog(string text) {
-
-	if (&log_record != NULL) {
-		log_record.push_back(text);
-		scrollDown = true;
-	}
-}
 
 void ModuleEditor::Docking()
 {
@@ -1359,88 +738,3 @@ void ModuleEditor::RequestBrowser(const char* path)
 }
 
 
-const char* ModuleEditor::GetSystemCaps()
-{
-	Caps.clear();
-	// IF the processor has certain register it will be added to the string
-	if (SDL_Has3DNow())
-	{
-		Caps.append("3D Now, ");
-	}
-
-	if (SDL_HasAVX())
-	{
-		Caps.append("AVX, ");
-	}
-
-	if (SDL_HasAVX2())
-	{
-		Caps.append("AVX2, ");
-	}
-
-	if (SDL_HasAltiVec())
-	{
-		Caps.append("AltiVec, ");
-	}
-
-	if (SDL_HasMMX())
-	{
-		Caps.append("MMX, ");
-	}
-
-	if (SDL_HasRDTSC())
-	{
-		Caps.append("RDTSC, ");
-	}
-
-	if (SDL_HasSSE())
-	{
-		Caps.append("SSE, ");
-	}
-
-	if (SDL_HasSSE2())
-	{
-		Caps.append("SSE2, ");
-	}
-
-	if (SDL_HasSSE3())
-	{
-		Caps.append("SSE3, ");
-	}
-
-	if (SDL_HasSSE41())
-	{
-		Caps.append("SSE41, ");
-	}
-
-	if (SDL_HasSSE41())
-	{
-		Caps.append("SSE42");
-	}
-
-	return Caps.data();
-}
-
-int ModuleEditor::GetBudget() {
-	int budget;
-	glGetIntegerv(GL_GPU_MEMORY_INFO_TOTAL_AVAILABLE_MEMORY_NVX, &budget);
-	return budget / 1024.0f;
-}
-
-int ModuleEditor::GetUsage() {
-	int usage;
-	glGetIntegerv(GL_GPU_MEMORY_INFO_DEDICATED_VIDMEM_NVX, &usage);
-	return usage / 1024.0f;
-}
-
-int ModuleEditor::GetAvailable() {
-	int available;
-	glGetIntegerv(GL_GPU_MEMORY_INFO_CURRENT_AVAILABLE_VIDMEM_NVX, &available);
-	return available / 1024.0f;
-}
-
-int ModuleEditor::GetReserved() {
-	int reserved;
-	glGetIntegerv(GL_GPU_MEMORY_INFO_EVICTED_MEMORY_NVX, &reserved);
-	return reserved / 1024.0f;
-}

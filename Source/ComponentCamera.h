@@ -8,6 +8,7 @@
 #include "Dependencies/MathGeoLib/include/Geometry/Frustum.h"
 #include "Dependencies/MathGeoLib/include/Math/float3.h"
 #include "Dependencies/MathGeoLib/include/Geometry/LineSegment.h"
+#include "glmath.h"
 
 class ComponentCamera : public Component {
 	//Properties

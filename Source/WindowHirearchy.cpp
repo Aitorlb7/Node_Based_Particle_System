@@ -11,6 +11,10 @@ WindowHirearchy::~WindowHirearchy()
 {
 }
 
+void WindowHirearchy::Start()
+{
+}
+
 void WindowHirearchy::Draw()
 {
 	if (!isActive) return;

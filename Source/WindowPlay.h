@@ -9,6 +9,8 @@ public:
 	WindowPlay(bool isActive);
 	~WindowPlay();
 
+	void Start() override;
+
 	void Draw() override;
 
 	void CleanUp() override;

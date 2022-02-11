@@ -12,6 +12,8 @@ public:
 	Window(const char* name, bool isActive = true);
 	virtual ~Window();
 
+
+	virtual void	Start();
 	virtual void	Draw();
 	virtual void	CleanUp();
 

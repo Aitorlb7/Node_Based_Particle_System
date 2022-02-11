@@ -10,6 +10,10 @@ WindowAbout::~WindowAbout()
 {
 }
 
+void WindowAbout::Start()
+{
+}
+
 void WindowAbout::Draw()
 {
 	if (!isActive) return;

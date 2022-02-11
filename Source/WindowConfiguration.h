@@ -1,11 +1,13 @@
 #include "Window.h"
-
+#include "SDL_version.h"
 class WindowConfiguration : public Window
 {
 public:
 
 	WindowConfiguration(bool isActive);
 	~WindowConfiguration();
+
+	void Start() override;
 
 	void Draw() override;
 
@@ -21,7 +23,7 @@ public:
 
 	void CleanUp() override;
 
-private:
+public:
 	std::string caps;
 	SDL_version version;
 

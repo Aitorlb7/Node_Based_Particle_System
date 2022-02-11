@@ -7,7 +7,11 @@ public:
 	WindowConsole(bool isActive);
 	~WindowConsole();
 
+	void Start() override;
+
 	void Draw() override;
+
+	void AddLog(std::string text);
 
 	void CleanUp() override;
 

@@ -22,6 +22,13 @@ WindowAssetExplorer::~WindowAssetExplorer()
 {
 }
 
+void WindowAssetExplorer::Start()
+{
+	LoadIcons();
+	UpdateAssetExplorer();
+	currentFolder = assetsFolder;
+}
+
 void WindowAssetExplorer::Draw()
 {
 	if (!isActive) return;

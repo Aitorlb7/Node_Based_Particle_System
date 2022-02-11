@@ -9,6 +9,8 @@ public:
 	WindowHirearchy(bool isActive);
 	~WindowHirearchy();
 
+	void Start() override;
+
 	void Draw() override;
 
 	void DrawHierarchyLevel(GameObject* rootObject);

@@ -15,6 +15,8 @@ public:
 	WindowInspector(bool isActive);
 	~WindowInspector();
 
+	void Start() override;
+
 	void Draw() override;
 
 	void DrawComponent(Component* component);
@@ -26,6 +28,6 @@ public:
 	void CleanUp() override;
 
 private:
-	ResourceShader* shaderToRecompile = nullptr;
+
 	bool enableObject = true;
 };

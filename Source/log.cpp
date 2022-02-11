@@ -1,6 +1,7 @@
 #pragma once
 #include "Globals.h"
 #include "ModuleEditor.h"
+#include "WindowConsole.h"
 #include "Application.h"
 
 void log(const char file[], int line, const char* format, ...)
@@ -18,6 +19,6 @@ void log(const char file[], int line, const char* format, ...)
 
 	if (App != nullptr) {
 		std::string log_text = std::string(tmp_string);
-		App->editor->AddLog(log_text);
+		App->editor->consoleWindow->AddLog(log_text);
 	}
 }
