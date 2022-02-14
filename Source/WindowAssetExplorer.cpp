@@ -243,7 +243,7 @@ void WindowAssetExplorer::AssetsExplorer(PathNode& assetFolder)
 
 		ImGui::Text(assetFolder.children[i].localPath.c_str());
 
-		if ((i + 1) % column == 0) row++;
+		if(column > 0 && (i + 1) % column == 0) row++;
 
 		ImGui::PopID();
 	}

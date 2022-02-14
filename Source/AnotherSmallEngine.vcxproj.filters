@@ -298,6 +298,12 @@
     <ClCompile Include="WindowPlay.cpp">
       <Filter>Editor\Windows</Filter>
     </ClCompile>
+    <ClCompile Include="WindowNodeEditor.cpp">
+      <Filter>Editor\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="Node.cpp">
+      <Filter>Tools</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Dependencies\ImGui\imconfig.h">
@@ -1068,6 +1074,12 @@
     </ClInclude>
     <ClInclude Include="WindowHirearchy.h">
       <Filter>Editor\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="WindowNodeEditor.h">
+      <Filter>Editor\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="Node.h">
+      <Filter>Tools</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
