@@ -17,6 +17,8 @@
 #include "ResourceMaterial.h"
 #include "ResourceTexture.h"
 
+#include "Dependencies/ImGui/imgui.h"
+
 WindowInspector::WindowInspector(bool isActive) : Window("Inspector Window", isActive)
 {
 }

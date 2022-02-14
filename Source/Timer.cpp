@@ -4,6 +4,8 @@
 // ----------------------------------------------------
 
 #include "Timer.h"
+#include "Globals.h"
+#include "Dependencies\SDL\include\SDL.h"
 
 // ---------------------------------------------
 Timer::Timer()

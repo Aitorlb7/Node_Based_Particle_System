@@ -1,14 +1,12 @@
 
 #pragma once
 #include "Component.h"
-//#include "glmath.h"
-
-//#include "Dependencies/MathGeoLib/include/MathGeoLib.h"
 #include "Dependencies/MathGeoLib/include/Math/float4x4.h"
 #include "Dependencies/MathGeoLib/include/Geometry/Frustum.h"
 #include "Dependencies/MathGeoLib/include/Math/float3.h"
 #include "Dependencies/MathGeoLib/include/Geometry/LineSegment.h"
-#include "glmath.h"
+
+class mat4x4;
 
 class ComponentCamera : public Component {
 	//Properties
@@ -22,7 +20,7 @@ public:
 
 private:
 	bool looking; 
-	float3 looking_at;
+	math::float3 looking_at;
 
 	LineSegment latest_ray;
 
@@ -55,7 +53,7 @@ public:
 	mat4x4 GetViewMatrix();
 	float* GetProjectionMatrix();
 	
-	void Look(float3& reference);
+	void Look(math::float3& reference);
 	void Match(ComponentCamera* reference);
 	
 	void Pan(float motion_x, float motion_y);

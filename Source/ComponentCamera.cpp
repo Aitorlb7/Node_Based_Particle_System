@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Application.h"
-#include "Globals.h"
 #include "GameObject.h"
 
 #include "ModuleWindow.h"
@@ -11,7 +10,7 @@
 #include "ComponentCamera.h"
 #include "ComponentTransform.h"
 
-//#include "glmath.h"
+#include "glmath.h"
 #include "Dependencies/MathGeoLib/include/Math/float3.h"
 #include "Dependencies/MathGeoLib/include/Math/float3x3.h"
 #include "Dependencies/MathGeoLib/include/Math/Quat.h"

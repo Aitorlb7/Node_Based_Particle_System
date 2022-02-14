@@ -1,7 +1,7 @@
 #include "WindowAssetExplorer.h"
 #include "Application.h"
 #include "ModuleResource.h"
-#include"ModuleFileSystem.h"
+#include "ModuleFileSystem.h"
 #include "ModuleEditor.h"
 #include "JsonConfig.h"
 
@@ -11,11 +11,10 @@
 #include "ResourceTexture.h"
 #include "ResourceMaterial.h"
 
+#include "Dependencies/ImGui/imgui.h"
+
 WindowAssetExplorer::WindowAssetExplorer(bool isActive): Window("Assets Explorer Window", isActive)
 {
-	LoadIcons();
-	UpdateAssetExplorer();
-	currentFolder = assetsFolder;
 }
 
 WindowAssetExplorer::~WindowAssetExplorer()

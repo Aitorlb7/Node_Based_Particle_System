@@ -1,9 +1,7 @@
 #ifndef __ResoruceMaterial_H__
 #define __ResoruceMaterial_H__
 
-#include "Globals.h"
 #include "Color.h"
-#include "Resource.h"
 #include "ResourceTexture.h"
 #include "ResourceShader.h"
 

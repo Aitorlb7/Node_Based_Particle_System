@@ -1,8 +1,6 @@
 #ifndef __ResoruceTexture_H__
 #define __ResoruceTexture_H__
 
-#include "Globals.h"
-#include "Color.h"
 #include "Resource.h"
 
 class ResourceTexture : public Resource

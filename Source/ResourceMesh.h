@@ -1,7 +1,6 @@
 #ifndef __ResourceMesh_H__
 #define __ResourceMesh_H__
 
-#include "Globals.h"
 #include "Dependencies/MathGeoLib/include/Geometry/AABB.h"
 #include "Resource.h"
 using namespace std;

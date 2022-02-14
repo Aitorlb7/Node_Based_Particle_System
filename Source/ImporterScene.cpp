@@ -19,7 +19,6 @@
 #include "ComponentTransform.h"
 #include "ComponentCamera.h"
 #include "ComponentMaterial.h"
-#include "ModuleScene.h"
 #include "ResourceScene.h"
 #include "ModuleCamera3D.h"
 

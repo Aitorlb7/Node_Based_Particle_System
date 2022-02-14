@@ -1,7 +1,6 @@
 #ifndef __RESOURCEMODEL_H__
 #define __RESOURCEMODEL_H__
 
-#include "Globals.h"
 #include "Resource.h"
 #include "Dependencies/MathGeoLib/include/Math/float3.h"
 #include "Dependencies/MathGeoLib/include/Math/Quat.h"
@@ -9,7 +8,7 @@
 class GameObject;
 struct ModelContainer
 {
-	ModelContainer(uint32 ID, const char* name = "", const float3& position = float3::zero, const float3& scale = float3::one, const Quat& rotation = Quat::identity, uint32 parentID = 0)
+	ModelContainer(uint32 ID, const char* name = "", const math::float3& position = math::float3::zero, const math::float3& scale = math::float3::one, const Quat& rotation = Quat::identity, uint32 parentID = 0)
 		: name(name),
 		ID(ID),
 		parentID(parentID),
@@ -26,8 +25,8 @@ struct ModelContainer
 	uint parentID;
 	int meshID;
 	int materialID;
-	float3 position;
-	float3 scale;
+	math::float3 position;
+	math::float3 scale;
 	Quat rotation;
 };
 

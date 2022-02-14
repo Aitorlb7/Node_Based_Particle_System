@@ -1,13 +1,14 @@
 #ifndef __ResourceShader_H__
 #define __ResourceShader_H__
 
-#include "Globals.h"
 #include "Resource.h"
-#include "OpenGL.h"
+
 #include "Dependencies/MathGeoLib/include/Math/float2.h"
 #include "Dependencies/MathGeoLib/include/Math/float3.h"
 #include "Dependencies/MathGeoLib/include/Math/float4.h"
 #include "Dependencies/MathGeoLib/include/Math/float4x4.h"
+
+#include "OpenGL.h"
 
 enum class UniformType
 {
@@ -33,9 +34,10 @@ struct Uniform
 	bool boolean;
 	GLint integer;
 	GLfloat floatNumber;
-	float2 vec2;
-	float3 vec3;
-	float4 vec4;
+	math::float2 vec2;
+	math::float3 vec3;
+	math::float4 vec4;
+
 	float4x4 matrix4 = float4x4::zero;
 
 };

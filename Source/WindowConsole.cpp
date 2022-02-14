@@ -1,5 +1,7 @@
 #include "WindowConsole.h"
 
+#include "Dependencies/ImGui/imgui.h"
+
 WindowConsole::WindowConsole(bool isActive): Window("Console Window", isActive)
 {
 }

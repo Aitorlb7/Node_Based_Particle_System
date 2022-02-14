@@ -4,6 +4,9 @@
 #include "ModuleRenderer3D.h"
 #include "ModuleScene.h"
 #include "ModuleCamera3D.h"
+#include "ModuleResource.h"
+#include "ModuleFileSystem.h"
+
 #include "GameObject.h"
 #include "Component.h"
 #include "ComponentCamera.h"
@@ -12,7 +15,6 @@
 #include "ComponentMesh.h"
 #include "ComponentTransform.h"
 
-#include "Window.h"
 #include "WindowAbout.h"
 #include "WindowAssetExplorer.h"
 #include "WindowConfiguration.h"
@@ -25,8 +27,7 @@
 #include "ResourceMaterial.h"
 #include "ResourceShader.h"
 #include "Resource.h"
-#include "ModuleResource.h"
-#include "ModuleFileSystem.h"
+
 #include "JsonConfig.h"
 
 #include "ImporterScene.h"
@@ -40,16 +41,12 @@
 #include "Dependencies/Devil/Include/ilut.h"
 #include "Dependencies/ImGuizmo/ImGuizmo.h"
 
-#include "PathNode.h"
 #include <map>
 
 #include "Dependencies/Glew/include/GL/glew.h"
 #include "Dependencies/SDL/include/SDL_opengl.h"
 
 #include <fstream>
-
-
-
 
 ModuleEditor::ModuleEditor(bool start_enabled) : Module(start_enabled)
 {
@@ -123,11 +120,6 @@ update_status ModuleEditor::Update(float dt)
 	if (!MainMenuBar()) return UPDATE_STOP;	
 	SetupStyleFromHue();
 
-	std::vector<Window*>::iterator item = windows.begin();
-	for (item; item != windows.end(); ++item){
-		(*item)->Draw();
-	}
-
 	if (show_demo_window) ImGui::ShowDemoWindow(&show_demo_window);
 	DropTargetWindow();
 	TextEditorWindow();	
@@ -171,6 +163,13 @@ void ModuleEditor::DrawGUI()
 {
 	
 	ImGuiIO& io = ImGui::GetIO();
+
+
+	std::vector<Window*>::iterator item = windows.begin();
+	for (item; item != windows.end(); ++item) {
+		(*item)->Draw();
+	}
+
 	ImGui::Render();
 	glViewport(0, 0, (int)io.DisplaySize.x, (int)io.DisplaySize.y);
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());

@@ -16,6 +16,8 @@
 #include "Dependencies/Glew/include/GL/glew.h"
 #include "Dependencies/SDL/include/SDL_opengl.h"
 
+#include "SDL.h"
+
 
 WindowConfiguration::WindowConfiguration(bool isActive): Window("Configuration Window", isActive)
 {
@@ -31,7 +33,6 @@ void WindowConfiguration::Start()
 	window_height = App->window->height;
 
 	brightness = SDL_GetWindowBrightness(App->window->window);
-	SDL_GetVersion(&version);
 	fpsCap = App->GetFpsCap();
 }
 
@@ -72,11 +73,6 @@ void WindowConfiguration::Draw()
 	}
 	if (ImGui::CollapsingHeader("Hardware"))
 	{
-		ImGui::Text("SDL Version:");
-		ImGui::SameLine();
-		ImGui::TextColored(GREEN, "%d.%d.%d", version.major, version.minor, version.patch);
-
-		ImGui::Separator();
 
 		ImGui::Text("CPUs: ");
 		ImGui::SameLine();

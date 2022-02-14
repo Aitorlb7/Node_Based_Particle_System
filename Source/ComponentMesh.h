@@ -1,7 +1,6 @@
 #pragma once
 #include "Component.h"
 #include "Globals.h"
-#include "glmath.h"
 #include "Dependencies/MathGeoLib/include/Geometry/AABB.h"
 
 struct ResourceMesh;

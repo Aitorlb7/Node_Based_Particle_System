@@ -1,6 +1,5 @@
 #pragma once
 #include "Component.h"
-#include "glmath.h"
 #include "Globals.h"
 
 class ResourceMaterial;

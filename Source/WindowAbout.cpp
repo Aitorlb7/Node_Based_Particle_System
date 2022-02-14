@@ -1,6 +1,8 @@
 #include "WindowAbout.h"
 #include "Application.h"
 
+#include "Dependencies/ImGui/imgui.h"
+
 
 WindowAbout::WindowAbout(bool isActive) : Window("About Window", isActive)
 {

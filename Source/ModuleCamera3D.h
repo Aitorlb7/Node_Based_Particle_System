@@ -40,7 +40,7 @@ public:
 
 	ComponentCamera* currentCamera;
 
-	float3	reference; 
+	math::float3	reference;
 
 private:
 

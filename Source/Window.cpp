@@ -1,4 +1,5 @@
 #include "Window.h"
+#include "Dependencies/ImGui/imgui.h"
 
 Window::Window(const char* name, bool isActive): 
 name(name),

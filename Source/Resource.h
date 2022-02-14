@@ -5,6 +5,7 @@
 #include "Random.h"
 
 class JsonConfig;
+
 enum class ResourceType
 {
 	Mesh,

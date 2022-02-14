@@ -1,9 +1,8 @@
 #pragma once
 #include "Module.h"
-#include "Globals.h"
+#include "Timer.h"
 #include "Dependencies/MathGeoLib/include/Geometry/LineSegment.h"
 #include "Dependencies/ImGuizmo/ImGuizmo.h"
-#include "Timer.h"
 #include <unordered_map>
 #include <map>
 

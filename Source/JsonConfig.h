@@ -2,13 +2,11 @@
 #define __JSONCONFIG_H__
 
 #include "Dependencies/Parson/parson.h"
-//#include "Dependencies/MathGeoLib/include/MathGeoLib.h" //To delete
+#include "Globals.h"
+#include "Dependencies/MathGeoLib/include/Math/Quat.h"
 #include "Dependencies/MathGeoLib/include/Math/float2.h"
 #include "Dependencies/MathGeoLib/include/Math/float3.h"
 #include "Dependencies/MathGeoLib/include/Math/float4.h"
-
-#include "Globals.h"
-
 
 
 struct json_object_t;
@@ -55,17 +53,17 @@ public:
 	Color GetColor(const string name);
 	void SetColor(const string name, const Color color);
 
-	float2 GetFloat2(const string name);
-	void SetFloat2(const string name, const float2 float2);
+	math::float2 GetFloat2(const string name);
+	void SetFloat2(const string name, const math::float2 float2);
 
-	float3 GetFloat3(const string name);
-	void SetFloat3(const string name, const float3 float3);
+	math::float3 GetFloat3(const string name);
+	void SetFloat3(const string name, const math::float3 float3);
 
-	float4 GetFloat4(const string name);
-	void SetFloat4(const string name, const float4 float4);
+	math::float4 GetFloat4(const string name);
+	void SetFloat4(const string name, const math::float4 float4);
 
-	Quat GetQuat(const string name);
-	void SetQuat(const string name, const Quat quat);
+	math::Quat GetQuat(const string name);
+	void SetQuat(const string name, const math::Quat quat);
 
 	ArrayConfig GetArray(const string name) const;
 	ArrayConfig SetArray(const string name);

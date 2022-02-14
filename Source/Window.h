@@ -1,10 +1,7 @@
 #ifndef __WINDOW_H__
 #define __WINDOW_H__
 
-#include <string>
-#include <vector>
-#include "Module.h"
-#include "Dependencies/ImGui/imgui.h"
+#include "Globals.h"
 
 class Window
 {

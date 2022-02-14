@@ -3,6 +3,8 @@
 #include "GameObject.h"
 #include "ModuleScene.h"
 
+#include "Dependencies/ImGui/imgui.h"
+
 WindowHirearchy::WindowHirearchy(bool isActive): Window("Hirearchy Window", isActive)
 {
 }

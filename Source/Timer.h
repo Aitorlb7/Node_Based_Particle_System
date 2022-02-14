@@ -1,8 +1,7 @@
 #ifndef __TIMER_H__
 #define __TIMER_H__
 
-#include "Globals.h"
-#include "Dependencies\SDL\include\SDL.h"
+typedef unsigned __int32 uint32;
 
 class Timer
 {
@@ -19,17 +18,15 @@ public:
 
 
 
-	Uint32 Read();
+	uint32 Read();
 	float ReadSec();
 	
 	bool running;
-	Uint32	started_at;
-	Uint32	stopped_at;
-	Uint32	paused_at;
-	Uint32	resumed_at;
-	Uint32	time;
-
-private:
+	uint32	started_at;
+	uint32	stopped_at;
+	uint32	paused_at;
+	uint32	resumed_at;
+	uint32	time;
 
 };
 

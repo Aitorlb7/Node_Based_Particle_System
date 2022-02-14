@@ -1,13 +1,8 @@
 #ifndef __ModuleEditor_H__
 #define __ModuleEditor_H__
 #include "Module.h"
-#include "Dependencies/ImGui/imgui.h"
-#include "ResourceTexture.h"
-#include "PathNode.h"
-#include "Globals.h"
-#include "Timer.h"
 #include "Color.h"
-
+#include "Globals.h"
 #include "Dependencies/ImGui/ColorTextEditor/TextEditor.h"
 
 using namespace std;

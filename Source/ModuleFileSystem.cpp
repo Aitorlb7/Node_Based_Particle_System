@@ -2,6 +2,8 @@
 #include "ModuleFileSystem.h"
 #include "PathNode.h"
 
+#include "SDL.h"
+
 #include "Dependencies/PhysFS/include/physfs.h"
 #include <fstream>
 #include <filesystem>

@@ -1,6 +1,7 @@
 #ifndef _RANDOM_H_
 #define _RANDOM_H_
-#include "Globals.h"
+
+typedef unsigned __int32 uint32;
 
 struct Random {
 public:

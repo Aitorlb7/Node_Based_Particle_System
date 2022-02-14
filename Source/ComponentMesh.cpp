@@ -3,7 +3,6 @@
 #include "GameObject.h"
 
 #include "ResourceMesh.h"
-#include "Dependencies/ImGUI/imgui.h"
 
 ComponentMesh::ComponentMesh(GameObject* owner) : Component(owner)
 {

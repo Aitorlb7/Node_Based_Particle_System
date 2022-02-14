@@ -6,9 +6,7 @@
 #include "ResourceShader.h"
 #include "ImporterShader.h"
 #include "GameObject.h"
-#include "ModuleEditor.h"
 #include <string>
-#include "Dependencies/ImGUI/imgui.h"
 
 #include "ComponentTransform.h"
 

@@ -1,16 +1,15 @@
 #pragma once
 #include "Module.h"
-#include "Globals.h"
 #include "glmath.h"
 #include "Light.h"
 #include "OpenGL.h"
-#include "Timer.h"
 #include <map>
 #include <vector>
 #include "Dependencies/SDL/include/SDL.h"
 #include "Dependencies/MathGeoLib/include/Math/float4x4.h"
 #include "Dependencies/MathGeoLib/include/Math/float3x3.h"
 #include "SkyBox.h"
+#include "Timer.h"
 
 #define MAX_LIGHTS 8
 
@@ -19,6 +18,7 @@ class ComponentMesh;
 class ComponentMaterial;
 class GameObject;
 class ResourceShader;
+
 
 class ModuleRenderer3D : public Module
 {

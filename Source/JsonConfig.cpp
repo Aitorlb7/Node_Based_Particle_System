@@ -1,6 +1,6 @@
 #include "JsonConfig.h"
 #include "Color.h"
-#include "Dependencies/MathGeoLib/include/Math/Quat.h"
+
 
 JsonConfig::JsonConfig()
 {

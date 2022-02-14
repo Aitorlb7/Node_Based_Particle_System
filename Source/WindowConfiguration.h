@@ -1,5 +1,5 @@
 #include "Window.h"
-#include "SDL_version.h"
+
 class WindowConfiguration : public Window
 {
 public:
@@ -25,7 +25,6 @@ public:
 
 public:
 	std::string caps;
-	SDL_version version;
 
 	float brightness = 0;
 	int fpsCap = 0;

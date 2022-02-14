@@ -1,8 +1,8 @@
 #pragma once
+
 #include "Dependencies/MathGeoLib/include/Math/float4x4.h"
 
 class GameObject;
-
 
 enum class ComponentType {
 	Error = -1,

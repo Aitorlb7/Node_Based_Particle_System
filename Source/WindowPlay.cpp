@@ -5,6 +5,8 @@
 #include "ModuleFileSystem.h"
 
 #include "ResourceScene.h"
+
+#include "Dependencies/ImGui/imgui.h"
 WindowPlay::WindowPlay(bool isActive): Window("Play Window", isActive)
 {
 }
