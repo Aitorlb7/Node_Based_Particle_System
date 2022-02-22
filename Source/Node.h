@@ -30,10 +30,20 @@ enum class NodeType
     Houdini
 };
 
+enum class IconType : ImU32 
+{   
+    Flow, 
+    Circle, 
+    Square, 
+    Grid, 
+    RoundSquare, 
+    Diamond 
+};
+
 struct Pin
 {
     ed::PinId   ID;
-    ::Node* Node;
+    Node* Node;
     std::string Name;
     PinType     Type;
     PinKind     Kind;
@@ -59,11 +69,21 @@ struct Link
     }
 };
 
+struct NodeIdLess
+{
+    bool operator()(const ed::NodeId& lhs, const ed::NodeId& rhs) const
+    {
+        return lhs.AsPointer() < rhs.AsPointer();
+    }
+};
+
 class Node
 {
+public:
     Node(int id, const char* name, ImColor color = ImColor(255, 255, 255));
     ~Node();
 
+public:
     ed::NodeId ID;
     std::string Name;
     std::vector<Pin> Inputs;
@@ -75,11 +95,4 @@ class Node
     std::string State;
     std::string SavedState;
 };
-
-
-
-
-) :
-    ID(id), Name(name), Color(color), Type(NodeType::Blueprint), Size(0, 0)
-{
-}
+    

@@ -8,3 +8,7 @@ Node::Node(int id, const char* name, ImColor color = ImColor(255, 255, 255)):
     Size(0, 0)
 {
 }
+
+Node::~Node()
+{
+}

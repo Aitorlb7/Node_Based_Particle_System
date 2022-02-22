@@ -866,6 +866,10 @@ static void             NavSaveLastChildNavWindowIntoParent(ImGuiWindow* nav_win
 static ImGuiWindow*     NavRestoreLastChildNavWindow(ImGuiWindow* window);
 static int              FindWindowFocusIndex(ImGuiWindow* window);
 
+//TODO Add Layout
+
+
+
 // Error Checking
 static void             ErrorCheckNewFrameSanityChecks();
 static void             ErrorCheckEndFrameSanityChecks();
