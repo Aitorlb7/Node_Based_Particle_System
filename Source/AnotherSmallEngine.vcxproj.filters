@@ -302,7 +302,13 @@
       <Filter>Editor\Windows</Filter>
     </ClCompile>
     <ClCompile Include="Node.cpp">
-      <Filter>Tools</Filter>
+      <Filter>Tools\NodeEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="NodeBuilder.cpp">
+      <Filter>Tools\NodeEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui_impl_dx11.cpp">
+      <Filter>Dependencies\ImGui</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1079,7 +1085,13 @@
       <Filter>Editor\Windows</Filter>
     </ClInclude>
     <ClInclude Include="Node.h">
-      <Filter>Tools</Filter>
+      <Filter>Tools\NodeEditor</Filter>
+    </ClInclude>
+    <ClInclude Include="NodeBuilder.h">
+      <Filter>Tools\NodeEditor</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui_impl_dx11.h">
+      <Filter>Dependencies\ImGui</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1166,6 +1178,9 @@
     </Filter>
     <Filter Include="Editor\Windows">
       <UniqueIdentifier>{78def855-347e-4c03-a8a2-d061e45b2a63}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Tools\NodeEditor">
+      <UniqueIdentifier>{489269e7-0202-45a4-9017-9106a22dca25}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

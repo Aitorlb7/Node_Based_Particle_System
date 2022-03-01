@@ -2,6 +2,8 @@
 #include "NodeBuilder.h"
 #include <map>
 
+struct ImRect;
+
 class WindowNodeEditor: public Window
 {
 public:
@@ -30,18 +32,16 @@ public:
 
 	ImColor GetIconColor(PinType type);
 	void DrawIcon(ImDrawList* drawList, const ImVec2& a, const ImVec2& b, IconType type, bool filled, ImU32 color, ImU32 innerColor);
-
 	void DrawPinIcon(const Pin& pin, bool connected, int alpha);
-
 	bool Splitter(bool split_vertically, float thickness, float* size1, float* size2, float min_size1, float min_size2, float splitter_long_axis_size);
-
 	void ShowLeftPane(float paneWidth);
-
 	void ShowStyleEditor(bool* show);
 
 	inline int GetNextId() { return nextId++;}
 	inline ed::LinkId GetNextLinkId() { return ed::LinkId(GetNextId()); }
 	inline void TouchNode(ed::NodeId id) { nodeTouchTime[id] = touchTime;}
+
+	ImRect ImRect_Expanded(const ImRect& rect, float x, float y);
 
 public:
 
@@ -53,6 +53,7 @@ private:
 	std::vector<Node> nodes;
 	std::vector<Link> links;
 	ed::EditorContext* contextEditor = nullptr;
+	ImTextureID      headerBackground = nullptr;
 
 	const float          touchTime = 1.0f;
 	std::map<ed::NodeId, float, NodeIdLess> nodeTouchTime;

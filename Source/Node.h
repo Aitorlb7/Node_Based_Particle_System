@@ -40,6 +40,8 @@ enum class IconType : ImU32
     Diamond 
 };
 
+class Node;
+
 struct Pin
 {
     ed::PinId   ID;

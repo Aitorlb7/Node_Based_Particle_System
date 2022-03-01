@@ -103,7 +103,7 @@ void NodeBuilder::Input(ed::PinId id)
     if (applyPadding)
         ImGui::Spring(0);
 
-    Pin(id, PinKind::Input);
+    Pin(id, ed::PinKind::Input);
 
     ImGui::BeginHorizontal(id.AsPointer());
 }
@@ -135,7 +135,7 @@ void NodeBuilder::Output(ed::PinId id)
     if (applyPadding)
         ImGui::Spring(0);
 
-    Pin(id, PinKind::Output);
+    Pin(id, ed::PinKind::Output);
 
     ImGui::BeginHorizontal(id.AsPointer());
 }

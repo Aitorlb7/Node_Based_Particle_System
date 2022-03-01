@@ -310,6 +310,7 @@
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="glmath.h" />
     <ClInclude Include="Globals.h" />
+    <ClInclude Include="imgui_impl_dx11.h" />
     <ClInclude Include="ImporterMaterials.h" />
     <ClInclude Include="ImporterMesh.h" />
     <ClInclude Include="ImporterScene.h" />
@@ -319,6 +320,7 @@
     <ClInclude Include="ModuleFileSystem.h" />
     <ClInclude Include="ModuleResource.h" />
     <ClInclude Include="Node.h" />
+    <ClInclude Include="NodeBuilder.h" />
     <ClInclude Include="PathNode.h" />
     <ClInclude Include="ComponentCamera.h" />
     <ClInclude Include="Random.h" />
@@ -416,6 +418,7 @@
     <ClCompile Include="Dependencies\Parson\parson.c" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="glmath.cpp" />
+    <ClCompile Include="imgui_impl_dx11.cpp" />
     <ClCompile Include="ImporterMaterials.cpp" />
     <ClCompile Include="ImporterMesh.cpp" />
     <ClCompile Include="ImporterScene.cpp" />
@@ -427,6 +430,7 @@
     <ClCompile Include="ModuleFileSystem.cpp" />
     <ClCompile Include="ModuleResource.cpp" />
     <ClCompile Include="Node.cpp" />
+    <ClCompile Include="NodeBuilder.cpp" />
     <ClCompile Include="Random.cpp" />
     <ClCompile Include="Resource.cpp" />
     <ClCompile Include="ResourceFolder.cpp" />

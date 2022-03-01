@@ -1,6 +1,6 @@
 #include "Node.h"
 
-Node::Node(int id, const char* name, ImColor color = ImColor(255, 255, 255)):
+Node::Node(int id, const char* name, ImColor color):
     ID(id), 
     Name(name), 
     Color(color), 

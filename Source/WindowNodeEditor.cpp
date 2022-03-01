@@ -1,7 +1,7 @@
 #include "WindowNodeEditor.h"
-#include <imgui.h>
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include <imgui_internal.h>
+#include <imgui_impl_dx11.h>
 
 WindowNodeEditor::WindowNodeEditor(bool isActive): Window("Particle System Node Editor", isActive)
 {
@@ -13,9 +13,9 @@ WindowNodeEditor::~WindowNodeEditor()
 
 void WindowNodeEditor::Start()
 {
-	ed::Config config;
+	/*ed::Config config;
 
-	config.SettingsFile = "NodeEditor.json";
+	config.SettingsFile = "NodeEditor.json";*/
 
 	/*config.LoadNodeSettings = [](ed::NodeId nodeId, char* data, void* userPointer) -> size_t
 	{
@@ -41,8 +41,7 @@ void WindowNodeEditor::Start()
 		return true;
 	};*/
 
-	contextEditor = ed::CreateEditor(&config);
-	ed::SetCurrentEditor(contextEditor);
+	contextEditor = ed::CreateEditor();
 
 	Node* node;
 	node = CreateEmiterNode();      ed::SetNodePosition(node->ID, ImVec2(-252, 220));
@@ -50,6 +49,8 @@ void WindowNodeEditor::Start()
 	ed::NavigateToContent();
 
 	BuildNodes();
+
+    headerBackground =  ImGui_LoadTexture("Output/Assets/Textures/pizza.png");
 }
 
 void WindowNodeEditor::Draw()
@@ -83,7 +84,8 @@ void WindowNodeEditor::Draw()
 
     static float leftPaneWidth = 400.0f;
     static float rightPaneWidth = 800.0f;
-    Splitter(true, 4.0f, &leftPaneWidth, &rightPaneWidth, 50.0f, 50.0f);
+
+    Splitter(true, 4.0f, &leftPaneWidth, &rightPaneWidth, 50.0f, 50.0f,-1);
 
     ShowLeftPane(leftPaneWidth - 4.0f);
 
@@ -93,9 +95,9 @@ void WindowNodeEditor::Draw()
     {
         auto cursorTopLeft = ImGui::GetCursorScreenPos();
 
-        util::BlueprintNodeBuilder builder(s_HeaderBackground, Application_GetTextureWidth(s_HeaderBackground), Application_GetTextureHeight(s_HeaderBackground));
+        NodeBuilder builder(headerBackground, ImGui_GetTextureWidth(headerBackground), ImGui_GetTextureHeight(headerBackground));
 
-        for (auto& node : s_Nodes)
+        for (auto& node : nodes)
         {
             if (node.Type != NodeType::Blueprint && node.Type != NodeType::Simple)
                 continue;
@@ -233,7 +235,7 @@ void WindowNodeEditor::Draw()
             builder.End();
         }
 
-        for (auto& node : s_Nodes)
+        for (auto& node : nodes)
         {
             if (node.Type != NodeType::Tree)
                 continue;
@@ -268,7 +270,7 @@ void WindowNodeEditor::Draw()
                 auto& pin = node.Inputs[0];
                 ImGui::Dummy(ImVec2(0, padding));
                 ImGui::Spring(1, 0);
-                inputsRect = ImGui_GetItemRect();
+                inputsRect = ImRect(ImGui::GetItemRectMin(), ImGui::GetItemRectMax());
 
                 ed::PushStyleVar(ed::StyleVar_PinArrowSize, 10.0f);
                 ed::PushStyleVar(ed::StyleVar_PinArrowWidth, 10.0f);
@@ -297,7 +299,7 @@ void WindowNodeEditor::Draw()
             ImGui::TextUnformatted(node.Name.c_str());
             ImGui::Spring(1);
             ImGui::EndVertical();
-            auto contentRect = ImGui_GetItemRect();
+            auto contentRect = ImRect(ImGui::GetItemRectMin(), ImGui::GetItemRectMax());
 
             ImGui::Spring(1, padding);
             ImGui::EndHorizontal();
@@ -312,7 +314,7 @@ void WindowNodeEditor::Draw()
                 auto& pin = node.Outputs[0];
                 ImGui::Dummy(ImVec2(0, padding));
                 ImGui::Spring(1, 0);
-                outputsRect = ImGui_GetItemRect();
+                outputsRect = ImRect(ImGui::GetItemRectMin(), ImGui::GetItemRectMax());
 
                 ed::PushStyleVar(ed::StyleVar_PinCorners, 3);
                 ed::BeginPin(pin.ID, ed::PinKind::Output);
@@ -370,7 +372,7 @@ void WindowNodeEditor::Draw()
             //ImGui::PopStyleVar();
         }
 
-        for (auto& node : s_Nodes)
+        for (auto& node : nodes)
         {
             if (node.Type != NodeType::Houdini)
                 continue;
@@ -406,7 +408,7 @@ void WindowNodeEditor::Draw()
                 for (auto& pin : node.Inputs)
                 {
                     ImGui::Dummy(ImVec2(padding, padding));
-                    inputsRect = ImGui_GetItemRect();
+                    inputsRect = ImRect(ImGui::GetItemRectMin(), ImGui::GetItemRectMax());
                     ImGui::Spring(1, 0);
                     inputsRect.Min.y -= padding;
                     inputsRect.Max.y -= padding;
@@ -446,7 +448,7 @@ void WindowNodeEditor::Draw()
             ImGui::PopStyleColor();
             ImGui::Spring(1);
             ImGui::EndVertical();
-            auto contentRect = ImGui_GetItemRect();
+            auto contentRect = ImRect(ImGui::GetItemRectMin(), ImGui::GetItemRectMax());
 
             ImGui::Spring(1, padding);
             ImGui::EndHorizontal();
@@ -461,7 +463,7 @@ void WindowNodeEditor::Draw()
                 for (auto& pin : node.Outputs)
                 {
                     ImGui::Dummy(ImVec2(padding, padding));
-                    outputsRect = ImGui_GetItemRect();
+                    outputsRect = ImRect(ImGui::GetItemRectMin(), ImGui::GetItemRectMax());
                     ImGui::Spring(1, 0);
                     outputsRect.Min.y += padding;
                     outputsRect.Max.y += padding;
@@ -527,7 +529,7 @@ void WindowNodeEditor::Draw()
             //ImGui::PopStyleVar();
         }
 
-        for (auto& node : s_Nodes)
+        for (auto& node : nodes)
         {
             if (node.Type != NodeType::Comment)
                 continue;
@@ -569,7 +571,7 @@ void WindowNodeEditor::Draw()
 
                 auto drawList = ed::GetHintBackgroundDrawList();
 
-                auto hintBounds = ImGui_GetItemRect();
+                auto hintBounds = ImRect(ImGui::GetItemRectMin(), ImGui::GetItemRectMax());
                 auto hintFrameBounds = ImRect_Expanded(hintBounds, 8, 4);
 
                 drawList->AddRectFilled(
@@ -587,7 +589,7 @@ void WindowNodeEditor::Draw()
             ed::EndGroupHint();
         }
 
-        for (auto& link : s_Links)
+        for (auto& link : links)
             ed::Link(link.ID, link.StartPinID, link.EndPinID, link.Color, 2.0f);
 
         if (!createNewNode)
@@ -652,8 +654,8 @@ void WindowNodeEditor::Draw()
                             showLabel("+ Create Link", ImColor(32, 45, 32, 180));
                             if (ed::AcceptNewItem(ImColor(128, 255, 128), 4.0f))
                             {
-                                s_Links.emplace_back(Link(GetNextId(), startPinId, endPinId));
-                                s_Links.back().Color = GetIconColor(startPin->Type);
+                                links.emplace_back(Link(GetNextId(), startPinId, endPinId));
+                                links.back().Color = GetIconColor(startPin->Type);
                             }
                         }
                     }
@@ -689,9 +691,9 @@ void WindowNodeEditor::Draw()
                 {
                     if (ed::AcceptDeletedItem())
                     {
-                        auto id = std::find_if(s_Links.begin(), s_Links.end(), [linkId](auto& link) { return link.ID == linkId; });
-                        if (id != s_Links.end())
-                            s_Links.erase(id);
+                        auto id = std::find_if(links.begin(), links.end(), [linkId](auto& link) { return link.ID == linkId; });
+                        if (id != links.end())
+                            links.erase(id);
                     }
                 }
 
@@ -700,9 +702,9 @@ void WindowNodeEditor::Draw()
                 {
                     if (ed::AcceptDeletedItem())
                     {
-                        auto id = std::find_if(s_Nodes.begin(), s_Nodes.end(), [nodeId](auto& node) { return node.ID == nodeId; });
-                        if (id != s_Nodes.end())
-                            s_Nodes.erase(id);
+                        auto id = std::find_if(nodes.begin(), nodes.end(), [nodeId](auto& node) { return node.ID == nodeId; });
+                        if (id != nodes.end())
+                            nodes.erase(id);
                     }
                 }
             }
@@ -801,41 +803,8 @@ void WindowNodeEditor::Draw()
 
         Node* node = nullptr;
         if (ImGui::MenuItem("Input Action"))
-            node = SpawnInputActionNode();
-        if (ImGui::MenuItem("Output Action"))
-            node = SpawnOutputActionNode();
-        if (ImGui::MenuItem("Branch"))
-            node = SpawnBranchNode();
-        if (ImGui::MenuItem("Do N"))
-            node = SpawnDoNNode();
-        if (ImGui::MenuItem("Set Timer"))
-            node = SpawnSetTimerNode();
-        if (ImGui::MenuItem("Less"))
-            node = SpawnLessNode();
-        if (ImGui::MenuItem("Weird"))
-            node = SpawnWeirdNode();
-        if (ImGui::MenuItem("Trace by Channel"))
-            node = SpawnTraceByChannelNode();
-        if (ImGui::MenuItem("Print String"))
-            node = SpawnPrintStringNode();
-        ImGui::Separator();
-        if (ImGui::MenuItem("Comment"))
-            node = SpawnComment();
-        ImGui::Separator();
-        if (ImGui::MenuItem("Sequence"))
-            node = SpawnTreeSequenceNode();
-        if (ImGui::MenuItem("Move To"))
-            node = SpawnTreeTaskNode();
-        if (ImGui::MenuItem("Random Wait"))
-            node = SpawnTreeTask2Node();
-        ImGui::Separator();
-        if (ImGui::MenuItem("Message"))
-            node = SpawnMessageNode();
-        ImGui::Separator();
-        if (ImGui::MenuItem("Transform"))
-            node = SpawnHoudiniTransformNode();
-        if (ImGui::MenuItem("Group"))
-            node = SpawnHoudiniGroupNode();
+            node = CreateEmiterNode();
+        
 
         if (node)
         {
@@ -857,8 +826,8 @@ void WindowNodeEditor::Draw()
                         if (startPin->Kind == PinKind::Input)
                             std::swap(startPin, endPin);
 
-                        s_Links.emplace_back(Link(GetNextId(), startPin->ID, endPin->ID));
-                        s_Links.back().Color = GetIconColor(startPin->Type);
+                        links.emplace_back(Link(GetNextId(), startPin->ID, endPin->ID));
+                        links.back().Color = GetIconColor(startPin->Type);
 
                         break;
                     }
@@ -906,6 +875,12 @@ void WindowNodeEditor::Draw()
 
 void WindowNodeEditor::CleanUp()
 {
+    if (&headerBackground)
+    {
+        ImGui_DestroyTexture(&headerBackground);
+        headerBackground = nullptr;
+    }
+
 	if (contextEditor)
 	{
 		ed::DestroyEditor(contextEditor);
@@ -1512,4 +1487,14 @@ void WindowNodeEditor::ShowStyleEditor(bool* show = nullptr)
     ImGui::PopItemWidth();
 
     ImGui::End();
+}
+
+ImRect WindowNodeEditor::ImRect_Expanded(const ImRect& rect, float x, float y)
+{
+    auto result = rect;
+    result.Min.x -= x;
+    result.Min.y -= y;
+    result.Max.x += x;
+    result.Max.y += y;
+    return result;
 }
