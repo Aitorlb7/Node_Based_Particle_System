@@ -22,6 +22,7 @@
 #include "WindowHirearchy.h"
 #include "WindowInspector.h"
 #include "WindowPlay.h"
+#include "WindowNodeEditor.h"
 
 #include "ResourceScene.h"
 #include "ResourceMaterial.h"
@@ -57,7 +58,7 @@ ModuleEditor::ModuleEditor(bool start_enabled) : Module(start_enabled)
 	hirearchyWindow = new WindowHirearchy(true);
 	inspectorWindow = new WindowInspector(true);
 	playWindow = new WindowPlay(true);
-
+	nodeEditorWindow = new WindowNodeEditor(true);
 
 	AddWindow(aboutWindow);
 	AddWindow(explorerWindow);
@@ -66,7 +67,7 @@ ModuleEditor::ModuleEditor(bool start_enabled) : Module(start_enabled)
 	AddWindow(hirearchyWindow);
 	AddWindow(inspectorWindow);
 	AddWindow(playWindow);
-
+	AddWindow(nodeEditorWindow);
 }
 
 ModuleEditor::~ModuleEditor()

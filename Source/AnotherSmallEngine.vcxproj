@@ -151,6 +151,7 @@
     <ClInclude Include="Dependencies\ImGui\ColorTextEditor\TextEditor.h" />
     <ClInclude Include="Dependencies\ImGui\imconfig.h" />
     <ClInclude Include="Dependencies\ImGui\imgui.h" />
+    <ClInclude Include="Dependencies\ImGui\imgui_impl_dx11.h" />
     <ClInclude Include="Dependencies\ImGui\imgui_impl_opengl3.h" />
     <ClInclude Include="Dependencies\ImGui\imgui_impl_sdl.h" />
     <ClInclude Include="Dependencies\ImGui\imgui_internal.h" />
@@ -232,6 +233,12 @@
     <ClInclude Include="Dependencies\MathGeoLib\include\Math\TransformOps.h" />
     <ClInclude Include="Dependencies\MathGeoLib\include\Math\vec2d.h" />
     <ClInclude Include="Dependencies\MathGeoLib\include\Time\Clock.h" />
+    <ClInclude Include="Dependencies\NodeEditor\crude_json.h" />
+    <ClInclude Include="Dependencies\NodeEditor\imgui_bezier_math.h" />
+    <ClInclude Include="Dependencies\NodeEditor\imgui_canvas.h" />
+    <ClInclude Include="Dependencies\NodeEditor\imgui_extra_math.h" />
+    <ClInclude Include="Dependencies\NodeEditor\imgui_node_editor.h" />
+    <ClInclude Include="Dependencies\NodeEditor\imgui_node_editor_internal.h" />
     <ClInclude Include="Dependencies\Parson\parson.h" />
     <ClInclude Include="Dependencies\PCG\pcg_extras.hpp" />
     <ClInclude Include="Dependencies\PCG\pcg_random.hpp" />
@@ -310,7 +317,6 @@
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="glmath.h" />
     <ClInclude Include="Globals.h" />
-    <ClInclude Include="imgui_impl_dx11.h" />
     <ClInclude Include="ImporterMaterials.h" />
     <ClInclude Include="ImporterMesh.h" />
     <ClInclude Include="ImporterScene.h" />
@@ -370,6 +376,7 @@
     <ClCompile Include="Dependencies\ImGui\imgui.cpp" />
     <ClCompile Include="Dependencies\ImGui\imgui_demo.cpp" />
     <ClCompile Include="Dependencies\ImGui\imgui_draw.cpp" />
+    <ClCompile Include="Dependencies\ImGui\imgui_impl_dx11.cpp" />
     <ClCompile Include="Dependencies\ImGui\imgui_impl_opengl3.cpp" />
     <ClCompile Include="Dependencies\ImGui\imgui_impl_sdl.cpp" />
     <ClCompile Include="Dependencies\ImGui\imgui_widgets.cpp" />
@@ -415,10 +422,13 @@
     <ClCompile Include="Dependencies\MathGeoLib\include\Math\SSEMath.cpp" />
     <ClCompile Include="Dependencies\MathGeoLib\include\Math\TransformOps.cpp" />
     <ClCompile Include="Dependencies\MathGeoLib\include\Time\Clock.cpp" />
+    <ClCompile Include="Dependencies\NodeEditor\crude_json.cpp" />
+    <ClCompile Include="Dependencies\NodeEditor\imgui_canvas.cpp" />
+    <ClCompile Include="Dependencies\NodeEditor\imgui_node_editor.cpp" />
+    <ClCompile Include="Dependencies\NodeEditor\imgui_node_editor_api.cpp" />
     <ClCompile Include="Dependencies\Parson\parson.c" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="glmath.cpp" />
-    <ClCompile Include="imgui_impl_dx11.cpp" />
     <ClCompile Include="ImporterMaterials.cpp" />
     <ClCompile Include="ImporterMesh.cpp" />
     <ClCompile Include="ImporterScene.cpp" />
@@ -475,6 +485,9 @@
     <None Include="Dependencies\MathGeoLib\include\Geometry\TriangleMesh_IntersectRay_SSE.inl" />
     <None Include="Dependencies\MathGeoLib\include\Math\float2.inl" />
     <None Include="Dependencies\MathGeoLib\include\Math\Matrix.inl" />
+    <None Include="Dependencies\NodeEditor\imgui_bezier_math.inl" />
+    <None Include="Dependencies\NodeEditor\imgui_extra_math.inl" />
+    <None Include="Dependencies\NodeEditor\imgui_node_editor_internal.inl" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="AnotherSmallEngine.rc" />

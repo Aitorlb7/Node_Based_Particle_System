@@ -542,21 +542,21 @@ void ImGui_ImplDX11_NewFrame()
 extern "C" {
 #define STB_IMAGE_IMPLEMENTATION
 #define STB_IMAGE_STATIC
-#include "stb_image.h"
+//#include "stb_image.h"
 }
 
-ImTextureID ImGui_LoadTexture(const char* path)
-{
-    int width = 0, height = 0, component = 0;
-    if (auto data = stbi_load(path, &width, &height, &component, 4))
-    {
-        auto texture = ImGui_CreateTexture(data, width, height);
-        stbi_image_free(data);
-        return texture;
-    }
-    else
-        return nullptr;
-}
+//ImTextureID ImGui_LoadTexture(const char* path)
+//{
+//    int width = 0, height = 0, component = 0;
+//    if (auto data = stbi_load(path, &width, &height, &component, 4))
+//    {
+//        auto texture = ImGui_CreateTexture(data, width, height);
+//        stbi_image_free(data);
+//        return texture;
+//    }
+//    else
+//        return nullptr;
+//}
 
 ImTextureID ImGui_CreateTexture(const void* data, int width, int height)
 {

@@ -1,8 +1,24 @@
 #include "Node.h"
 
-struct NodeBuilder
+enum class Stage
 {
+    Invalid,
+    Begin,
+    Header,
+    Content,
+    Input,
+    Output,
+    Middle,
+    End
+};
+
+
+class NodeBuilder
+{
+public:
     NodeBuilder(ImTextureID texture = nullptr, int textureWidth = 0, int textureHeight = 0);
+
+
 
     void Begin(ed::NodeId id);
     void End();
@@ -20,17 +36,6 @@ struct NodeBuilder
 
 
 private:
-    enum class Stage
-    {
-        Invalid,
-        Begin,
-        Header,
-        Content,
-        Input,
-        Output,
-        Middle,
-        End
-    };
 
     bool SetStage(Stage stage);
 
@@ -40,7 +45,7 @@ private:
     ImTextureID HeaderTextureId;
     int         HeaderTextureWidth;
     int         HeaderTextureHeight;
-    ed::NodeId      CurrentNodeId;
+    ed::NodeId  CurrentNodeId;
     Stage       CurrentStage;
     ImU32       HeaderColor;
     ImVec2      NodeMin;

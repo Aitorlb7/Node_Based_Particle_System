@@ -22,6 +22,7 @@ class WindowConsole;
 class WindowHirearchy;
 class WindowInspector;
 class WindowPlay;
+class WindowNodeEditor;
 
 class ModuleEditor : public Module 
 {
@@ -63,6 +64,7 @@ public:
 	WindowHirearchy* hirearchyWindow = nullptr;
 	WindowInspector* inspectorWindow = nullptr;
 	WindowPlay* playWindow = nullptr;
+	WindowNodeEditor* nodeEditorWindow = nullptr;
 
 	Color frustumColor = Color(1.0f, 1.0f, 0.2f, 0.75f);
 	Color NormalColor = Color(.8f, .8f, 0.0f, 0.75f);

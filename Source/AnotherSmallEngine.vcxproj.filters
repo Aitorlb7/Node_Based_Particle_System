@@ -307,8 +307,20 @@
     <ClCompile Include="NodeBuilder.cpp">
       <Filter>Tools\NodeEditor</Filter>
     </ClCompile>
-    <ClCompile Include="imgui_impl_dx11.cpp">
+    <ClCompile Include="Dependencies\ImGui\imgui_impl_dx11.cpp">
       <Filter>Dependencies\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependencies\NodeEditor\crude_json.cpp">
+      <Filter>Dependencies\NodeEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependencies\NodeEditor\imgui_canvas.cpp">
+      <Filter>Dependencies\NodeEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependencies\NodeEditor\imgui_node_editor.cpp">
+      <Filter>Dependencies\NodeEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependencies\NodeEditor\imgui_node_editor_api.cpp">
+      <Filter>Dependencies\NodeEditor</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1090,8 +1102,26 @@
     <ClInclude Include="NodeBuilder.h">
       <Filter>Tools\NodeEditor</Filter>
     </ClInclude>
-    <ClInclude Include="imgui_impl_dx11.h">
+    <ClInclude Include="Dependencies\ImGui\imgui_impl_dx11.h">
       <Filter>Dependencies\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\NodeEditor\crude_json.h">
+      <Filter>Dependencies\NodeEditor</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\NodeEditor\imgui_bezier_math.h">
+      <Filter>Dependencies\NodeEditor</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\NodeEditor\imgui_canvas.h">
+      <Filter>Dependencies\NodeEditor</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\NodeEditor\imgui_extra_math.h">
+      <Filter>Dependencies\NodeEditor</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\NodeEditor\imgui_node_editor.h">
+      <Filter>Dependencies\NodeEditor</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\NodeEditor\imgui_node_editor_internal.h">
+      <Filter>Dependencies\NodeEditor</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1182,6 +1212,9 @@
     <Filter Include="Tools\NodeEditor">
       <UniqueIdentifier>{489269e7-0202-45a4-9017-9106a22dca25}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Dependencies\NodeEditor">
+      <UniqueIdentifier>{4876664f-cfa6-4ba0-9cbf-f03412283e08}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="Dependencies\MathGeoLib\include\Geometry\KDTree.inl">
@@ -1228,6 +1261,15 @@
     </None>
     <None Include="Dependencies\Devil\include\config.h.win">
       <Filter>Dependencies\Devil</Filter>
+    </None>
+    <None Include="Dependencies\NodeEditor\imgui_bezier_math.inl">
+      <Filter>Dependencies\NodeEditor</Filter>
+    </None>
+    <None Include="Dependencies\NodeEditor\imgui_extra_math.inl">
+      <Filter>Dependencies\NodeEditor</Filter>
+    </None>
+    <None Include="Dependencies\NodeEditor\imgui_node_editor_internal.inl">
+      <Filter>Dependencies\NodeEditor</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

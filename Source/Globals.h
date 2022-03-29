@@ -38,8 +38,8 @@ enum update_status
 #define WIN_FULLSCREEN false
 #define WIN_RESIZABLE true
 #define WIN_BORDERLESS false
-#define WIN_FULLSCREEN_DESKTOP true
-#define WIN_MAXIMIZED false
+#define WIN_FULLSCREEN_DESKTOP false
+#define WIN_MAXIMIZED true
 #define VSYNC false
 #define TITLE "Node Based Particle System"
 

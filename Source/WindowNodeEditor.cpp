@@ -1,5 +1,6 @@
 #include "WindowNodeEditor.h"
 #define IMGUI_DEFINE_MATH_OPERATORS
+#include "Dependencies/ImGui/imgui_internal.h"
 #include <imgui_internal.h>
 #include <imgui_impl_dx11.h>
 
@@ -13,11 +14,11 @@ WindowNodeEditor::~WindowNodeEditor()
 
 void WindowNodeEditor::Start()
 {
-	/*ed::Config config;
+	ed::Config config;
 
-	config.SettingsFile = "NodeEditor.json";*/
+	config.SettingsFile = "NodeEditor.json";
 
-	/*config.LoadNodeSettings = [](ed::NodeId nodeId, char* data, void* userPointer) -> size_t
+	config.LoadNodeSettings = [](ed::NodeId nodeId, char* data, void* userPointer) -> size_t
 	{
 		auto node = FindNode(nodeId);
 		if (!node)
@@ -39,18 +40,22 @@ void WindowNodeEditor::Start()
 		TouchNode(nodeId);
 
 		return true;
-	};*/
+	};
 
 	contextEditor = ed::CreateEditor();
 
 	Node* node;
-	node = CreateEmiterNode();      ed::SetNodePosition(node->ID, ImVec2(-252, 220));
+	node = CreateEmiterNode();      
+    
+    
+    
+    ed::SetNodePosition(node->ID, ImVec2(-252, 220));
 
 	ed::NavigateToContent();
 
 	BuildNodes();
 
-    headerBackground =  ImGui_LoadTexture("Output/Assets/Textures/pizza.png");
+    //headerBackground =  ImGui_LoadTexture("Output/Assets/Textures/pizza.png");
 }
 
 void WindowNodeEditor::Draw()
@@ -63,7 +68,7 @@ void WindowNodeEditor::Draw()
 
     ed::SetCurrentEditor(contextEditor);
 
-    //auto& style = ImGui::GetStyle();
+    auto& style = ImGui::GetStyle();
 
 # if 0
     {
