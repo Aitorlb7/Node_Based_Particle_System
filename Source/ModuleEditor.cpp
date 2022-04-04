@@ -58,7 +58,7 @@ ModuleEditor::ModuleEditor(bool start_enabled) : Module(start_enabled)
 	hirearchyWindow = new WindowHirearchy(true);
 	inspectorWindow = new WindowInspector(true);
 	playWindow = new WindowPlay(true);
-	nodeEditorWindow = new WindowNodeEditor(true);
+	nodeEditorWindow = new WindowNodeEditor(false);
 
 	AddWindow(aboutWindow);
 	AddWindow(explorerWindow);
@@ -667,6 +667,7 @@ bool ModuleEditor::MainMenuBar()
 		if (ImGui::BeginMenu("View"))
 		{
 			if (ImGui::MenuItem("Configuration","",configWindow->isActive)) configWindow->Enable();
+			if (ImGui::MenuItem("Particle Node Editor", "", nodeEditorWindow->isActive)) nodeEditorWindow->Enable();
 			if (ImGui::MenuItem("Console", "", consoleWindow->isActive)) consoleWindow->Enable();
 			if (ImGui::MenuItem("Hierarchy", "", hirearchyWindow->isActive)) hirearchyWindow->Enable();
 			if (ImGui::MenuItem("Inspector", "", inspectorWindow->isActive)) inspectorWindow->Enable();

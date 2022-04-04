@@ -2013,7 +2013,7 @@ ed::Control ed::EditorContext::BuildControl(bool allowOffscreen)
         ImGui::SetCursorScreenPos(rect.Min);
 
         // debug
-        //if (id < 0) return ImGui::Button(idString, to_imvec(rect.size));
+        //if (id < 0) return ImGui::Button(idString, rect.GetSize());
 
         auto result = ImGui::InvisibleButton(idString, rect.GetSize());
 

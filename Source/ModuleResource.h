@@ -52,6 +52,8 @@ public:
 
 	ResourceShader* GetShader(const char* name);
 
+	ResourceTexture* GetTexture(const char* name);
+
 	void UnloadResource(uint32 UID);
 	void DeleteResource(uint32 UID);
 

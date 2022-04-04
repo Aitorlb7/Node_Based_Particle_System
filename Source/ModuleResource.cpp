@@ -660,3 +660,34 @@ ResourceShader* ModuleResources::GetShader(const char* name)
 	LOG("ERROR The shader doesn't exist");
 	return nullptr;
 }
+
+
+ResourceTexture* ModuleResources::GetTexture(const char* name)
+{
+	ResourceTexture* tempTexture = new ResourceTexture();
+	std::map<uint32, Resource*>::iterator item;
+
+	for (item = importedResources.begin(); item != importedResources.end(); item++)
+	{
+		if (item->second->type == ResourceType::Texture && item->second->name == name)
+		{
+			tempTexture = (ResourceTexture*)item->second;
+
+			if (tempTexture->id == 0)
+			{
+				tempTexture = (ResourceTexture*)App->resources->LoadResource(tempTexture->UID);
+
+				return tempTexture;
+			}
+			else
+			{
+				return tempTexture;
+			}
+		}
+
+	}
+
+	LOG("ERROR The shader doesn't exist");
+	return nullptr;
+}
+

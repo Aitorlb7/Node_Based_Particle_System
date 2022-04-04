@@ -169,8 +169,6 @@ void WindowAssetExplorer::AssetsExplorer(PathNode& assetFolder)
 
 			if (resource->type == ResourceType::Texture && !textureIconLoaded) App->resources->LoadResource(UID);
 
-
-
 			switch (resource->type)
 			{
 			case ResourceType::Model:
@@ -178,15 +176,12 @@ void WindowAssetExplorer::AssetsExplorer(PathNode& assetFolder)
 				break;
 			case ResourceType::Texture:
 				ImGui::ImageButton((ImTextureID)textureIcon->id, ImVec2(iconSize, iconSize), flipV, flipH);
-
 				break;
 			case ResourceType::Folder:
 				ImGui::ImageButton((ImTextureID)folderIcon->id, ImVec2(iconSize, iconSize), flipV, flipH, -1, ImVec4(0, 0, 0, 0), App->editor->ExplorerIconsTint);
-
 				break;
 			default:
 				ImGui::ImageButton((ImTextureID)defaultIcon->id, ImVec2(iconSize, iconSize), flipV, flipH, -1, ImVec4(0, 0, 0, 0), App->editor->ExplorerIconsTint);
-
 				break;
 			}
 
