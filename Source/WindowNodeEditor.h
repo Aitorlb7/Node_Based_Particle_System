@@ -18,7 +18,7 @@ public:
 
 	void UpdateTouch();
 	float GetTouchProgress(ed::NodeId id);
-	Node* FindNode(ed::NodeId id);
+	//Node* FindNode(ed::NodeId id);
 	Link* FindLink(ed::LinkId id);
 	Pin* FindPin(ed::PinId id);
 	bool IsPinLinked(ed::PinId id);
@@ -39,24 +39,26 @@ public:
 
 	inline int GetNextId() { return nextId++;}
 	inline ed::LinkId GetNextLinkId() { return ed::LinkId(GetNextId()); }
-	inline void TouchNode(ed::NodeId id) { nodeTouchTime[id] = touchTime;}
+	//inline void TouchNode(ed::NodeId id) { nodeTouchTime[id] = touchTime;}
 
 	ImRect ImRect_Expanded(const ImRect& rect, float x, float y);
 
 public:
+	std::vector<Node> nodes;
 
+	const float          touchTime = 1.0f;
+	std::map<ed::NodeId, float, NodeIdLess> nodeTouchTime;
 
 private:
 	int nextId = 1;
 	const int pinIconSize = 24;
 
-	std::vector<Node> nodes;
+
 	std::vector<Link> links;
 	ed::EditorContext* contextEditor = nullptr;
 	ImTextureID      headerBackground = nullptr;
 
-	const float          touchTime = 1.0f;
-	std::map<ed::NodeId, float, NodeIdLess> nodeTouchTime;
+
 
 
 };

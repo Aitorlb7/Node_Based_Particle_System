@@ -594,6 +594,7 @@ bool ed::Node::EndDrag()
 
 void ed::Node::Draw(ImDrawList* drawList, DrawFlags flags)
 {
+    //TODO: FIX m_Bounds
     if (flags == Detail::Object::None)
     {
         drawList->ChannelsSetCurrent(m_Channel + c_NodeBackgroundChannel);
@@ -603,12 +604,23 @@ void ed::Node::Draw(ImDrawList* drawList, DrawFlags flags)
             m_Bounds.Max,
             m_Color, m_Rounding);
 
+        /*drawList->AddRectFilled(
+            m_Bounds.Min,
+            m_Bounds.Max ,
+            m_Color, m_Rounding);*/
+
+        /*drawList->AddRectFilled(
+            m_GroupBounds.Min,
+            m_GroupBounds.Max,
+            m_Color, m_GroupRounding);*/
+
+
         if (IsGroup(this))
         {
-            drawList->AddRectFilled(
+            /*drawList->AddRectFilled(
                 m_GroupBounds.Min,
                 m_GroupBounds.Max,
-                m_GroupColor, m_GroupRounding);
+                m_GroupColor, m_GroupRounding);*/
 
             if (m_GroupBorderWidth > 0.0f)
             {
@@ -1512,6 +1524,8 @@ ImVec2 ed::EditorContext::GetNodeSize(NodeId nodeId)
     if (!node)
         return ImVec2(0, 0);
 
+    ImVec2 NodeSize = node->m_Bounds.GetSize();
+
     return node->m_Bounds.GetSize();
 }
 
@@ -1725,6 +1739,7 @@ ed::Node* ed::EditorContext::CreateNode(NodeId id)
         RestoreNodeState(node);
     }
 
+    //TODO
     node->m_Bounds.Min  = settings->m_Location;
     node->m_Bounds.Max  = node->m_Bounds.Min;
     node->m_Bounds.Floor();
@@ -2013,7 +2028,7 @@ ed::Control ed::EditorContext::BuildControl(bool allowOffscreen)
         ImGui::SetCursorScreenPos(rect.Min);
 
         // debug
-        //if (id < 0) return ImGui::Button(idString, rect.GetSize());
+        //if (id < 0) return ImGui::Button(idString, to_imvec(rect.size));
 
         auto result = ImGui::InvisibleButton(idString, rect.GetSize());
 
