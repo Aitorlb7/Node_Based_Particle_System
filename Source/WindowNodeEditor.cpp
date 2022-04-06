@@ -14,6 +14,7 @@ WindowNodeEditor::WindowNodeEditor(bool isActive): Window("Particle System Node 
 WindowNodeEditor::~WindowNodeEditor()
 {
 }
+
 //TODO: STATIC really????
 static void TouchNode(ed::NodeId id)
 {
@@ -69,9 +70,10 @@ void WindowNodeEditor::Start()
     ed::SetCurrentEditor(contextEditor);
 
 	Node* node;
-	node = CreateEmiterNode();      
+	node = CreateEmiterNode();      ed::SetNodePosition(node->ID, ImVec2(210, 60));
+    node = CreateGroupNode();      ed::SetNodePosition(node->ID, ImVec2(300, 60));
+    node = CreateMessageNode();      ed::SetNodePosition(node->ID, ImVec2(100, 60));
 
-    ed::SetNodePosition(node->ID, ImVec2(210, 60));
 	ed::NavigateToContent();
 
 	BuildNodes();
@@ -91,21 +93,19 @@ void WindowNodeEditor::Draw()
 
     auto& io = ImGui::GetIO();
 
-    //ImGui::Text("FPS: %.2f (%.2gms)", io.Framerate, io.Framerate ? 1000.0f / io.Framerate : 0.0f);
-
     ed::SetCurrentEditor(contextEditor);
 
     auto& style = ImGui::GetStyle();
 
-//# if 0
-//    {
-//        for (auto x = -io.DisplaySize.y; x < io.DisplaySize.x; x += 10.0f)
-//        {
-//            ImGui::GetWindowDrawList()->AddLine(ImVec2(x, 0), ImVec2(x + io.DisplaySize.y, io.DisplaySize.y),
-//                IM_COL32(255, 255, 0, 255));
-//        }
-//    }
-//# endif
+# if 0
+    {
+        for (auto x = -io.DisplaySize.y; x < io.DisplaySize.x; x += 10.0f)
+        {
+            ImGui::GetWindowDrawList()->AddLine(ImVec2(x, 0), ImVec2(x + io.DisplaySize.y, io.DisplaySize.y),
+                IM_COL32(255, 255, 0, 255));
+        }
+    }
+# endif
 
     static ed::NodeId contextNodeId = 0;
     static ed::LinkId contextLinkId = 0;
@@ -114,16 +114,17 @@ void WindowNodeEditor::Draw()
     static Pin* newNodeLinkPin = nullptr;
     static Pin* newLinkPin = nullptr;
 
-    //static float leftPaneWidth = 400.0f;
-    //static float rightPaneWidth = 800.0f;
+    static float leftPaneWidth = 400.0f;
+    static float rightPaneWidth = 800.0f;
 
-    //Splitter(true, 4.0f, &leftPaneWidth, &rightPaneWidth, 50.0f, 50.0f,-1);
-
-    //ShowLeftPane(leftPaneWidth - 4.0f);
-
-    //ImGui::SameLine(0.0f, 12.0f);
 
     ImGui::Begin("Node Editor", &isActive);
+
+    Splitter(true, 4.0f, &leftPaneWidth, &rightPaneWidth, 50.0f, 50.0f,-1);
+
+    ShowLeftPane(leftPaneWidth - 4.0f);
+
+    ImGui::SameLine(0.0f, 12.0f);
 
     ed::Begin("Node editor");
     {
@@ -1031,21 +1032,43 @@ void WindowNodeEditor::BuildNodes()
 
 Node* WindowNodeEditor::CreateEmiterNode()
 {
-	//nodes.emplace_back(GetNextId(), "Emiter", ImColor(255, 128, 128));
-	//nodes.back().Outputs.emplace_back(GetNextId(), "", PinType::Delegate);
-	//nodes.back().Outputs.emplace_back(GetNextId(), "Pressed", PinType::Flow);
-	//nodes.back().Outputs.emplace_back(GetNextId(), "Released", PinType::Flow);
 
-    nodes.emplace_back(GetNextId(), "Basic", ImColor(128, 195, 248));
-    nodes.back().Type = NodeType::Comment;
-    nodes.back().Outputs.emplace_back(GetNextId(), "Bool", PinType::Bool);
-    nodes.back().Size = ImVec2(100 , 100);
+    nodes.emplace_back(GetNextId(), "Emitter", ImColor(128, 195, 248));
+    nodes.back().Inputs.emplace_back(GetNextId(), "", PinType::Flow);
+    nodes.back().Inputs.emplace_back(GetNextId(), "Particle", PinType::Object);
+    nodes.back().Inputs.emplace_back(GetNextId(), "Function 'X'", PinType::Function);
+    nodes.back().Inputs.emplace_back(GetNextId(), "LifeTime", PinType::Float);
+    nodes.back().Inputs.emplace_back(GetNextId(), "Active", PinType::Bool);
+    nodes.back().Outputs.emplace_back(GetNextId(), "", PinType::Flow);
 
-	BuildNode(&nodes.back());
+    BuildNode(&nodes.back());
 
 	return &nodes.back();
 }
 
+Node* WindowNodeEditor::CreateGroupNode()
+{
+    nodes.emplace_back(GetNextId(), "Group", ImColor(128, 195, 248));
+    nodes.back().Type = NodeType::Comment;
+    nodes.back().Outputs.emplace_back(GetNextId(), "Bool", PinType::Bool);
+    nodes.back().Size = ImVec2(200 , 200);
+
+    BuildNode(&nodes.back());
+
+    return &nodes.back();
+}
+
+Node* WindowNodeEditor::CreateMessageNode()
+{
+
+    nodes.emplace_back(GetNextId(), "", ImColor(128, 195, 248));
+    nodes.back().Type = NodeType::Simple;
+    nodes.back().Outputs.emplace_back(GetNextId(), "Message", PinType::String);
+
+    BuildNode(&nodes.back());
+
+    return &nodes.back();
+}
 
 
 ImColor WindowNodeEditor::GetIconColor(PinType type)
@@ -1063,6 +1086,7 @@ ImColor WindowNodeEditor::GetIconColor(PinType type)
 	case PinType::Delegate: return ImColor(255, 48, 48);
 	}
 }
+
 void WindowNodeEditor::DrawIcon(ImDrawList* drawList, const ImVec2& a, const ImVec2& b, IconType type, bool filled, ImU32 color, ImU32 innerColor)
 {
     auto rect = ImRect(a, b);
@@ -1327,27 +1351,27 @@ bool WindowNodeEditor::Splitter(bool split_vertically, float thickness, float* s
 
 void WindowNodeEditor::ShowLeftPane(float paneWidth)
 {
-    auto& io = ImGui::GetIO();
+   auto& io = ImGui::GetIO();
 
     ImGui::BeginChild("Selection", ImVec2(paneWidth, 0));
 
     paneWidth = ImGui::GetContentRegionAvailWidth();
 
     static bool showStyleEditor = false;
-    ImGui::BeginChild("Style Editor", ImVec2(paneWidth, 0));
-
+    ImGui::BeginHorizontal("Style Editor", ImVec2(paneWidth, 0));
+    ImGui::Spring(0.0f, 0.0f);
     if (ImGui::Button("Zoom to Content"))
         ed::NavigateToContent();
-    ImGui::Spacing();
+    ImGui::Spring(0.0f);
     if (ImGui::Button("Show Flow"))
     {
         for (auto& link : links)
             ed::Flow(link.ID);
     }
-    ImGui::Spacing();
+    ImGui::Spring();
     if (ImGui::Button("Edit Style"))
         showStyleEditor = true;
-    ImGui::EndChild();
+    ImGui::EndHorizontal();
 
     if (showStyleEditor)
         ShowStyleEditor(&showStyleEditor);
@@ -1362,6 +1386,7 @@ void WindowNodeEditor::ShowLeftPane(float paneWidth)
 
     selectedNodes.resize(nodeCount);
     selectedLinks.resize(linkCount);
+
 
     ImGui::GetWindowDrawList()->AddRectFilled(
         ImGui::GetCursorScreenPos(),
@@ -1403,23 +1428,15 @@ void WindowNodeEditor::ShowLeftPane(float paneWidth)
 
         auto id = std::string("(") + std::to_string(reinterpret_cast<uintptr_t>(node.ID.AsPointer())) + ")";
         auto textSize = ImGui::CalcTextSize(id.c_str(), nullptr);
-        auto iconPanelPos = start + ImVec2(
-            paneWidth - ImGui::GetStyle().FramePadding.x - ImGui::GetStyle().IndentSpacing - pinIconSize - pinIconSize - ImGui::GetStyle().ItemInnerSpacing.x * 1,
-            (ImGui::GetTextLineHeight() - pinIconSize) / 2);
+        /*auto iconPanelPos = start + ImVec2(
+            paneWidth - ImGui::GetStyle().FramePadding.x - ImGui::GetStyle().IndentSpacing - saveIconWidth - restoreIconWidth - ImGui::GetStyle().ItemInnerSpacing.x * 1,
+            (ImGui::GetTextLineHeight() - saveIconHeight) / 2);*/
         ImGui::GetWindowDrawList()->AddText(
-            ImVec2(iconPanelPos.x - textSize.x - ImGui::GetStyle().ItemInnerSpacing.x, start.y),
+            ImVec2(textSize.x - ImGui::GetStyle().ItemInnerSpacing.x, start.y),
             IM_COL32(255, 255, 255, 255), id.c_str(), nullptr);
 
         auto drawList = ImGui::GetWindowDrawList();
-        ImGui::SetCursorScreenPos(iconPanelPos);
-        ImGui::SetItemAllowOverlap();
-
-        ImGui::SameLine(0, ImGui::GetStyle().ItemInnerSpacing.x);
-        ImGui::SetItemAllowOverlap();
-
-        ImGui::SameLine(0, 0);
-        ImGui::SetItemAllowOverlap();
-
+       
         ImGui::PopID();
     }
     ImGui::Unindent();
@@ -1433,12 +1450,12 @@ void WindowNodeEditor::ShowLeftPane(float paneWidth)
     ImGui::Spacing(); ImGui::SameLine();
     ImGui::TextUnformatted("Selection");
 
-    ImGui::BeginChild("Selection Stats", ImVec2(paneWidth, 0));
+    ImGui::BeginHorizontal("Selection Stats", ImVec2(paneWidth, 0));
     ImGui::Text("Changed %d time%s", changeCount, changeCount > 1 ? "s" : "");
-    ImGui::Spacing();
+    ImGui::Spring();
     if (ImGui::Button("Deselect All"))
         ed::ClearSelection();
-    ImGui::EndChild();
+    ImGui::EndHorizontal();
     ImGui::Indent();
     for (int i = 0; i < nodeCount; ++i) ImGui::Text("Node (%p)", selectedNodes[i].AsPointer());
     for (int i = 0; i < linkCount; ++i) ImGui::Text("Link (%p)", selectedLinks[i].AsPointer());
@@ -1457,7 +1474,7 @@ void WindowNodeEditor::ShowLeftPane(float paneWidth)
 
 void WindowNodeEditor::ShowStyleEditor(bool* show = nullptr)
 {
-    if (!ImGui::Begin("Style", show))
+    if (!ImGui::Begin("Node Editor Style", show))
     {
         ImGui::End();
         return;
@@ -1466,14 +1483,11 @@ void WindowNodeEditor::ShowStyleEditor(bool* show = nullptr)
     auto paneWidth = ImGui::GetContentRegionAvailWidth();
 
     auto& editorStyle = ed::GetStyle();
-    ImGui::BeginChild("Style buttons", ImVec2(paneWidth, 0), 1.0f);
 
-    ImGui::TextUnformatted("Values");
-    ImGui::Separator();
-    if (ImGui::Button("Reset to defaults"))
+    if (ImGui::Button("Reset values to defaults"))
         editorStyle = ed::Style();
-    ImGui::EndChild();
-    ImGui::Spacing();
+
+    ImGui::Separator();
     ImGui::DragFloat4("Node Padding", &editorStyle.NodePadding.x, 0.1f, 0.0f, 40.0f);
     ImGui::DragFloat("Node Rounding", &editorStyle.NodeRounding, 0.1f, 0.0f, 40.0f);
     ImGui::DragFloat("Node Border Width", &editorStyle.NodeBorderWidth, 0.1f, 0.0f, 15.0f);
@@ -1482,34 +1496,25 @@ void WindowNodeEditor::ShowStyleEditor(bool* show = nullptr)
     ImGui::DragFloat("Pin Rounding", &editorStyle.PinRounding, 0.1f, 0.0f, 40.0f);
     ImGui::DragFloat("Pin Border Width", &editorStyle.PinBorderWidth, 0.1f, 0.0f, 15.0f);
     ImGui::DragFloat("Link Strength", &editorStyle.LinkStrength, 1.0f, 0.0f, 500.0f);
-    //ImVec2  SourceDirection;
-    //ImVec2  TargetDirection;
     ImGui::DragFloat("Scroll Duration", &editorStyle.ScrollDuration, 0.001f, 0.0f, 2.0f);
     ImGui::DragFloat("Flow Marker Distance", &editorStyle.FlowMarkerDistance, 1.0f, 1.0f, 200.0f);
     ImGui::DragFloat("Flow Speed", &editorStyle.FlowSpeed, 1.0f, 1.0f, 2000.0f);
     ImGui::DragFloat("Flow Duration", &editorStyle.FlowDuration, 0.001f, 0.0f, 5.0f);
-    //ImVec2  PivotAlignment;
-    //ImVec2  PivotSize;
-    //ImVec2  PivotScale;
-    //float   PinCorners;
-    //float   PinRadius;
-    //float   PinArrowSize;
-    //float   PinArrowWidth;
     ImGui::DragFloat("Group Rounding", &editorStyle.GroupRounding, 0.1f, 0.0f, 40.0f);
     ImGui::DragFloat("Group Border Width", &editorStyle.GroupBorderWidth, 0.1f, 0.0f, 15.0f);
 
     ImGui::Separator();
 
     static ImGuiColorEditFlags edit_mode = ImGuiColorEditFlags_RGB;
-    ImGui::BeginChild("Color Mode", ImVec2(paneWidth, 0), 1.0f);
     ImGui::TextUnformatted("Filter Colors");
     ImGui::Spacing();
     ImGui::RadioButton("RGB", &edit_mode, ImGuiColorEditFlags_RGB);
+    ImGui::SameLine();
     ImGui::Spacing();
     ImGui::RadioButton("HSV", &edit_mode, ImGuiColorEditFlags_HSV);
+    ImGui::SameLine();
     ImGui::Spacing();
     ImGui::RadioButton("HEX", &edit_mode, ImGuiColorEditFlags_HEX);
-    ImGui::EndChild();
 
     static ImGuiTextFilter filter;
     filter.Draw("", paneWidth);

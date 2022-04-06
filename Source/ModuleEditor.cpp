@@ -551,7 +551,7 @@ bool ModuleEditor::MainMenuBar()
 		}
 		
 		//Set Next window Pos and Size
-		ImGui::SetNextWindowPos(ImGui::GetMainViewport()->GetCenter() , ImGuiCond_Appearing, ImVec2(0.5, 0.5));
+		ImGui::SetNextWindowPos(ImGui::GetMainViewport()->Pos , ImGuiCond_Appearing, ImVec2(0.5, 0.5));
 		ImGui::SetNextWindowSize(ImVec2(250.0f, 150.0f));
 
 		//Set next Pop based on a string
@@ -612,7 +612,7 @@ bool ModuleEditor::MainMenuBar()
 			ImGui::EndPopup();
 		}
 
-		ImGui::SetNextWindowPos(ImGui::GetMainViewport()->GetCenter(), ImGuiCond_Appearing, ImVec2(0.5, 0.5));
+		ImGui::SetNextWindowPos(ImGui::GetMainViewport()->Pos, ImGuiCond_Appearing, ImVec2(0.5, 0.5));
 		ImGui::SetNextWindowSize(ImVec2(250.0f, 150.0f));
 
 		if (menuAction == "Load Scene") ImGui::OpenPopup("Load Scene Options");

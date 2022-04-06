@@ -30,6 +30,10 @@ public:
 
 	Node* CreateEmiterNode();
 
+	Node* CreateGroupNode();
+
+	Node* CreateMessageNode();
+
 	ImColor GetIconColor(PinType type);
 	void DrawIcon(ImDrawList* drawList, const ImVec2& a, const ImVec2& b, IconType type, bool filled, ImU32 color, ImU32 innerColor);
 	void DrawPinIcon(const Pin& pin, bool connected, int alpha);

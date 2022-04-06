@@ -64,7 +64,7 @@ void WindowInspector::Draw()
 
 		if (ImGui::Button("Delete Object"))
 		{
-			ImGui::OpenPopup("Delete Object", ImGuiPopupFlags_None);
+			ImGui::OpenPopup("Delete Object");
 		}
 		if (ImGui::BeginPopupModal("Delete Object", NULL, ImGuiWindowFlags_AlwaysAutoResize))
 		{
@@ -184,16 +184,16 @@ void WindowInspector::DrawTransform(ComponentTransform* component)
 	if (ImGui::CollapsingHeader("Component Transform"), ImGuiTreeNodeFlags_DefaultOpen)
 	{
 		ImGui::Text("Local");
-		if (ImGui::DragFloat3("Local Position", (float*)&component->local_position, 0.02f, 0.0f, 0.0f, "%.2f", ImGuiSliderFlags_None)) { component->UpdateLocalTransform(); }
-		if (ImGui::DragFloat3("Local Scale", (float*)&component->local_scale, 0.02f, 0.0f, 0.0f, "%.2f", ImGuiSliderFlags_None)) { component->UpdateLocalTransform(); }
-		if (ImGui::DragFloat3("Local Rotation", (float*)&component->local_eulerRotation, 0.08f, 0.0f, 0.0f, "%.2f", ImGuiSliderFlags_None)) { component->SetLocalEulerRotation(component->local_eulerRotation); }
+		if (ImGui::DragFloat3("Local Position", (float*)&component->local_position, 0.02f, 0.0f, 0.0f, "%.2f")) { component->UpdateLocalTransform(); }
+		if (ImGui::DragFloat3("Local Scale", (float*)&component->local_scale, 0.02f, 0.0f, 0.0f, "%.2f")) { component->UpdateLocalTransform(); }
+		if (ImGui::DragFloat3("Local Rotation", (float*)&component->local_eulerRotation, 0.08f, 0.0f, 0.0f, "%.2f")) { component->SetLocalEulerRotation(component->local_eulerRotation); }
 
 		ImGui::Separator();
 
 		ImGui::Text("Global");
-		if (ImGui::DragFloat3("Global Position", (float*)&component->global_position, 0.02f, 0.0f, 0.0f, "%.2f", ImGuiSliderFlags_None)) { component->UpdateLocalTransform(); }
-		if (ImGui::DragFloat3("Global Scale", (float*)&component->global_scale, 0.02f, 0.0f, 0.0f, "%.2f", ImGuiSliderFlags_None)) { component->UpdateLocalTransform(); }
-		if (ImGui::DragFloat3("Global Rotation", (float*)&component->global_eulerRotation, 0.08f, 0.0f, 0.0f, "%.2f", ImGuiSliderFlags_None)) { component->SetGlobalEulerRotation(component->global_eulerRotation); }
+		if (ImGui::DragFloat3("Global Position", (float*)&component->global_position, 0.02f, 0.0f, 0.0f, "%.2f")) { component->UpdateLocalTransform(); }
+		if (ImGui::DragFloat3("Global Scale", (float*)&component->global_scale, 0.02f, 0.0f, 0.0f, "%.2f")) { component->UpdateLocalTransform(); }
+		if (ImGui::DragFloat3("Global Rotation", (float*)&component->global_eulerRotation, 0.08f, 0.0f, 0.0f, "%.2f")) { component->SetGlobalEulerRotation(component->global_eulerRotation); }
 	}
 }
 
@@ -341,15 +341,15 @@ void WindowInspector::DrawMaterial(ComponentMaterial* component)
 		{
 			switch (shader->uniforms[i].uniformType)
 			{
-			case  UniformType::INT:	ImGui::DragInt(shader->uniforms[i].name.c_str(), &shader->uniforms[i].integer, 0.02f, 0.0f, 0.0f, "%.2f", ImGuiSliderFlags_None); break;
-			case  UniformType::FLOAT: ImGui::DragFloat(shader->uniforms[i].name.c_str(), &shader->uniforms[i].floatNumber, 0.02f, 0.0f, 0.0f, "%.2f", ImGuiSliderFlags_None); break;
-			case  UniformType::INT_VEC2: ImGui::DragInt2(shader->uniforms[i].name.c_str(), (int*)&shader->uniforms[i].vec2, 0.02f, 0.0f, 0.0f, "%.2f", ImGuiSliderFlags_None); break;
-			case  UniformType::INT_VEC3: ImGui::DragInt3(shader->uniforms[i].name.c_str(), (int*)&shader->uniforms[i].vec3, 0.02f, 0.0f, 0.0f, "%.2f", ImGuiSliderFlags_None); break;
-			case  UniformType::INT_VEC4: ImGui::DragInt4(shader->uniforms[i].name.c_str(), (int*)&shader->uniforms[i].vec4, 0.02f, 0.0f, 0.0f, "%.2f", ImGuiSliderFlags_None); break;
-			case  UniformType::FLOAT_VEC2: ImGui::DragFloat2(shader->uniforms[i].name.c_str(), (float*)&shader->uniforms[i].vec2, 0.02f, 0.0f, 0.0f, "%.2f", ImGuiSliderFlags_None); break;
-			case  UniformType::FLOAT_VEC3: ImGui::DragFloat3(shader->uniforms[i].name.c_str(), (float*)&shader->uniforms[i].vec3, 0.02f, 0.0f, 0.0f, "%.2f", ImGuiSliderFlags_None); break;
-			case  UniformType::FLOAT_VEC4: ImGui::DragFloat4(shader->uniforms[i].name.c_str(), (float*)&shader->uniforms[i].vec4, 0.02f, 0.0f, 0.0f, "%.2f", ImGuiSliderFlags_None); break;
-			case UniformType::MATRIX4: ImGui::DragFloat4(shader->uniforms[i].name.c_str(), shader->uniforms[i].matrix4.ToEulerXYZ().ptr(), 0.02f, 0.0f, 0.0f, "%.2f", ImGuiSliderFlags_None); break;
+			case  UniformType::INT:	ImGui::DragInt(shader->uniforms[i].name.c_str(), &shader->uniforms[i].integer, 0.02f, 0.0f, 0.0f, "%.2f"); break;
+			case  UniformType::FLOAT: ImGui::DragFloat(shader->uniforms[i].name.c_str(), &shader->uniforms[i].floatNumber, 0.02f, 0.0f, 0.0f, "%.2f"); break;
+			case  UniformType::INT_VEC2: ImGui::DragInt2(shader->uniforms[i].name.c_str(), (int*)&shader->uniforms[i].vec2, 0.02f, 0.0f, 0.0f, "%.2f"); break;
+			case  UniformType::INT_VEC3: ImGui::DragInt3(shader->uniforms[i].name.c_str(), (int*)&shader->uniforms[i].vec3, 0.02f, 0.0f, 0.0f, "%.2f"); break;
+			case  UniformType::INT_VEC4: ImGui::DragInt4(shader->uniforms[i].name.c_str(), (int*)&shader->uniforms[i].vec4, 0.02f, 0.0f, 0.0f, "%.2f"); break;
+			case  UniformType::FLOAT_VEC2: ImGui::DragFloat2(shader->uniforms[i].name.c_str(), (float*)&shader->uniforms[i].vec2, 0.02f, 0.0f, 0.0f, "%.2f"); break;
+			case  UniformType::FLOAT_VEC3: ImGui::DragFloat3(shader->uniforms[i].name.c_str(), (float*)&shader->uniforms[i].vec3, 0.02f, 0.0f, 0.0f, "%.2f"); break;
+			case  UniformType::FLOAT_VEC4: ImGui::DragFloat4(shader->uniforms[i].name.c_str(), (float*)&shader->uniforms[i].vec4, 0.02f, 0.0f, 0.0f, "%.2f"); break;
+			case UniformType::MATRIX4: ImGui::DragFloat4(shader->uniforms[i].name.c_str(), shader->uniforms[i].matrix4.ToEulerXYZ().ptr(), 0.02f, 0.0f, 0.0f, "%.2f"); break;
 			}
 		}
 
@@ -374,7 +374,7 @@ void WindowInspector::DrawCamera(ComponentCamera* component)
 
 		//Set FOV
 		float Inspector_FOV = component->GetFOV();
-		if (ImGui::SliderFloat("FOV", &Inspector_FOV, 30, 120, "%0.2f", ImGuiSliderFlags_None)) { component->SetFOV(Inspector_FOV); }
+		if (ImGui::SliderFloat("FOV", &Inspector_FOV, 30, 120, "%0.2f")) { component->SetFOV(Inspector_FOV); }
 
 		//Set NearPlane
 		float NearPlane = component->GetNearPlane();

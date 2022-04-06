@@ -7,7 +7,7 @@
 // CREDITS
 //   Written by Michal Cichon
 //------------------------------------------------------------------------------
-# include "imgui_node_editor_internal.h"
+# include "Dependencies/NodeEditor/imgui_node_editor_internal.h"
 # include <cstdio> // snprintf
 # include <string>
 # include <fstream>
@@ -541,7 +541,7 @@ void ed::Pin::Draw(ImDrawList* drawList, DrawFlags flags)
     {
         drawList->ChannelsSetCurrent(m_Node->m_Channel + c_NodePinChannel);
 
-        drawList->AddRectFilled(m_Bounds.Min, m_Bounds.Max,
+         drawList->AddRectFilled(m_Bounds.Min, m_Bounds.Max,
             m_Color, m_Rounding, m_Corners);
 
         if (m_BorderWidth > 0.0f)
