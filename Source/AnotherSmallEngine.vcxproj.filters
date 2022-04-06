@@ -1,24 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="Dependencies\ImGui\imgui_widgets.cpp">
-      <Filter>Dependencies\ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="Dependencies\ImGui\imgui_impl_sdl.cpp">
-      <Filter>Dependencies\ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="Dependencies\ImGui\imgui_impl_opengl3.cpp">
-      <Filter>Dependencies\ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="Dependencies\ImGui\imgui_draw.cpp">
-      <Filter>Dependencies\ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="Dependencies\ImGui\imgui_demo.cpp">
-      <Filter>Dependencies\ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="Dependencies\ImGui\imgui.cpp">
-      <Filter>Dependencies\ImGui</Filter>
-    </ClCompile>
     <ClCompile Include="ModuleCamera3D.cpp">
       <Filter>Modules</Filter>
     </ClCompile>
@@ -307,9 +289,6 @@
     <ClCompile Include="NodeBuilder.cpp">
       <Filter>Tools\NodeEditor</Filter>
     </ClCompile>
-    <ClCompile Include="Dependencies\ImGui\imgui_impl_dx11.cpp">
-      <Filter>Dependencies\ImGui</Filter>
-    </ClCompile>
     <ClCompile Include="Dependencies\NodeEditor\crude_json.cpp">
       <Filter>Dependencies\NodeEditor</Filter>
     </ClCompile>
@@ -322,32 +301,29 @@
     <ClCompile Include="Dependencies\NodeEditor\imgui_node_editor_api.cpp">
       <Filter>Dependencies\NodeEditor</Filter>
     </ClCompile>
+    <ClCompile Include="Dependencies\ImGui\imgui.cpp">
+      <Filter>Dependencies\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependencies\ImGui\imgui_demo.cpp">
+      <Filter>Dependencies\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependencies\ImGui\imgui_draw.cpp">
+      <Filter>Dependencies\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependencies\ImGui\imgui_impl_dx11.cpp">
+      <Filter>Dependencies\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependencies\ImGui\imgui_impl_opengl3.cpp">
+      <Filter>Dependencies\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependencies\ImGui\imgui_impl_sdl.cpp">
+      <Filter>Dependencies\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependencies\ImGui\imgui_widgets.cpp">
+      <Filter>Dependencies\ImGui</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Dependencies\ImGui\imconfig.h">
-      <Filter>Dependencies\ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\ImGui\imstb_truetype.h">
-      <Filter>Dependencies\ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\ImGui\imstb_textedit.h">
-      <Filter>Dependencies\ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\ImGui\imstb_rectpack.h">
-      <Filter>Dependencies\ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\ImGui\imgui_internal.h">
-      <Filter>Dependencies\ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\ImGui\imgui_impl_sdl.h">
-      <Filter>Dependencies\ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\ImGui\imgui_impl_opengl3.h">
-      <Filter>Dependencies\ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="Dependencies\ImGui\imgui.h">
-      <Filter>Dependencies\ImGui</Filter>
-    </ClInclude>
     <ClInclude Include="ModuleWindow.h">
       <Filter>Modules</Filter>
     </ClInclude>
@@ -664,103 +640,103 @@
       <Filter>Dependencies\Parson</Filter>
     </ClInclude>
     <ClInclude Include="Dependencies\Assimp\include\ai_assert.h">
-      <Filter>Dependencies\Assimp</Filter>
+      <Filter>Dependencies\Glew\Assimp</Filter>
     </ClInclude>
     <ClInclude Include="Dependencies\Assimp\include\anim.h">
-      <Filter>Dependencies\Assimp</Filter>
+      <Filter>Dependencies\Glew\Assimp</Filter>
     </ClInclude>
     <ClInclude Include="Dependencies\Assimp\include\camera.h">
-      <Filter>Dependencies\Assimp</Filter>
+      <Filter>Dependencies\Glew\Assimp</Filter>
     </ClInclude>
     <ClInclude Include="Dependencies\Assimp\include\cexport.h">
-      <Filter>Dependencies\Assimp</Filter>
+      <Filter>Dependencies\Glew\Assimp</Filter>
     </ClInclude>
     <ClInclude Include="Dependencies\Assimp\include\cfileio.h">
-      <Filter>Dependencies\Assimp</Filter>
+      <Filter>Dependencies\Glew\Assimp</Filter>
     </ClInclude>
     <ClInclude Include="Dependencies\Assimp\include\cimport.h">
-      <Filter>Dependencies\Assimp</Filter>
+      <Filter>Dependencies\Glew\Assimp</Filter>
     </ClInclude>
     <ClInclude Include="Dependencies\Assimp\include\color4.h">
-      <Filter>Dependencies\Assimp</Filter>
+      <Filter>Dependencies\Glew\Assimp</Filter>
     </ClInclude>
     <ClInclude Include="Dependencies\Assimp\include\config.h">
-      <Filter>Dependencies\Assimp</Filter>
+      <Filter>Dependencies\Glew\Assimp</Filter>
     </ClInclude>
     <ClInclude Include="Dependencies\Assimp\include\DefaultLogger.hpp">
-      <Filter>Dependencies\Assimp</Filter>
+      <Filter>Dependencies\Glew\Assimp</Filter>
     </ClInclude>
     <ClInclude Include="Dependencies\Assimp\include\defs.h">
-      <Filter>Dependencies\Assimp</Filter>
+      <Filter>Dependencies\Glew\Assimp</Filter>
     </ClInclude>
     <ClInclude Include="Dependencies\Assimp\include\Exporter.hpp">
-      <Filter>Dependencies\Assimp</Filter>
+      <Filter>Dependencies\Glew\Assimp</Filter>
     </ClInclude>
     <ClInclude Include="Dependencies\Assimp\include\Importer.hpp">
-      <Filter>Dependencies\Assimp</Filter>
+      <Filter>Dependencies\Glew\Assimp</Filter>
     </ClInclude>
     <ClInclude Include="Dependencies\Assimp\include\importerdesc.h">
-      <Filter>Dependencies\Assimp</Filter>
+      <Filter>Dependencies\Glew\Assimp</Filter>
     </ClInclude>
     <ClInclude Include="Dependencies\Assimp\include\IOStream.hpp">
-      <Filter>Dependencies\Assimp</Filter>
+      <Filter>Dependencies\Glew\Assimp</Filter>
     </ClInclude>
     <ClInclude Include="Dependencies\Assimp\include\IOSystem.hpp">
-      <Filter>Dependencies\Assimp</Filter>
+      <Filter>Dependencies\Glew\Assimp</Filter>
     </ClInclude>
     <ClInclude Include="Dependencies\Assimp\include\light.h">
-      <Filter>Dependencies\Assimp</Filter>
+      <Filter>Dependencies\Glew\Assimp</Filter>
     </ClInclude>
     <ClInclude Include="Dependencies\Assimp\include\Logger.hpp">
-      <Filter>Dependencies\Assimp</Filter>
+      <Filter>Dependencies\Glew\Assimp</Filter>
     </ClInclude>
     <ClInclude Include="Dependencies\Assimp\include\LogStream.hpp">
-      <Filter>Dependencies\Assimp</Filter>
+      <Filter>Dependencies\Glew\Assimp</Filter>
     </ClInclude>
     <ClInclude Include="Dependencies\Assimp\include\material.h">
-      <Filter>Dependencies\Assimp</Filter>
+      <Filter>Dependencies\Glew\Assimp</Filter>
     </ClInclude>
     <ClInclude Include="Dependencies\Assimp\include\matrix3x3.h">
-      <Filter>Dependencies\Assimp</Filter>
+      <Filter>Dependencies\Glew\Assimp</Filter>
     </ClInclude>
     <ClInclude Include="Dependencies\Assimp\include\matrix4x4.h">
-      <Filter>Dependencies\Assimp</Filter>
+      <Filter>Dependencies\Glew\Assimp</Filter>
     </ClInclude>
     <ClInclude Include="Dependencies\Assimp\include\mesh.h">
-      <Filter>Dependencies\Assimp</Filter>
+      <Filter>Dependencies\Glew\Assimp</Filter>
     </ClInclude>
     <ClInclude Include="Dependencies\Assimp\include\metadata.h">
-      <Filter>Dependencies\Assimp</Filter>
+      <Filter>Dependencies\Glew\Assimp</Filter>
     </ClInclude>
     <ClInclude Include="Dependencies\Assimp\include\NullLogger.hpp">
-      <Filter>Dependencies\Assimp</Filter>
+      <Filter>Dependencies\Glew\Assimp</Filter>
     </ClInclude>
     <ClInclude Include="Dependencies\Assimp\include\postprocess.h">
-      <Filter>Dependencies\Assimp</Filter>
+      <Filter>Dependencies\Glew\Assimp</Filter>
     </ClInclude>
     <ClInclude Include="Dependencies\Assimp\include\ProgressHandler.hpp">
-      <Filter>Dependencies\Assimp</Filter>
+      <Filter>Dependencies\Glew\Assimp</Filter>
     </ClInclude>
     <ClInclude Include="Dependencies\Assimp\include\quaternion.h">
-      <Filter>Dependencies\Assimp</Filter>
+      <Filter>Dependencies\Glew\Assimp</Filter>
     </ClInclude>
     <ClInclude Include="Dependencies\Assimp\include\scene.h">
-      <Filter>Dependencies\Assimp</Filter>
+      <Filter>Dependencies\Glew\Assimp</Filter>
     </ClInclude>
     <ClInclude Include="Dependencies\Assimp\include\texture.h">
-      <Filter>Dependencies\Assimp</Filter>
+      <Filter>Dependencies\Glew\Assimp</Filter>
     </ClInclude>
     <ClInclude Include="Dependencies\Assimp\include\types.h">
-      <Filter>Dependencies\Assimp</Filter>
+      <Filter>Dependencies\Glew\Assimp</Filter>
     </ClInclude>
     <ClInclude Include="Dependencies\Assimp\include\vector2.h">
-      <Filter>Dependencies\Assimp</Filter>
+      <Filter>Dependencies\Glew\Assimp</Filter>
     </ClInclude>
     <ClInclude Include="Dependencies\Assimp\include\vector3.h">
-      <Filter>Dependencies\Assimp</Filter>
+      <Filter>Dependencies\Glew\Assimp</Filter>
     </ClInclude>
     <ClInclude Include="Dependencies\Assimp\include\version.h">
-      <Filter>Dependencies\Assimp</Filter>
+      <Filter>Dependencies\Glew\Assimp</Filter>
     </ClInclude>
     <ClInclude Include="Dependencies\Devil\include\config.h">
       <Filter>Dependencies\Devil</Filter>
@@ -1102,9 +1078,6 @@
     <ClInclude Include="NodeBuilder.h">
       <Filter>Tools\NodeEditor</Filter>
     </ClInclude>
-    <ClInclude Include="Dependencies\ImGui\imgui_impl_dx11.h">
-      <Filter>Dependencies\ImGui</Filter>
-    </ClInclude>
     <ClInclude Include="Dependencies\NodeEditor\crude_json.h">
       <Filter>Dependencies\NodeEditor</Filter>
     </ClInclude>
@@ -1122,6 +1095,33 @@
     </ClInclude>
     <ClInclude Include="Dependencies\NodeEditor\imgui_node_editor_internal.h">
       <Filter>Dependencies\NodeEditor</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\ImGui\imconfig.h">
+      <Filter>Dependencies\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\ImGui\imgui.h">
+      <Filter>Dependencies\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\ImGui\imgui_impl_dx11.h">
+      <Filter>Dependencies\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\ImGui\imgui_impl_opengl3.h">
+      <Filter>Dependencies\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\ImGui\imgui_impl_sdl.h">
+      <Filter>Dependencies\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\ImGui\imgui_internal.h">
+      <Filter>Dependencies\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\ImGui\imstb_rectpack.h">
+      <Filter>Dependencies\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\ImGui\imstb_textedit.h">
+      <Filter>Dependencies\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\ImGui\imstb_truetype.h">
+      <Filter>Dependencies\ImGui</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1182,9 +1182,6 @@
     <Filter Include="Dependencies\Parson">
       <UniqueIdentifier>{2d39be7d-49f4-4e0c-8ee8-952e5f73e09f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Dependencies\Assimp">
-      <UniqueIdentifier>{a38b916a-ed58-466d-87a5-03e88bd38b02}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Dependencies\Devil">
       <UniqueIdentifier>{3e6e68c3-fd7e-45ee-b159-73b5c3615772}</UniqueIdentifier>
     </Filter>
@@ -1215,6 +1212,9 @@
     <Filter Include="Dependencies\NodeEditor">
       <UniqueIdentifier>{4876664f-cfa6-4ba0-9cbf-f03412283e08}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Dependencies\Glew\Assimp">
+      <UniqueIdentifier>{a38b916a-ed58-466d-87a5-03e88bd38b02}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="Dependencies\MathGeoLib\include\Geometry\KDTree.inl">
@@ -1239,25 +1239,25 @@
       <Filter>Dependencies\MathGeoLib\Math</Filter>
     </None>
     <None Include="Dependencies\Assimp\include\color4.inl">
-      <Filter>Dependencies\Assimp</Filter>
+      <Filter>Dependencies\Glew\Assimp</Filter>
     </None>
     <None Include="Dependencies\Assimp\include\material.inl">
-      <Filter>Dependencies\Assimp</Filter>
+      <Filter>Dependencies\Glew\Assimp</Filter>
     </None>
     <None Include="Dependencies\Assimp\include\matrix3x3.inl">
-      <Filter>Dependencies\Assimp</Filter>
+      <Filter>Dependencies\Glew\Assimp</Filter>
     </None>
     <None Include="Dependencies\Assimp\include\matrix4x4.inl">
-      <Filter>Dependencies\Assimp</Filter>
+      <Filter>Dependencies\Glew\Assimp</Filter>
     </None>
     <None Include="Dependencies\Assimp\include\quaternion.inl">
-      <Filter>Dependencies\Assimp</Filter>
+      <Filter>Dependencies\Glew\Assimp</Filter>
     </None>
     <None Include="Dependencies\Assimp\include\vector2.inl">
-      <Filter>Dependencies\Assimp</Filter>
+      <Filter>Dependencies\Glew\Assimp</Filter>
     </None>
     <None Include="Dependencies\Assimp\include\vector3.inl">
-      <Filter>Dependencies\Assimp</Filter>
+      <Filter>Dependencies\Glew\Assimp</Filter>
     </None>
     <None Include="Dependencies\Devil\include\config.h.win">
       <Filter>Dependencies\Devil</Filter>

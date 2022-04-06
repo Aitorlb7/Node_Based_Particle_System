@@ -604,23 +604,12 @@ void ed::Node::Draw(ImDrawList* drawList, DrawFlags flags)
             m_Bounds.Max,
             m_Color, m_Rounding);
 
-        /*drawList->AddRectFilled(
-            m_Bounds.Min,
-            m_Bounds.Max ,
-            m_Color, m_Rounding);*/
-
-        /*drawList->AddRectFilled(
-            m_GroupBounds.Min,
-            m_GroupBounds.Max,
-            m_Color, m_GroupRounding);*/
-
-
         if (IsGroup(this))
         {
-            /*drawList->AddRectFilled(
+            drawList->AddRectFilled(
                 m_GroupBounds.Min,
                 m_GroupBounds.Max,
-                m_GroupColor, m_GroupRounding);*/
+                m_GroupColor, m_GroupRounding);
 
             if (m_GroupBorderWidth > 0.0f)
             {
@@ -701,6 +690,7 @@ void ed::Node::GetGroupedNodes(std::vector<Node*>& result, bool append)
 
 ImRect ed::Node::GetRegionBounds(NodeRegion region) const
 {
+    //TODO
     if (m_Type == NodeType::Node)
     {
         if (region == NodeRegion::Header)
@@ -4793,6 +4783,8 @@ void ed::NodeBuilder::End()
     m_NodeRect = ImGui_GetItemRect();
     m_NodeRect.Floor();
 
+    //TODO
+
     if (m_CurrentNode->m_Bounds.GetSize() != m_NodeRect.GetSize())
     {
         m_CurrentNode->m_Bounds.Max = m_CurrentNode->m_Bounds.Min + m_NodeRect.GetSize();
@@ -4946,7 +4938,7 @@ void ed::NodeBuilder::Group(const ImVec2& size)
         ImGui::Dummy(m_CurrentNode->m_GroupBounds.GetSize());
     else
         ImGui::Dummy(size);
-
+    //TODO
     m_GroupBounds = ImGui_GetItemRect();
     m_GroupBounds.Floor();
 }
