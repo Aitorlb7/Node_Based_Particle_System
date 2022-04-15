@@ -17,16 +17,12 @@ node-based procedural generation tools such as Houdini and Unity.
 
 * [Repository](https://github.com/Aitorlb7/Node_Based_Particle_System)
 
-This project uses as a base engine our own 3D Engine ASE(<https://github.com/paufiol/AnotherSmallEngine>) (Another Small Engine) developed alongside with [Pau Fiol](<https://github.com/paufiol>)
+This project uses as a base engine our own 3D Engine [ASE](<https://github.com/paufiol/AnotherSmallEngine>) (Another Small Engine) developed alongside with [Pau Fiol](<https://github.com/paufiol>)
 
 ****
 ## Developer
 ### Aitor Luque - [Aitorlb7](<https://github.com/Aitorlb7>).
 
-****
-
-**Warning:** The models won't load if Library folder is erased and the meta files are not, We load with the data stored inside the meta which points to the Custom Files stored in Library. --> To fix that erase all ".meta" files inside Assets folder.
- 
 ****
 ## How to Use
 * **Mouse Wheel:** Zooms camera forward and backwards.
@@ -56,9 +52,13 @@ This project uses as a base engine our own 3D Engine ASE(<https://github.com/pau
 * Dear ImGui
     * [ImGuizmo](https://github.com/CedricGuillemet/ImGuizmo)
     * [ImGuiColorTextEdit](https://github.com/BalazsJako/ImGuiColorTextEdit)
+    * [ImGuiNodeEditor](https://github.com/thedmd/imgui-node-editor)
 * OpenGL 
 * Glew 
 * MatGeoLib
 * Assimp
 * Parson
 * DevIL
+****
+
+**Warning:** The models won't load if Library folder is erased and the meta files are not, We load with the data stored inside the meta which points to the Custom Files stored in Library. --> To fix that erase all ".meta" files inside Assets folder.
