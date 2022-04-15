@@ -41,6 +41,7 @@ public:
 	std::vector<float> GetFps() { return fpsVec; }
 	std::vector<float> GetMs() { return msVec; }
 	int GetFpsCap() { return framerateCap; }
+	float GetDT() { return dt; };
 	void SetFpsCap(int fpsCap);
 private:
 	uint					frame_count = 0;
@@ -55,11 +56,7 @@ private:
 	int						totalBars = 100; // Number of bars that appear in the histogram
 	std::vector<float> fpsVec;
 	std::vector<float> msVec;
-
-	float GetDT() const;
 	float	dt;
-
-
 	void AddModule(Module* module);
 	void PrepareUpdate();
 	void FinishUpdate();

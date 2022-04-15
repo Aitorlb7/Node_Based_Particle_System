@@ -6,11 +6,13 @@
 #include "ModuleScene.h"
 
 #include "ModuleResource.h"
+#include "ResourceTexture.h"
 #include "ResourceMesh.h"
 #include "ResourceMaterial.h"
 #include "ImporterShader.h"
 #include "ImporterMaterials.h"
 
+#include "Particle.h"
 #include "GameObject.h"
 #include "ModuleFileSystem.h"
 
@@ -86,10 +88,9 @@ bool ModuleRenderer3D::Init()
 		
 		glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
 		glClearDepth(1.0f);
-		
-		//Initialize clear color
-		glClearColor(.05f, .07f, .07f, 1.f);
 
+		glClearColor(0.3f, 0.3f, 0.3f, 1.f);
+	
 		//Check for error
 		error = glGetError();
 		if(error != GL_NO_ERROR)
@@ -136,9 +137,13 @@ bool ModuleRenderer3D::Init()
 
 bool ModuleRenderer3D::Start()
 {	
-	defaultSkyBox.SetUpSkyBoxBuffers();
+	defaultParticleTex = App->resources->GetTexture("DefaultParticle");
 
-	defaultSkyBox.CreateSkybox();
+	SetUpParticlesBuffer();
+
+	//defaultSkyBox.SetUpSkyBoxBuffers();
+
+	//defaultSkyBox.CreateSkybox();
 
 	return true;
 }
@@ -147,6 +152,7 @@ bool ModuleRenderer3D::Start()
 update_status ModuleRenderer3D::PreUpdate(float dt)
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	//glClearColor(0.4f, 0.4f, 0.4f, 0.4f);
 	glLoadIdentity();
 
 	glMatrixMode(GL_MODELVIEW);
@@ -182,7 +188,7 @@ update_status ModuleRenderer3D::PreUpdate(float dt)
 		DrawCuboid(frustum_corners, App->editor->frustumColor);
 	}
 
-	glColor4f(1,1,1,1);
+	glColor4f(0.3f, 0.3f, 0.3f, 0.3f);
 	glEnd();
 
 	return UPDATE_CONTINUE;
@@ -194,7 +200,8 @@ update_status ModuleRenderer3D::PostUpdate(float dt)
 	if (App->editor->configWindow->drawWireframe) { glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); glEnable(GL_TEXTURE_CUBE_MAP); }
 	else { glPolygonMode(GL_FRONT_AND_BACK, GL_FILL); glDisable(GL_TEXTURE_CUBE_MAP); }
 	
-	IterateMeshDraw();
+	DrawAllMeshes();
+	DrawAllParticles();
 
 	ImGui::GetBackgroundDrawList();
 	
@@ -246,12 +253,8 @@ void ModuleRenderer3D::UpdateProjectionMatrix()
 	
 }
 
-void ModuleRenderer3D::IterateMeshDraw()
+void ModuleRenderer3D::DrawAllMeshes()
 {
-	//The Skybox needs to be rendered first in the scene
-	
-	defaultSkyBox.RenderSkybox();
-
 	//Draw all the GameObjects in the scene
 
 	for (uint i = 0; i < App->scene->game_objects.size(); i++)
@@ -315,13 +318,13 @@ void ModuleRenderer3D::DrawMesh(ComponentMesh* componentMesh, float4x4 transform
 	{
 		if(componentMaterial->GetMaterial()->GetShader()) shaderProgram = componentMaterial->GetMaterial()->GetShaderProgramID();
 
-		shaderProgram ? shaderProgram : shaderProgram = SetDefaultShader(componentMaterial);
+		shaderProgram ? shaderProgram : shaderProgram = SetDefaultShader(componentMaterial->GetMaterial());
 
 		glUseProgram(shaderProgram);
 		
-		App->editor->configWindow->drawCheckerTex ? glBindTexture(GL_TEXTURE_2D, checkerID) : glBindTexture(GL_TEXTURE_2D, componentMaterial->GetMaterial()->GetId());
+		App->editor->configWindow->drawCheckerTex ? glBindTexture(GL_TEXTURE_2D, checkerID) : glBindTexture(GL_TEXTURE_2D, componentMaterial->GetMaterial()->GetTextureId());
 
-		componentMaterial->GetMaterial()->GetId() ? componentMaterial->GetMaterial()->GetShader()->SetUniform1i("hasTexture", (GLint)true) : componentMaterial->GetMaterial()->GetShader()->SetUniform1i("hasTexture", (GLint)false);
+		componentMaterial->GetMaterial()->GetTextureId() ? componentMaterial->GetMaterial()->GetShader()->SetUniform1i("hasTexture", (GLint)true) : componentMaterial->GetMaterial()->GetShader()->SetUniform1i("hasTexture", (GLint)false);
 
 		if (shaderProgram != 0) 
 		{
@@ -359,14 +362,13 @@ void ModuleRenderer3D::DrawMesh(ComponentMesh* componentMesh, float4x4 transform
 	}	
 }
 
-uint32 ModuleRenderer3D::SetDefaultShader(ComponentMaterial* componentMaterial)
-{
-	
+uint32 ModuleRenderer3D::SetDefaultShader(ResourceMaterial* resourceMaterial)
+{	
 	if (!defaultShader) defaultShader = App->resources->GetShader("DefaultShader");
 	
-	componentMaterial->GetMaterial()->SetShader(defaultShader);
+	resourceMaterial->SetShader(defaultShader);
 
-	return componentMaterial->GetMaterial()->GetShaderProgramID();
+	return resourceMaterial->GetShaderProgramID();
 }
 
 void ModuleRenderer3D::UseCheckerTexture() {
@@ -455,6 +457,101 @@ void ModuleRenderer3D::SetPolygonssmooth(bool state) {
 		glEnable(GL_POLYGON_SMOOTH);
 	else if (state == true)
 		glDisable(GL_POLYGON_SMOOTH);
+}
+
+void ModuleRenderer3D::SetUpParticlesBuffer()
+{
+	// Purely temporal as we port particles to shaders
+	particleVertices = { -0.5f, -0.5f, 0.0f, 0.5f, 0.5f, 0.0f, -0.5f, 0.5f, 0.0f,
+						-0.5f, -0.5f, 0.0f, 0.5f, -0.5f, 0.0f, 0.5f, 0.5f, 0.0f };
+
+	particleUVs = { 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f,
+					0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f };
+
+
+	// TODO: Remake this into Instancing
+
+	glGenVertexArrays(1, &particleVAO);
+	glBindVertexArray(particleVAO);
+
+	glGenBuffers(1, &particleVertexBuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, particleVertexBuffer);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 18, particleVertices.data(), GL_STATIC_DRAW);
+
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(0);
+
+	glGenBuffers(1, &particleUVBuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, particleUVBuffer);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 12, particleUVs.data(), GL_STATIC_DRAW);
+
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(1);
+
+	glBindVertexArray(0);
+}
+
+void ModuleRenderer3D::AddParticle(Particle* particle, ResourceMaterial* material)
+{
+	particles.insert(std::pair<float, ParticleRenderInfo>(particle->distanceToCamera, ParticleRenderInfo(material,particle)));
+}
+
+void ModuleRenderer3D::DrawAllParticles()
+{
+	if (particles.empty()) return;
+
+	std::map<float, ParticleRenderInfo>::reverse_iterator it;
+
+	for (it = particles.rbegin(); it != particles.rend(); ++it)
+	{
+		DrawParticle((*it).second);
+	}
+	
+	particles.clear();
+
+	glUseProgram(0);
+}
+
+void ModuleRenderer3D::DrawParticle(ParticleRenderInfo& particleInfo)
+{
+	uint32 shaderProgram = 0;
+	float4x4 transform = float4x4::FromTRS(particleInfo.particle->position, 
+										   particleInfo.particle->worldRotation, 
+										   float3(particleInfo.particle->size)).Transposed();
+
+	if (particleInfo.material->GetShader()) 
+		shaderProgram = particleInfo.material->GetShaderProgramID();
+
+	shaderProgram ? shaderProgram : shaderProgram = SetDefaultShader(particleInfo.material);
+
+	glUseProgram(shaderProgram);
+
+	if (!particleInfo.material->GetTexture()) 
+		particleInfo.material->SetTexture(defaultParticleTex);
+
+	particleInfo.material->GetShader()->SetUniform1i("hasTexture", (GLint)true);
+
+	glBindTexture(GL_TEXTURE_2D, particleInfo.material->GetTextureId());
+
+	if (shaderProgram != 0)
+	{
+		particleInfo.material->GetShader()->SetUniformVec4f("inColor", (GLfloat*)&particleInfo.material->GetColor());
+
+		particleInfo.material->GetShader()->SetUniformMatrix4("modelMatrix", transform.ptr());
+
+		particleInfo.material->GetShader()->SetUniformMatrix4("viewMatrix", App->camera->GetRawViewMatrix());
+
+		particleInfo.material->GetShader()->SetUniformMatrix4("projectionMatrix", App->camera->GetProjectionMatrix());
+
+		//Importer::ShaderImporter::SetShaderUniforms(particleInfo.material->GetShader());
+	}
+
+	glBindVertexArray(particleVAO);
+
+	glDrawArrays(GL_TRIANGLES, 0, 6);
+
+	glBindTexture(GL_TEXTURE_2D, 0);
+	glBindVertexArray(0);
 }
 
 bool ModuleRenderer3D::DoesIntersect(const AABB& aabb) {

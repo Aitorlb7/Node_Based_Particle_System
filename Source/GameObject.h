@@ -1,6 +1,5 @@
 #pragma once
 #include "Globals.h"
-#include "Random.h"
 #include "Dependencies/MathGeoLib/include/Geometry/AABB.h"
 #include "Dependencies/MathGeoLib/include/Geometry/OBB.h"
 
@@ -16,7 +15,6 @@ class GameObject {
 //Properties
 public:
 	std::string name;
-
 
 	GameObject* parent;
 	std::vector<GameObject*> children;
@@ -34,7 +32,6 @@ private:
 
 	uint32 	UID;
 
-	Random randomNum;
 //Methods
 public:
 	GameObject(std::string name = "Game_Object");

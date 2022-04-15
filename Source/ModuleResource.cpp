@@ -9,6 +9,7 @@
 #include "ResourceScene.h"
 #include "ResourceModel.h"
 #include "ResourceFolder.h"
+#include "ResourceParticleSystem.h"
 
 #include "ImporterMaterials.h"
 #include "ImporterMesh.h"
@@ -207,6 +208,7 @@ uint32 ModuleResources::ImportFile(const char* assetsFile)
 	uint64 fileSize = 0;
 	if (type != ResourceType::Folder)
 		fileSize = App->fileSystem->Load(assetsFile, &buffer);
+
 	switch (type)
 	{
 	case ResourceType::Texture: 
@@ -404,6 +406,9 @@ Resource* ModuleResources::CreateNewResource(const char* assetsFile, ResourceTyp
 	case ResourceType::Shader:
 		resource = new ResourceShader(assetsFile, SHADERS_PATH, name, UID);
 		break;
+	case ResourceType::ParticleSystem:
+		resource = new ResourceParticleSystem(assetsFile, PARTICLE_SYSTEM_PATH, name, UID);
+		break;
 	default:
 		resource = new Resource();
 		break;
@@ -559,7 +564,7 @@ ResourceType ModuleResources::GetTypeFromFile(const char* path) const
 	std::string extension;
 	App->fileSystem->SplitFilePath(path, nullptr, nullptr, &extension);
 
-	static_assert(static_cast<int>(ResourceType::None) == 7, "Code Needs Update");
+	static_assert(static_cast<int>(ResourceType::None) == 8, "Code Needs Update");
 
 	if (extension == "tga" || extension == "png" || extension == "jpg" || extension == "TGA" || extension == "PNG" || extension == "JPG")
 		return ResourceType::Texture;
@@ -641,18 +646,7 @@ ResourceShader* ModuleResources::GetShader(const char* name)
 	{
 		if (item->second->type == ResourceType::Shader && item->second->name == name)
 		{
-			tempShader = (ResourceShader*)item->second;
-
-			if (tempShader->shaderProgramID == 0)
-			{
-				tempShader = (ResourceShader*)App->resources->LoadResource(tempShader->UID);
-
-				return tempShader;
-			}
-			else
-			{
-				return tempShader;
-			}
+			return (ResourceShader*)App->resources->LoadResource(item->second->UID);	
 		}
 
 	}

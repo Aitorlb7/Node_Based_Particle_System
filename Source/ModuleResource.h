@@ -3,9 +3,9 @@
 
 #include "Module.h"
 #include "Resource.h"
+#include "Random.h"
 #include <map>
 
-class Random;
 class ResourceMesh;
 class ResourceShader;
 class ResourceTexture;
@@ -57,18 +57,12 @@ public:
 	void UnloadResource(uint32 UID);
 	void DeleteResource(uint32 UID);
 
-	inline uint32 GenerateNewUID() { return randomNum.GenerateRandomInt(); }
+	inline uint32 GenerateNewUID() { return Random::GenerateRandomInt(); }
 
 public:
 
 	std::map<uint32, Resource*> resources;
 	std::map<uint32, Resource*> importedResources;
-
-private:
-
-
-
-	Random randomNum;
 };
 
 

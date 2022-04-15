@@ -5,8 +5,12 @@ class ComponentCamera;
 class ComponentMaterial;
 class ComponentMesh;
 class ComponentTransform;
+class ComponentParticleSystem;
 class ResourceShader;
+class ResourceParticleSystem;
 class TextEditor;
+class Emitter;
+class ParticleModule;
 
 class WindowInspector : public Window
 {
@@ -24,10 +28,17 @@ public:
 	void DrawMesh(ComponentMesh* component);
 	void DrawMaterial(ComponentMaterial* component);
 	void DrawCamera(ComponentCamera* component);
+	void DrawParticleSystem(ComponentParticleSystem* component);
+
+	std::string GetModuleName(const ParticleModule* module) const;
 
 	void CleanUp() override;
 
 private:
 
 	bool enableObject = true;
+
+	ResourceParticleSystem* rParticleSystem;
+	Emitter* selectedEmitter;
+	ParticleModule* selectedModule;
 };

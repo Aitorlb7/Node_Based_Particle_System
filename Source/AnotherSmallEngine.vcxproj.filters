@@ -322,6 +322,24 @@
     <ClCompile Include="Dependencies\ImGui\imgui_widgets.cpp">
       <Filter>Dependencies\ImGui</Filter>
     </ClCompile>
+    <ClCompile Include="Particle.cpp">
+      <Filter>GameObjects\Particles</Filter>
+    </ClCompile>
+    <ClCompile Include="Emitter.cpp">
+      <Filter>GameObjects\Particles</Filter>
+    </ClCompile>
+    <ClCompile Include="ParticleModule.cpp">
+      <Filter>GameObjects\Particles</Filter>
+    </ClCompile>
+    <ClCompile Include="EmitterInstance.cpp">
+      <Filter>GameObjects\Particles</Filter>
+    </ClCompile>
+    <ClCompile Include="ComponentParticleSystem.cpp">
+      <Filter>GameObjects\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="ResourceParticleSystem.cpp">
+      <Filter>Resources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ModuleWindow.h">
@@ -1123,6 +1141,24 @@
     <ClInclude Include="Dependencies\ImGui\imstb_truetype.h">
       <Filter>Dependencies\ImGui</Filter>
     </ClInclude>
+    <ClInclude Include="Particle.h">
+      <Filter>GameObjects\Particles</Filter>
+    </ClInclude>
+    <ClInclude Include="Emitter.h">
+      <Filter>GameObjects\Particles</Filter>
+    </ClInclude>
+    <ClInclude Include="ParticleModule.h">
+      <Filter>GameObjects\Particles</Filter>
+    </ClInclude>
+    <ClInclude Include="EmitterInstance.h">
+      <Filter>GameObjects\Particles</Filter>
+    </ClInclude>
+    <ClInclude Include="ComponentParticleSystem.h">
+      <Filter>GameObjects\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="ResourceParticleSystem.h">
+      <Filter>Resources</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Dependencies">
@@ -1214,6 +1250,9 @@
     </Filter>
     <Filter Include="Dependencies\Glew\Assimp">
       <UniqueIdentifier>{a38b916a-ed58-466d-87a5-03e88bd38b02}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObjects\Particles">
+      <UniqueIdentifier>{6c6d0a51-063d-42b6-a38f-fcaffa563a25}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

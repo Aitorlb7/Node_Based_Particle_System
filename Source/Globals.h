@@ -53,12 +53,14 @@ enum update_status
 #define SCENES_PATH "Library/Scenes/"
 #define MODELS_PATH "Library/Models/"
 #define SHADERS_PATH "Library/Shaders/"
+#define PARTICLE_SYSTEM_PATH "Library/ParticleSystems/"
 
 //#define ASSETS_PATH "Output/Assets"
 #define ASSETS_FOLDER "Assets/"
 #define MODELS_FOLDER "Assets/Models/"
 #define TEXTURES_FOLDER "Assets/Textures/"
 #define SCENES_FOLDER "Assets/Scenes/"
+#define PARTICLE_SYSTEM_FOLDER "Assets/ParticleSystems/"
 #define SKYBOX_FOLDER "Assets/Textures/Skybox/"
 
 
@@ -66,6 +68,7 @@ enum update_status
 #define MATERIAL_EXTENSION	".asemat"
 #define SCENE_EXTENSION	".asescene"
 #define TEXTURE_EXTENSION ".asetex"
+#define PARTICLE_SYSTEM_EXTENSION ".aseps"
 #define ASE_EXTENSION ".ASE"
 
 #define VERTEX_SHADER "__Vertex_Shader__"

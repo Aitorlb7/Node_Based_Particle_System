@@ -3,18 +3,17 @@
 #include "Dependencies/PCG/pcg_random.hpp"
 #include "Dependencies/PCG/pcg_extras.hpp"
 
-Random::Random(uint32 num) : num(num)
-{
-}
+//Random::Random(uint32 num) : num(num)
+//{
+//}
 uint32 Random::GenerateRandomIntRange(int first, int last)
 {
 	pcg_extras::seed_seq_from<std::random_device> seed;
 	pcg32 rng(seed);
 
 	std::uniform_int_distribution<uint32> uniform_dist1(first, last);
-	int num = num = uniform_dist1(rng);
-
-	return num;;
+	
+	return uniform_dist1(rng);
 }
 
 uint32 Random::GenerateRandomInt()
@@ -23,7 +22,18 @@ uint32 Random::GenerateRandomInt()
 	pcg32 rng(seed);
 
 	std::uniform_int_distribution<uint32> uniform_dist1(0, 429496);
-	int num = num = uniform_dist1(rng);
+	
+	return uniform_dist1(rng);
+}
 
-	return num;
+float3 Random::GenerateRandomFloat3(const float3& a, const float3& b)
+{
+	return float3(math::Lerp(a.x, b.x, GenerateRandomIntRange(0,1)), math::Lerp(a.y, b.y, GenerateRandomIntRange(0, 1)), math::Lerp(a.z, b.z, GenerateRandomIntRange(0, 1)));
+
+}
+
+float4 Random::GenerateRandomFloat4(const float4& a, const float4& b)
+{
+	return float4(math::Lerp(a.x, b.x, GenerateRandomIntRange(0, 1)), math::Lerp(a.y, b.y, GenerateRandomIntRange(0, 1)),
+				  math::Lerp(a.z, b.z, GenerateRandomIntRange(0, 1)), math::Lerp(a.w, b.w, GenerateRandomIntRange(0, 1)));
 }

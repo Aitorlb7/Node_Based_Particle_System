@@ -17,7 +17,18 @@ class ComponentCamera;
 class ComponentMesh;
 class ComponentMaterial;
 class GameObject;
+class ResourceTexture;
 class ResourceShader;
+class ResourceMaterial;
+class Particle;
+
+struct ParticleRenderInfo 
+{
+	ParticleRenderInfo(ResourceMaterial* _material, Particle* _particle) : material(_material), particle(_particle) {}
+
+	ResourceMaterial* material;
+	Particle* particle;
+};
 
 
 class ModuleRenderer3D : public Module
@@ -34,9 +45,8 @@ public:
 
 	void OnResize(int width, int height);
 
-	void DrawSkybox();
 	void UseCheckerTexture();
-	void IterateMeshDraw();
+	void DrawAllMeshes();
 	void DrawMesh(ComponentMesh* mesh, float4x4 transform, ComponentMaterial* rMaterial = nullptr, GameObject* meshOwner = nullptr);
 
 	void DrawNormals(ComponentMesh* mesh, float4x4 transform);
@@ -51,10 +61,20 @@ public:
 
 	void UpdateProjectionMatrix();
 
+	//Particles
+	void SetUpParticlesBuffer();
+
+	void AddParticle(Particle* particle, ResourceMaterial* material);
+
+	void DrawAllParticles();
+
+	void DrawParticle(ParticleRenderInfo& particleInfo);
+
 private:
 	bool DoesIntersect(const AABB& aabb);
 	void DrawCuboid(const float3* corners, Color color);
-	uint32 SetDefaultShader(ComponentMaterial* componentMaterial);
+	uint32 SetDefaultShader(ResourceMaterial* componentMaterial);
+
 public:
 	Light lights[MAX_LIGHTS];
 	SDL_GLContext context;
@@ -75,6 +95,17 @@ public:
 
 	std::map<float, GameObject*> sortedGO;
 
+	//Use Map or Multimap?? We will have several particles at the same camera distance?
+	std::map<float, ParticleRenderInfo> particles;
+
 private:
-	
+	std::vector<float> particleVertices;
+	std::vector<float> particleUVs;
+
+	uint particleVAO;
+	uint particleVertexBuffer;
+	uint particleUVBuffer;
+
+	ResourceTexture* defaultParticleTex;
+
 };

@@ -19,7 +19,7 @@ ComponentMaterial::ComponentMaterial(GameObject* owner) : Component(owner)
 ComponentMaterial::ComponentMaterial(GameObject* owner, const char* texturePath, uint id) : Component(owner)
 {
 	rMaterial = new ResourceMaterial();
-	rMaterial->SetId(id);
+	rMaterial->SetTextureId(id);
 	rMaterial->SetPath(texturePath);
 	type = ComponentType::Material;
 }
@@ -44,7 +44,7 @@ void ComponentMaterial::Update() {
 
 void ComponentMaterial::CleanUp()
 {
-	rMaterial->SetId(0);
+	rMaterial->SetTextureId(0);
 	rMaterial = nullptr;
 	delete rMaterial;
 }

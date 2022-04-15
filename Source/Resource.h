@@ -2,7 +2,7 @@
 #define __RESOURCE_H__
 
 #include "Globals.h"
-#include "Random.h"
+
 
 class JsonConfig;
 
@@ -15,6 +15,7 @@ enum class ResourceType
 	Model,
 	Folder,
 	Shader,
+	ParticleSystem,
 	None
 };
 
@@ -31,8 +32,7 @@ public:
 
 	std::string name = "";
 	std::vector<uint32> resourcesInModels;
-protected:
-	Random randomNum;
+
 public:
 
 	Resource();

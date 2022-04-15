@@ -89,7 +89,7 @@ void ComponentTransform::UpdateLocalTransform()
 void ComponentTransform::UpdateGlobalTransform()
 {
 
-	GameObject* tempParent = owner->parent;
+	GameObject* tempParent = gameObject->parent;
 	if (tempParent != nullptr)
 	{
 		global_transform = tempParent->transform->global_transform * local_transform;
@@ -98,9 +98,9 @@ void ComponentTransform::UpdateGlobalTransform()
 
 	UpdateTRS();
 
-	for (uint i = 0; i < owner->children.size(); i++)
+	for (uint i = 0; i < gameObject->children.size(); i++)
 	{
-		owner->children.at(i)->transform->UpdateGlobalTransform();
+		gameObject->children.at(i)->transform->UpdateGlobalTransform();
 	}
 }
 
@@ -144,17 +144,17 @@ void ComponentTransform::SetGlobalTransform(float4x4 new_matrix)
 	
 	UpdateTRS();
 
-	if (owner->children.empty()) return;
+	if (gameObject->children.empty()) return;
 
-	for (uint i = 0; i < owner->children.size(); i++)
+	for (uint i = 0; i < gameObject->children.size(); i++)
 	{
-		owner->children.at(i)->transform->UpdateGlobalTransform();
+		gameObject->children.at(i)->transform->UpdateGlobalTransform();
 	}
 }
 
 void ComponentTransform::SetLocalTransform(float4x4 new_matrix)
 {
-	GameObject* tempParent = owner->parent;
+	GameObject* tempParent = gameObject->parent;
 	if (tempParent != nullptr)
 	{
 		local_transform = new_matrix;// *tempParent->transform->GetGlobalTransform().Inverted();

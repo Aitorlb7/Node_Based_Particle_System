@@ -1,14 +1,14 @@
 #include "Resource.h"
-
+#include "Random.h"
 
 Resource::Resource()
 {
-	UID = randomNum.GenerateRandomInt();
+	UID = Random::GenerateRandomInt();
 }
 
 Resource::Resource(ResourceType type) : type(type)
 {
-	UID = randomNum.GenerateRandomInt();
+	UID = Random::GenerateRandomInt();
 }
 
 Resource::Resource(ResourceType type, const char* assetsFile, const char* name, uint32 ID) : 
@@ -17,7 +17,7 @@ Resource::Resource(ResourceType type, const char* assetsFile, const char* name, 
 	assetsFile(assetsFile),
 	UID(ID)
 {
-	UID == 0 ? randomNum.GenerateRandomInt() : ID;
+	UID == 0 ? Random::GenerateRandomInt() : ID;
 }
 
 Resource::~Resource()

@@ -24,8 +24,8 @@ public:
 	inline void SetTexture(ResourceTexture* rTexture) { this->texture = rTexture; }
 	inline void SetTexture(uint id, const char* path) { this->texture->id = id; this->texture->path = path; }
 
-	inline uint GetId() { return texture->id; }
-	inline void SetId(uint id) { this->texture->id = id; }
+	inline uint GetTextureId() { return texture->id; }
+	inline void SetTextureId(uint id) { this->texture->id = id; }
 
 	inline std::string GetPath() const { return texture->path; }
 	inline void SetPath(std::string path) { this->texture->path = path; }

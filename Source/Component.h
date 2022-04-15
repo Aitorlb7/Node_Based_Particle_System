@@ -9,7 +9,8 @@ enum class ComponentType {
 	Transform,
 	Mesh,
 	Material,
-	Camera
+	Camera,
+	ParticleSystem
 };
 
 class Component {
@@ -17,7 +18,7 @@ class Component {
 public:
 	ComponentType type;
 	bool active;
-	GameObject* owner;
+	GameObject* gameObject;
 
 private:
 
@@ -32,7 +33,7 @@ public:
 
 	virtual void OnUpdateTransform(const float4x4& global, const float4x4& parent_global = float4x4::identity);
 
-	Component(GameObject* owner) : active(true), owner(owner), type(ComponentType::Error) {};
+	Component(GameObject* owner) : active(true), gameObject(owner), type(ComponentType::Error) {};
 private:
 
 };

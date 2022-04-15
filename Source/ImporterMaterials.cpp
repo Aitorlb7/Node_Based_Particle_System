@@ -84,7 +84,7 @@ uint64 Importer::MaterialsImporter::Save(ResourceMaterial* rMaterial, char** buf
 	*buffer = new char[size];
 	cursor = *buffer;
 
-	uint64 textureID = rMaterial->GetId();
+	uint64 textureID = rMaterial->GetTextureId();
 	bytes = sizeof(unsigned long long);
 	memcpy(cursor, &textureID, bytes);
 	cursor += bytes;

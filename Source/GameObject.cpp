@@ -8,13 +8,14 @@
 #include "ComponentCamera.h"
 #include "ResourceMesh.h"
 #include "Globals.h"
+#include "Random.h"
 
 
 #include "ModuleResource.h"
 #include "ResourceScene.h"
 
 GameObject::GameObject(std::string name): name(name), active(true), parent(nullptr),
-UID(randomNum.GenerateRandomInt())
+UID(Random::GenerateRandomInt())
 {
 	AddComponent(new ComponentTransform(this));
 	
