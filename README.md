@@ -1,12 +1,17 @@
-Node Based Particle System is a bachelor's degree final project, developed by [Aitor Luque](<https://github.com/Aitorlb7>) under the supervision of Jesus Díaz(<https://www.linkedin.com/in/jesusdz/>) at CITM(<https://www.citm.upc.edu/>).
+# Node Based Particle System
+**** 
+Node Based Particle System is a bachelor's degree final project, developed by [Aitor Luque](<https://github.com/Aitorlb7>) under the supervision of [Jesus Díaz](<https://www.linkedin.com/in/jesusdz/>) at [CITM](<https://www.citm.upc.edu/>).
+
 The main objective is to develop an open-source engine application to serve as a
 fast and understandable editor tool for creating complex procedural Particle Systems
 ready to be implemented in a final product, working towards a process speed up of the
 big time investment this task usually takes.
+
 The tool uses C++ , OpenGL and ImGui to build a node-based interface able to create
 and edit a wide amount of nodes storing parameters and particle systems components
 along their interactions, designed to be used without any previous technical
 experience.
+
 The structure of the tool is built as a resemblance of already existing engines with
 node-based procedural generation tools such as Houdini and Unity.
 
