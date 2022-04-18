@@ -5,7 +5,6 @@
 #include "Globals.h"
 #include "Dependencies/ImGui/ColorTextEditor/TextEditor.h"
 
-using namespace std;
 
 class GameObject;
 class Resource;
@@ -14,15 +13,7 @@ class ResourceShader;
 class ResourceMaterial;
 class ResourceScene;
 
-class Window;
-class WindowAbout;
-class WindowAssetExplorer;
-class WindowConfiguration;
-class WindowConsole;
-class WindowHirearchy;
-class WindowInspector;
-class WindowPlay;
-class WindowNodeEditor;
+class SceneWindow;
 
 class ModuleEditor : public Module 
 {
@@ -36,35 +27,26 @@ public:
 	update_status PostUpdate(float dt);
 	bool CleanUp() override;
 
-	void AddWindow(Window* window);
-
 	void DrawGUI();
 
-	void Docking();
 	void RequestBrowser(const char*);
-	bool MainMenuBar();
 
 	void SetupStyleFromHue();
 
-	void DropTargetWindow();
 	void TextEditorWindow();
 
 	void CallTextEditor(ResourceMaterial* resource);
 
 	void GUIisHovered();
 
-
+	SceneWindow* GetSceneWindow(const char* windowName);
 
 public:
+	std::vector<SceneWindow*> windowScenes;
 
-	WindowAbout* aboutWindow = nullptr;
-	WindowAssetExplorer* explorerWindow = nullptr;
-	WindowConfiguration* configWindow = nullptr;
-	WindowConsole* consoleWindow = nullptr;
-	WindowHirearchy* hirearchyWindow = nullptr;
-	WindowInspector* inspectorWindow = nullptr;
-	WindowPlay* playWindow = nullptr;
-	WindowNodeEditor* nodeEditorWindow = nullptr;
+	ImGuiWindowClass* parentWindowClass = nullptr;
+	ImGuiWindowClass* windowClass = nullptr;
+
 
 	Color frustumColor = Color(1.0f, 1.0f, 0.2f, 0.75f);
 	Color NormalColor = Color(.8f, .8f, 0.0f, 0.75f);
@@ -72,37 +54,23 @@ public:
 	Color OBBColor = Color(0.2f, 0.2f, 1.0f, 0.75f);
 	ImVec4 ExplorerIconsTint;
 
-	bool show_demo_window = false;
-	bool show_dropTarget_window = false;
-	bool show_texteditor_window = false;
-	bool show_saveeditor_popup = false;
-
-	Resource* scene = nullptr;
-	ResourceScene* sceneToLoad = nullptr;
-	std::vector<ResourceScene*> scenesInMemory;
-	std::string sceneName;
-	std::string selectedScene;
-	ImVec4 sceneTextColor = ImVec4(0.8, 0, 0, 1);
-
 	ResourceShader* shaderToRecompile = nullptr;
 
 	uint32 Hovered_UID = 0;
 
 	TextEditor editor;
 	std::string fileToEdit;
-
-	bool dockingWindow = true;
-
-	bool GUIhovered = false;
+	bool show_demo_window = false;
+	bool show_texteditor_window = false;
+	bool show_saveeditor_popup = false;
 	bool isUserTyping = false; 
-
-	bool enableObject = true;
 
 	bool allowSaveOrLoad = false;
 
 
-private: 
-	std::vector<Window*> windows;
+	bool GUIhovered = false;
+
+	bool drawWireframe = false;
 
 };
 

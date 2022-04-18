@@ -3,11 +3,12 @@
 #include <map>
 
 struct ImRect;
+class SceneWindow;
 
 class WindowNodeEditor: public Window
 {
 public:
-	WindowNodeEditor(bool isActive);
+	WindowNodeEditor(SceneWindow* parent, ImGuiWindowClass* windowClass, int ID, bool isActive);
 	~WindowNodeEditor();
 
 	void Start() override;

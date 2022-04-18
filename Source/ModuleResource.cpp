@@ -669,9 +669,7 @@ ResourceTexture* ModuleResources::GetTexture(const char* name)
 
 			if (tempTexture->id == 0)
 			{
-				tempTexture = (ResourceTexture*)App->resources->LoadResource(tempTexture->UID);
-
-				return tempTexture;
+				return (ResourceTexture*)App->resources->LoadResource(tempTexture->UID);
 			}
 			else
 			{
@@ -681,7 +679,21 @@ ResourceTexture* ModuleResources::GetTexture(const char* name)
 
 	}
 
-	LOG("ERROR The shader doesn't exist");
+	LOG("ERROR The texture doesn't exist");
+	return nullptr;
+}
+
+ResourceScene* ModuleResources::GetScene(const char* name)
+{
+	std::map<uint32, Resource*>::iterator it = App->resources->importedResources.begin();
+	for (; it != App->resources->importedResources.end(); it++)
+	{
+		if (it->second->type == ResourceType::Scene && it->second->name == "Default")
+		{
+			return (ResourceScene*)App->resources->LoadResource(it->second->UID);
+		}
+	}
+
 	return nullptr;
 }
 

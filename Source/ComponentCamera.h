@@ -64,6 +64,17 @@ public:
 	void OnClick(float pos_x, float pos_y);
 
 	ComponentCamera(GameObject* parent);
+
+	//Viewport texture
+
+	void SetUpFrameBuffer();
+	void UpdateFrameBuffer();
+	inline uint32 GetFrameBuffer() const { return frameBuffer; }
+	inline uint32 GetRenderTarget() const { return renderTexture; }
 private:
 
+
+	uint32 frameBuffer = 0;
+	uint32 depthStencilBuffer = 0;
+	uint32 renderTexture = 0;
 };

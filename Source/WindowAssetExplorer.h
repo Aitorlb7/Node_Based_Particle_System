@@ -5,12 +5,13 @@
 
 class ResourceTexture;
 class Resource;
+class SceneWindow;
 
 class WindowAssetExplorer : public Window
 {
 public:
 
-	WindowAssetExplorer(bool isActive);
+	WindowAssetExplorer(SceneWindow* frameWindowClass, ImGuiWindowClass* windowClass, int ID, bool isActive);
 	~WindowAssetExplorer();
 
 	void Start() override;

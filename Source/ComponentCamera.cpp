@@ -1,5 +1,3 @@
-#pragma once
-
 #include "Application.h"
 #include "GameObject.h"
 
@@ -9,6 +7,8 @@
 
 #include "ComponentCamera.h"
 #include "ComponentTransform.h"
+
+#include "OpenGL.h"
 
 #include "glmath.h"
 #include "Dependencies/MathGeoLib/include/Math/float3.h"
@@ -36,13 +36,58 @@ ComponentCamera::ComponentCamera(GameObject* owner) : active_camera(false), Comp
 	SetAspectRatio((float)App->window->Width() / (float)App->window->Height());
 	SetFOV(50.0f);
 
-	//Look(float3(0.0f, 0.0f, 0.0f));
+	SetUpFrameBuffer();
 
 	type = ComponentType::Camera;
 
 	draw_boundingboxes = true;
 	frustum_culling = false;
 	active_camera = false;
+}
+
+void ComponentCamera::SetUpFrameBuffer()
+{
+	//Generating buffers for target rendering
+	glGenFramebuffers(1, &frameBuffer);
+	glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
+
+	//Generating texture to render to
+	glGenTextures(1, &renderTexture);
+	glBindTexture(GL_TEXTURE_2D, renderTexture);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, App->window->Width(),App->window->Height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
+	glBindTexture(GL_TEXTURE_2D, 0);
+
+	//Generating the depth & stencil buffer
+	glGenRenderbuffers(1, &depthStencilBuffer);
+	glBindRenderbuffer(GL_RENDERBUFFER, depthStencilBuffer);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, App->window->Width(), App->window->Height());
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthStencilBuffer);
+
+	glBindRenderbuffer(GL_RENDERBUFFER, 0);
+
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, renderTexture, 0);
+
+	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+	{
+		LOG("Error creating camera frame buffer");
+	}
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+void ComponentCamera::UpdateFrameBuffer()
+{
+	//Update texture size
+	glBindTexture(GL_TEXTURE_2D, renderTexture);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, App->window->Width(), App->window->Height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
+	glBindTexture(GL_TEXTURE_2D, 0);
+
+	//Update depth & stencil buffer size
+	glBindRenderbuffer(GL_RENDERBUFFER, depthStencilBuffer);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, App->window->Width(), App->window->Height());
+	glBindRenderbuffer(GL_RENDERBUFFER, 0);
 }
 
 void ComponentCamera::Enable() {}

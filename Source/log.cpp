@@ -1,6 +1,7 @@
 #pragma once
 #include "Globals.h"
 #include "ModuleEditor.h"
+#include "SceneWindow.h"
 #include "WindowConsole.h"
 #include "Application.h"
 
@@ -17,8 +18,9 @@ void log(const char file[], int line, const char* format, ...)
 	sprintf_s(tmp_string2, 4096, "\n%s(%d) : %s", file, line, tmp_string);
 	OutputDebugString(tmp_string2);
 
-	if (App != nullptr) {
+	/*if (App != nullptr && !App->editor->GetSceneWindow("MainWindow")->GetWindows().empty()) {
 		std::string log_text = std::string(tmp_string);
-		App->editor->consoleWindow->AddLog(log_text);
-	}
+		WindowConsole* consoleWindow = (WindowConsole*)App->editor->GetSceneWindow("MainWindow")->GetWindow("Console Window");
+		consoleWindow->AddLog(log_text);
+	}*/
 }

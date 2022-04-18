@@ -1,4 +1,5 @@
 #include "WindowInspector.h"
+#include "SceneWindow.h"
 #include "ModuleEditor.h"
 #include "ModuleResource.h"
 #include "Application.h"
@@ -26,7 +27,7 @@
 
 #include "Dependencies/ImGui/imgui.h"
 
-WindowInspector::WindowInspector(bool isActive) : Window("Inspector Window", isActive)
+WindowInspector::WindowInspector(SceneWindow* parent, ImGuiWindowClass* windowClass, int ID, bool isActive) : Window(parent, windowClass, ID, "Inspector Window", isActive)
 {
 }
 

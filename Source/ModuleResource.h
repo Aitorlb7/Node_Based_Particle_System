@@ -51,8 +51,8 @@ public:
 	std::map<uint32, ResourceTexture*>GetTexturesInMemory();
 
 	ResourceShader* GetShader(const char* name);
-
 	ResourceTexture* GetTexture(const char* name);
+	ResourceScene* GetScene(const char* name);
 
 	void UnloadResource(uint32 UID);
 	void DeleteResource(uint32 UID);

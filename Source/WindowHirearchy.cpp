@@ -1,11 +1,12 @@
 #include "WindowHirearchy.h"
+#include "SceneWindow.h"
 #include "Application.h"
 #include "GameObject.h"
 #include "ModuleScene.h"
 
 #include "Dependencies/ImGui/imgui.h"
 
-WindowHirearchy::WindowHirearchy(bool isActive): Window("Hirearchy Window", isActive)
+WindowHirearchy::WindowHirearchy(SceneWindow* parent, ImGuiWindowClass* windowClass, int ID, bool isActive): Window(parent, windowClass, ID, "Hirearchy Window", isActive)
 {
 }
 

@@ -3,6 +3,7 @@
 
 #include "Module.h"
 #include "Dependencies/SDL/include/SDL.h"
+#include "Dependencies/MathGeoLib/include/Math/float2.h"
 
 class Application;
 
@@ -19,6 +20,7 @@ public:
 	bool CleanUp();
 	int Width() const;
 	int Height() const;
+	float2 GetSize() const;
 
 	void SetTitle(const char* title);
 

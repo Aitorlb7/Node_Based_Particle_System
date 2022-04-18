@@ -256,9 +256,6 @@
     <ClCompile Include="SkyBox.cpp">
       <Filter>Tools</Filter>
     </ClCompile>
-    <ClCompile Include="Window.cpp">
-      <Filter>Editor</Filter>
-    </ClCompile>
     <ClCompile Include="WindowInspector.cpp">
       <Filter>Editor\Windows</Filter>
     </ClCompile>
@@ -339,6 +336,21 @@
     </ClCompile>
     <ClCompile Include="ResourceParticleSystem.cpp">
       <Filter>Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="SceneWindow.cpp">
+      <Filter>Editor\Windows\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="Window.cpp">
+      <Filter>Editor\Windows\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="Viewport.cpp">
+      <Filter>Editor\Windows\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="MainWindow.cpp">
+      <Filter>Editor\Windows\SceneWindows</Filter>
+    </ClCompile>
+    <ClCompile Include="ParticleWindow.cpp">
+      <Filter>Editor\Windows\SceneWindows</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1063,9 +1075,6 @@
       <Filter>Tools</Filter>
     </ClInclude>
     <ClInclude Include="resource1.h" />
-    <ClInclude Include="Window.h">
-      <Filter>Editor</Filter>
-    </ClInclude>
     <ClInclude Include="WindowInspector.h">
       <Filter>Editor\Windows</Filter>
     </ClInclude>
@@ -1158,6 +1167,21 @@
     </ClInclude>
     <ClInclude Include="ResourceParticleSystem.h">
       <Filter>Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneWindow.h">
+      <Filter>Editor\Windows\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="Window.h">
+      <Filter>Editor\Windows\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="Viewport.h">
+      <Filter>Editor\Windows\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="MainWindow.h">
+      <Filter>Editor\Windows\SceneWindows</Filter>
+    </ClInclude>
+    <ClInclude Include="ParticleWindow.h">
+      <Filter>Editor\Windows\SceneWindows</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1253,6 +1277,12 @@
     </Filter>
     <Filter Include="GameObjects\Particles">
       <UniqueIdentifier>{6c6d0a51-063d-42b6-a38f-fcaffa563a25}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Editor\Windows\Base">
+      <UniqueIdentifier>{82f3c6a8-d127-4ee5-af09-8982ceaef00a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Editor\Windows\SceneWindows">
+      <UniqueIdentifier>{5809b40b-2d50-4798-8c62-2951d63704e5}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

@@ -13,6 +13,7 @@
 
 #define MAX_LIGHTS 8
 
+class WindowConfiguration;
 class ComponentCamera;
 class ComponentMesh;
 class ComponentMaterial;
@@ -99,6 +100,9 @@ public:
 	std::map<float, ParticleRenderInfo> particles;
 
 private:
+
+	WindowConfiguration* configWindow;
+
 	std::vector<float> particleVertices;
 	std::vector<float> particleUVs;
 

@@ -1,8 +1,8 @@
 #include "WindowConsole.h"
-
+#include "SceneWindow.h"
 #include "Dependencies/ImGui/imgui.h"
 
-WindowConsole::WindowConsole(bool isActive): Window("Console Window", isActive)
+WindowConsole::WindowConsole(SceneWindow* parent, ImGuiWindowClass* windowClass, int ID, bool isActive): Window(parent, windowClass, ID, "Console Window", isActive)
 {
 }
 

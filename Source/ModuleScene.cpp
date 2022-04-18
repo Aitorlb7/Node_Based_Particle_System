@@ -52,19 +52,6 @@ bool ModuleScene::Start()
 	CreateGameCamera();
 
 
-	//Load the Default scene with the Street and the Water plane with the Water Shader
-	//std::map<uint32, Resource*>::iterator it = App->resources->importedResources.begin();
-	//for (; it != App->resources->importedResources.end(); it++)
-	//{
-	//	if (it->second->type == ResourceType::Scene && it->second->name == "Default")
-	//	{
-	//		App->resources->LoadResource(it->second->UID);
-	//	}
-	//}
-
-
-
-
 	return ret;
 }
 

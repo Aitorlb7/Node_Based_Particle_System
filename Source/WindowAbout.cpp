@@ -1,10 +1,10 @@
 #include "WindowAbout.h"
 #include "Application.h"
+#include "SceneWindow.h"
 
 #include "Dependencies/ImGui/imgui.h"
 
-
-WindowAbout::WindowAbout(bool isActive) : Window("About Window", isActive)
+WindowAbout::WindowAbout(SceneWindow* parent, ImGuiWindowClass* windowClass, int ID, bool isActive) : Window(parent,windowClass,ID,"About Window", isActive)
 {
 }
 

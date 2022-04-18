@@ -1,13 +1,15 @@
 #include "Application.h"
 #include "ModuleEditor.h"
 #include "ModuleResource.h"
+#include "SceneWindow.h"
 #include "WindowNodeEditor.h"
+
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include "Dependencies/ImGui/imgui_internal.h"
 #include <imgui_internal.h>
 #include <imgui_impl_dx11.h>
 
-WindowNodeEditor::WindowNodeEditor(bool isActive): Window("Particle System Node Editor", isActive)
+WindowNodeEditor::WindowNodeEditor(SceneWindow* parent, ImGuiWindowClass* windowClass, int ID, bool isActive): Window(parent, windowClass, ID, "Particle System Node Editor", isActive)
 {
 }
 
@@ -18,11 +20,13 @@ WindowNodeEditor::~WindowNodeEditor()
 //TODO: STATIC really????
 static void TouchNode(ed::NodeId id)
 {
-    App->editor->nodeEditorWindow->nodeTouchTime[id] = App->editor->nodeEditorWindow->touchTime;
+    WindowNodeEditor* nodeEditor = (WindowNodeEditor*)App->editor->GetSceneWindow("ParticleWindow")->GetWindow("Particle System Node Editor");
+    nodeEditor->nodeTouchTime[id] = nodeEditor->touchTime;
 }
 static Node* FindNode(ed::NodeId id)
 {
-    for (Node& node : App->editor->nodeEditorWindow->nodes)
+    WindowNodeEditor* nodeEditor = (WindowNodeEditor*)App->editor->GetSceneWindow("ParticleWindow")->GetWindow("Particle System Node Editor");
+    for (Node& node : nodeEditor->nodes)
     {
         if (node.ID == id)
             return &node;

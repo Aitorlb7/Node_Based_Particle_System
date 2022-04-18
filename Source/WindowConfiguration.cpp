@@ -1,6 +1,8 @@
 #include "WindowConfiguration.h"
 #include "Application.h"
+#include "SceneWindow.h"
 #include "ModuleWindow.h"
+#include "ModuleEditor.h"
 #include "ModuleCamera3D.h"
 #include "ModuleRenderer3D.h"
 
@@ -19,7 +21,7 @@
 #include "SDL.h"
 
 
-WindowConfiguration::WindowConfiguration(bool isActive): Window("Configuration Window", isActive)
+WindowConfiguration::WindowConfiguration(SceneWindow* parent, ImGuiWindowClass* windowClass, int ID, bool isActive): Window(parent, windowClass, ID, "Configuration Window", isActive)
 {
 }
 
@@ -145,7 +147,7 @@ void WindowConfiguration::Draw()
 	if (ImGui::CollapsingHeader("Draw Settings"))
 	{
 		if (ImGui::Checkbox("Draw Normals", &drawNormals)) {}
-		if (ImGui::Checkbox("Wireframe Mode", &drawWireframe)) {}
+		if (ImGui::Checkbox("Wireframe Mode", &App->editor->drawWireframe)) {}
 		if (ImGui::Checkbox("Enable Checker Tex", &drawCheckerTex)) { drawTexture = false; }
 		if (ImGui::Checkbox("Enable Texture", &drawTexture)) { drawCheckerTex = false; }
 		if (ImGui::Checkbox("Draw Bounding Boxes", &App->renderer3D->drawboundingboxes)) { App->renderer3D->drawboundingboxes; }

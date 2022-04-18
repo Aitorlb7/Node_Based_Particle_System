@@ -1,10 +1,12 @@
 #include "Window.h"
 
+class SceneWindow;
+
 class WindowConfiguration : public Window
 {
 public:
 
-	WindowConfiguration(bool isActive);
+	WindowConfiguration(SceneWindow* parent, ImGuiWindowClass* windowClass, int ID, bool isActive);
 	~WindowConfiguration();
 
 	void Start() override;

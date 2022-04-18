@@ -1,4 +1,5 @@
 #include "WindowAssetExplorer.h"
+#include "SceneWindow.h"
 #include "Application.h"
 #include "ModuleResource.h"
 #include "ModuleFileSystem.h"
@@ -13,7 +14,7 @@
 
 #include "Dependencies/ImGui/imgui.h"
 
-WindowAssetExplorer::WindowAssetExplorer(bool isActive): Window("Assets Explorer Window", isActive)
+WindowAssetExplorer::WindowAssetExplorer(SceneWindow* parent, ImGuiWindowClass* windowClass, int ID, bool isActive): Window(parent, windowClass,ID,"Assets Explorer Window", isActive)
 {
 }
 
@@ -215,7 +216,6 @@ void WindowAssetExplorer::AssetsExplorer(PathNode& assetFolder)
 
 		if (ImGui::BeginDragDropSource())
 		{
-			App->editor->show_dropTarget_window = true;
 			ImGui::SetDragDropPayload("Asset", &UID, sizeof(uint32));
 
 			switch (resource->type)

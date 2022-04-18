@@ -1,12 +1,13 @@
 #include "Window.h"
 
 class GameObject;
+class SceneWindow;
 
 class WindowHirearchy : public Window
 {
 public:
 
-	WindowHirearchy(bool isActive);
+	WindowHirearchy(SceneWindow* parent, ImGuiWindowClass* windowClass, int ID, bool isActive);
 	~WindowHirearchy();
 
 	void Start() override;

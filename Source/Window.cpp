@@ -1,12 +1,19 @@
 #include "Window.h"
+#include "SceneWindow.h"
+
 #include "Dependencies/ImGui/imgui.h"
 
-Window::Window(const char* name, bool isActive): 
+
+Window::Window(SceneWindow* parent, ImGuiWindowClass* windowClass, int ID, std::string name, bool isActive) :
+windowParent(parent),
 name(name),
 isActive(isActive),
 isHovered(false),
-isClicked(false)
+isClicked(false),
+windowClass(windowClass), 
+ID(ID)
 {
+	IDstring = name + ("##") + std::to_string(ID);
 }
 
 Window::~Window()
@@ -14,6 +21,10 @@ Window::~Window()
 }
 
 void Window::Start()
+{
+}
+
+void Window::SetUp()
 {
 }
 
@@ -35,9 +46,14 @@ void Window::Disable()
 	isActive = false;
 }
 
-const char* Window::GetName() const
+std::string Window::GetName() const
 {
 	return name;
+}
+
+void Window::OnResize(float2 newSize)
+{
+	windowSize = newSize;
 }
 
 void Window::SetIsHovered()

@@ -1,4 +1,5 @@
 #include "WindowPlay.h"
+#include "SceneWindow.h"
 #include "Application.h"
 #include "ModuleScene.h"
 #include "ModuleResource.h"
@@ -7,7 +8,7 @@
 #include "ResourceScene.h"
 
 #include "Dependencies/ImGui/imgui.h"
-WindowPlay::WindowPlay(bool isActive): Window("Play Window", isActive)
+WindowPlay::WindowPlay(SceneWindow* parent, ImGuiWindowClass* windowClass, int ID, bool isActive): Window(parent, windowClass, ID, "Play Window", isActive)
 {
 }
 

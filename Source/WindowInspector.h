@@ -1,5 +1,6 @@
 #include "Window.h"
 
+class SceneWindow;
 class Component;
 class ComponentCamera;
 class ComponentMaterial;
@@ -16,7 +17,7 @@ class WindowInspector : public Window
 {
 public:
 
-	WindowInspector(bool isActive);
+	WindowInspector(SceneWindow* parent, ImGuiWindowClass* windowClass, int ID, bool isActive);
 	~WindowInspector();
 
 	void Start() override;

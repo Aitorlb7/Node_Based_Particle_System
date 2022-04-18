@@ -22,6 +22,7 @@
 #include "ComponentTransform.h"
 #include "ComponentCamera.h"
 
+#include "SceneWindow.h"
 #include "WindowConfiguration.h"
 
 #include "Dependencies/MathGeoLib/include/Geometry/Plane.h"
@@ -137,6 +138,8 @@ bool ModuleRenderer3D::Init()
 
 bool ModuleRenderer3D::Start()
 {	
+	configWindow = (WindowConfiguration*)App->editor->GetSceneWindow("MainWindow")->GetWindow("Configuration Window");
+
 	defaultParticleTex = App->resources->GetTexture("DefaultParticle");
 
 	SetUpParticlesBuffer();
@@ -164,9 +167,9 @@ update_status ModuleRenderer3D::PreUpdate(float dt)
 	for(uint i = 0; i < MAX_LIGHTS; ++i)
 		lights[i].Render();
 
-	SetCullface(App->editor->configWindow->cullface);
-	SetLighting(App->editor->configWindow->lighting);
-	SetTexture2D(App->editor->configWindow->texture2D);
+	SetCullface(configWindow->cullface);
+	SetLighting(configWindow->lighting);
+	SetTexture2D(configWindow->texture2D);
 
 	//Scene Grid
 	glLineWidth(2.0f);
@@ -197,7 +200,7 @@ update_status ModuleRenderer3D::PreUpdate(float dt)
 // PostUpdate present buffer to screen
 update_status ModuleRenderer3D::PostUpdate(float dt)
 {
-	if (App->editor->configWindow->drawWireframe) { glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); glEnable(GL_TEXTURE_CUBE_MAP); }
+	if (App->editor->drawWireframe) { glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); glEnable(GL_TEXTURE_CUBE_MAP); }
 	else { glPolygonMode(GL_FRONT_AND_BACK, GL_FILL); glDisable(GL_TEXTURE_CUBE_MAP); }
 	
 	DrawAllMeshes();
@@ -277,12 +280,12 @@ void ModuleRenderer3D::DrawAllMeshes()
 				if (componentMat != nullptr)
 				{
 					DrawMesh(tempComponentMesh, tempComponentTransform->GetGlobalTransform(), componentMat, App->scene->game_objects[i]);
-					if (App->editor->configWindow->drawNormals) DrawNormals(tempComponentMesh, tempComponentTransform->GetGlobalTransform());
+					if (configWindow->drawNormals) DrawNormals(tempComponentMesh, tempComponentTransform->GetGlobalTransform());
 				}
 				else 
 				{
 					DrawMesh(tempComponentMesh, tempComponentTransform->GetLocalTransform(), nullptr, App->scene->game_objects[i]);
-					if (App->editor->configWindow->drawNormals) DrawNormals(tempComponentMesh, tempComponentTransform->GetLocalTransform());
+					if (configWindow->drawNormals) DrawNormals(tempComponentMesh, tempComponentTransform->GetLocalTransform());
 				}
 
 				if (drawboundingboxes) {
@@ -322,7 +325,7 @@ void ModuleRenderer3D::DrawMesh(ComponentMesh* componentMesh, float4x4 transform
 
 		glUseProgram(shaderProgram);
 		
-		App->editor->configWindow->drawCheckerTex ? glBindTexture(GL_TEXTURE_2D, checkerID) : glBindTexture(GL_TEXTURE_2D, componentMaterial->GetMaterial()->GetTextureId());
+		configWindow->drawCheckerTex ? glBindTexture(GL_TEXTURE_2D, checkerID) : glBindTexture(GL_TEXTURE_2D, componentMaterial->GetMaterial()->GetTextureId());
 
 		componentMaterial->GetMaterial()->GetTextureId() ? componentMaterial->GetMaterial()->GetShader()->SetUniform1i("hasTexture", (GLint)true) : componentMaterial->GetMaterial()->GetShader()->SetUniform1i("hasTexture", (GLint)false);
 

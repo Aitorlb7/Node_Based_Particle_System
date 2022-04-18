@@ -1,4 +1,8 @@
 #include "Application.h"
+
+#include "SceneWindow.h"
+#include "MainWindow.h"
+
 #include "ModuleEditor.h"
 #include "ModuleWindow.h"
 #include "ModuleRenderer3D.h"
@@ -15,14 +19,14 @@
 #include "ComponentMesh.h"
 #include "ComponentTransform.h"
 
-#include "WindowAbout.h"
-#include "WindowAssetExplorer.h"
-#include "WindowConfiguration.h"
-#include "WindowConsole.h"
-#include "WindowHirearchy.h"
-#include "WindowInspector.h"
-#include "WindowPlay.h"
-#include "WindowNodeEditor.h"
+//#include "WindowAbout.h"
+//#include "WindowAssetExplorer.h"
+//#include "WindowConfiguration.h"
+//#include "WindowConsole.h"
+//#include "WindowHirearchy.h"
+//#include "WindowInspector.h"
+//#include "WindowPlay.h"
+//#include "WindowNodeEditor.h"
 
 #include "ResourceScene.h"
 #include "ResourceMaterial.h"
@@ -51,23 +55,23 @@
 
 ModuleEditor::ModuleEditor(bool start_enabled) : Module(start_enabled)
 {
-	aboutWindow = new WindowAbout(false);
-	explorerWindow = new WindowAssetExplorer(true);
-	configWindow = new WindowConfiguration(false);
-	consoleWindow = new WindowConsole(true);
-	hirearchyWindow = new WindowHirearchy(true);
-	inspectorWindow = new WindowInspector(true);
-	playWindow = new WindowPlay(true);
-	nodeEditorWindow = new WindowNodeEditor(false);
+	//aboutWindow = new WindowAbout(false);
+	//explorerWindow = new WindowAssetExplorer(true);
+	//configWindow = new WindowConfiguration(false);
+	//consoleWindow = new WindowConsole(true);
+	//hirearchyWindow = new WindowHirearchy(true);
+	//inspectorWindow = new WindowInspector(true);
+	//playWindow = new WindowPlay(true);
+	//nodeEditorWindow = new WindowNodeEditor(false);
 
-	AddWindow(aboutWindow);
-	AddWindow(explorerWindow);
-	AddWindow(configWindow);
-	AddWindow(consoleWindow);
-	AddWindow(hirearchyWindow);
-	AddWindow(inspectorWindow);
-	AddWindow(playWindow);
-	AddWindow(nodeEditorWindow);
+	//AddWindow(aboutWindow);
+	//AddWindow(explorerWindow);
+	//AddWindow(configWindow);
+	//AddWindow(consoleWindow);
+	//AddWindow(hirearchyWindow);
+	//AddWindow(inspectorWindow);
+	//AddWindow(playWindow);
+	//AddWindow(nodeEditorWindow);
 }
 
 ModuleEditor::~ModuleEditor()
@@ -90,12 +94,26 @@ bool ModuleEditor::Start()
 	ImGui_ImplSDL2_InitForOpenGL(App->window->window, App->renderer3D->context);
 	ImGui_ImplOpenGL3_Init(NULL);
 
-	std::vector<Window*>::iterator item = windows.begin();
-	for (item; item != windows.end(); ++item){ 
-		(*item)->Start();
-	}
+	ImGuiStyle& style = ImGui::GetStyle();
+	style.Colors[ImGuiCol_DragDropTarget] = ImVec4(0.0f, 1.0f, 1.0f, 1.0f);
 
 	editor.SetPalette(TextEditor::GetDarkPalette());
+
+	//Handle Window
+
+
+	parentWindowClass = new ImGuiWindowClass();
+	parentWindowClass->ClassId = 1;
+	parentWindowClass->DockNodeFlagsOverrideSet |= ImGuiDockNodeFlags_NoSplit;
+
+	windowClass = new ImGuiWindowClass();
+	windowClass->ClassId = 2;
+
+	SceneWindow* sceneWindow = new MainWindow(parentWindowClass, windowClass, Random::GenerateRandomInt());
+	
+	windowScenes.push_back(sceneWindow);
+
+	
 
 	return true;
 }
@@ -103,6 +121,8 @@ bool ModuleEditor::Start()
 update_status ModuleEditor::PreUpdate(float dt)
 {
 	update_status ret = UPDATE_CONTINUE;
+
+
 
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplSDL2_NewFrame(App->window->window);
@@ -116,17 +136,12 @@ update_status ModuleEditor::PreUpdate(float dt)
 update_status ModuleEditor::Update(float dt)
 {
 
-	Docking();
-
-	if (!MainMenuBar()) return UPDATE_STOP;	
+	//Docking();
 	SetupStyleFromHue();
-
-	if (show_demo_window) ImGui::ShowDemoWindow(&show_demo_window);
-	DropTargetWindow();
 	TextEditorWindow();	
-
 	GUIisHovered();
-	ImGui::End();
+
+	
 
 	return UPDATE_CONTINUE;
 }
@@ -145,19 +160,10 @@ bool ModuleEditor::CleanUp()
 	ImGui_ImplSDL2_Shutdown();
 	ImGui::DestroyContext();
 
-	std::vector<Window*>::iterator item = windows.begin();
-	for (item; item != windows.end(); ++item) {
-		(*item)->CleanUp();
-	}
 	
 	SDL_DestroyWindow(App->window->window);
 	SDL_Quit();
 	return true;
-}
-
-void ModuleEditor::AddWindow(Window* window)
-{
-	windows.push_back(window);
 }
 
 void ModuleEditor::DrawGUI()
@@ -165,15 +171,44 @@ void ModuleEditor::DrawGUI()
 	
 	ImGuiIO& io = ImGui::GetIO();
 
+	ImGuiWindowFlags frameWindow_flags =
+		ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoTitleBar |
+		ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove |
+		ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus;
 
-	std::vector<Window*>::iterator item = windows.begin();
-	for (item; item != windows.end(); ++item) {
-		(*item)->Draw();
+	ImGuiViewport* viewport = ImGui::GetMainViewport();
+	ImGui::SetNextWindowPos(viewport->GetWorkPos());
+	ImGui::SetNextWindowSize(viewport->GetWorkSize());
+	ImGui::SetNextWindowViewport(viewport->ID);
+
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
+	ImGui::SetNextWindowClass(parentWindowClass);
+	ImGui::Begin("Main Window", nullptr, frameWindow_flags);
+	ImGui::PopStyleVar();
+
+	ImGuiID dockspace_id = ImGui::GetID("Main Dockspace");
+	ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), ImGuiDockNodeFlags_NoSplit, parentWindowClass);
+
+	// We iterate in reverse so that we can handle the main window closure last
+	// and can remove windows from the array without the need of moving the iterator
+	for (int i = windowScenes.size() - 1; i >= 0; --i)
+	{
+		windowScenes[i]->Draw();
 	}
 
+	ImGui::End();
+
 	ImGui::Render();
-	glViewport(0, 0, (int)io.DisplaySize.x, (int)io.DisplaySize.y);
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+	if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+	{
+		SDL_Window* backup_current_window = SDL_GL_GetCurrentWindow();
+		SDL_GLContext backup_current_context = SDL_GL_GetCurrentContext();
+		ImGui::UpdatePlatformWindows();
+		ImGui::RenderPlatformWindowsDefault();
+		SDL_GL_MakeCurrent(backup_current_window, backup_current_context);
+	}
 }
 
 void ModuleEditor::GUIisHovered()
@@ -181,6 +216,15 @@ void ModuleEditor::GUIisHovered()
 	ImGuiIO& io = ImGui::GetIO(); (void)io;
 	io.WantCaptureMouse ? GUIhovered = true : GUIhovered = false;
 	io.WantCaptureKeyboard ? isUserTyping = true : isUserTyping = false;
+}
+
+SceneWindow* ModuleEditor::GetSceneWindow(const char* windowName)
+{
+	for (uint i = 0; i < windowScenes.size(); ++i)
+		if (strcmp(windowScenes[i]->GetName(), windowName) == 0) 
+			return windowScenes[i];
+
+	return nullptr;
 }
 
 
@@ -311,69 +355,71 @@ void  ModuleEditor::SetupStyleFromHue()
 	style.Colors[ImGuiCol_NavWindowingDimBg] =		ImVec4(col_text.x, col_text.y, col_text.z, 0.62f);
 }
 
-void ModuleEditor::DropTargetWindow()
-{
-	if (show_dropTarget_window)
-	{
-		ImGui::SetNextWindowSize({ 500, 400 });
-		ImGui::SetNextWindowPos({ 300, 50 });
+//void ModuleEditor::DropTargetWindow()
+//{
+//	if (show_dropTarget_window)
+//	{
+//		ImGui::SetNextWindowSize({ 500, 400 });
+//		ImGui::SetNextWindowPos({ 300, 50 });
+//
+//		ImGuiWindowFlags flags = ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoBackground;
+//
+//		ImGui::Begin("DropTarget", &show_dropTarget_window, flags);
+//		
+//		//ImGui::Rect
+//		//ImGui::
+//		ImGui::SetCursorPosX(ImGui::GetWindowWidth() / 2);
+//		ImGui::SetCursorPosY(ImGui::GetWindowHeight() / 2);
+//		ImGui::Text("Drop asset here:");
+//
+//		ImGui::SetCursorPosX(0);
+//		ImGui::SetCursorPosY(0);
+//		ImGui::InvisibleButton("Drop asset here:", ImVec2(ImGui::GetWindowWidth(), ImGui::GetWindowHeight()));
+//		
+//		//if (ImGui::BeginDragDropTarget())
+//		//{
+//		//	ResourceMaterial* material = new ResourceMaterial();
+//		//	ComponentMaterial* compMaterial;
+//		//
+//		//	//ImGuiDragDropFlags_
+//		//		
+//		//	if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("Asset", ImGuiDragDropFlags_None))
+//		//	{
+//		//		uint32 UID = *(const uint32*)payload->Data;
+//		//		Resource* resource = App->resources->GetResourceInMemory(UID);
+//
+//		//		switch (resource->type)
+//		//		{
+//		//		case ResourceType::Model:
+//		//			App->resources->LoadResource(UID);
+//		//			break;
+//		//		case ResourceType::Texture:
+//
+//		//			compMaterial = (ComponentMaterial*)App->scene->selected_object->GetComponent(ComponentType::Material);
+//		//			compMaterial->GetMaterial()->SetTexture((ResourceTexture*)App->resources->LoadResource(UID));
+//		//			break;
+//		//		case ResourceType::Shader:
+//
+//		//			if ((ComponentMaterial*)App->scene->selected_object->GetComponent(ComponentType::Material) == nullptr)
+//		//			{
+//		//				break;
+//		//			}
+//
+//		//			compMaterial = (ComponentMaterial*)App->scene->selected_object->GetComponent(ComponentType::Material);
+//		//			compMaterial->GetMaterial()->SetShader((ResourceShader*)App->resources->LoadResource(UID));
+//
+//		//			break;
+//		//		}
+//		//		// Else make a pop up Error
+//		//	}
+//		//	ImGui::EndDragDropTarget();
+//		//	show_dropTarget_window = false;
+//		//}
+//		ImGui::End();
+//	}
+//}
 
-		ImGuiWindowFlags flags = ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoBackground;
 
-		ImGui::Begin("DropTarget", &show_dropTarget_window, flags);
-		
-		//ImGui::Rect
-		//ImGui::
-		ImGui::SetCursorPosX(ImGui::GetWindowWidth() / 2);
-		ImGui::SetCursorPosY(ImGui::GetWindowHeight() / 2);
-		ImGui::Text("Drop asset here:");
-
-		ImGui::SetCursorPosX(0);
-		ImGui::SetCursorPosY(0);
-		ImGui::InvisibleButton("Drop asset here:", ImVec2(ImGui::GetWindowWidth(), ImGui::GetWindowHeight()));
-		
-		if (ImGui::BeginDragDropTarget())
-		{
-			ResourceMaterial* material = new ResourceMaterial();
-			ComponentMaterial* compMaterial;
-		
-			//ImGuiDragDropFlags_
-				
-			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("Asset", ImGuiDragDropFlags_AcceptBeforeDelivery))
-			{
-				uint32 UID = *(const uint32*)payload->Data;
-				Resource* resource = App->resources->GetResourceInMemory(UID);
-
-				switch (resource->type)
-				{
-				case ResourceType::Model:
-					App->resources->LoadResource(UID);
-					break;
-				case ResourceType::Texture:
-
-					compMaterial = (ComponentMaterial*)App->scene->selected_object->GetComponent(ComponentType::Material);
-					compMaterial->GetMaterial()->SetTexture((ResourceTexture*)App->resources->LoadResource(UID));
-					break;
-				case ResourceType::Shader:
-
-					if ((ComponentMaterial*)App->scene->selected_object->GetComponent(ComponentType::Material) == nullptr)
-					{
-						break;
-					}
-
-					compMaterial = (ComponentMaterial*)App->scene->selected_object->GetComponent(ComponentType::Material);
-					compMaterial->GetMaterial()->SetShader((ResourceShader*)App->resources->LoadResource(UID));
-
-					break;
-				}
-				// Else make a pop up Error
-			}
-			ImGui::EndDragDropTarget();
-			show_dropTarget_window = false;
-		}
-		ImGui::End();
-	}
-}
 
 void ModuleEditor::TextEditorWindow()
 {
@@ -516,222 +562,30 @@ void ModuleEditor::CallTextEditor(ResourceMaterial* resource)
 	shaderToRecompile = resource->GetShader();
 }
 
-bool ModuleEditor::MainMenuBar()
-{
-	bool ret = true;
-	std::string menuAction = "";
-	if (ImGui::BeginMainMenuBar())
-	{
-		if (ImGui::BeginMenu("File"))	
-		{ 
-			if (ImGui::MenuItem("Save Scene"))
-			{
-				scene = App->resources->CreateNewResource("", ResourceType::Scene, "scene");
-				menuAction = "Save Scene";
-			}
-			if (ImGui::MenuItem("Load Scene"))
-			{
-				
-				std::map<uint32, Resource*>::iterator it = App->resources->importedResources.begin();
-				for (; it != App->resources->importedResources.end(); it++)
-				{
-					if (it->second->type == ResourceType::Scene)
-					{
-						scenesInMemory.push_back((ResourceScene*)it->second);
-					}
-				}
-
-				if(!scenesInMemory.empty()) selectedScene = scenesInMemory.front()->name;
-
-				menuAction = "Load Scene";
-			}
-			if(ImGui::MenuItem("Exit")) ret = false;
-
-			ImGui::EndMenu(); 
-		}
-		
-		//Set Next window Pos and Size
-		ImGui::SetNextWindowPos(ImGui::GetMainViewport()->Pos , ImGuiCond_Appearing, ImVec2(0.5, 0.5));
-		ImGui::SetNextWindowSize(ImVec2(250.0f, 150.0f));
-
-		//Set next Pop based on a string
-		if (menuAction == "Save Scene") ImGui::OpenPopup("Save Scene Options");
-		
-
-		if (ImGui::BeginPopupModal("Save Scene Options", NULL, ImGuiWindowFlags_NoResize))
-		{
-			
-			//ImGui::Spacing();
-			//ImGui::TextColored(sceneTextColor, scene->libraryFile.c_str());
-			ImGui::Spacing();
-			
-			if (ImGui::InputText("Scene Name:", (char*)sceneName.c_str(), 64, ImGuiInputTextFlags_EnterReturnsTrue))
-			{
-				scene->libraryFile = SCENES_PATH ;
-				scene->libraryFile.append(sceneName.c_str());
-				scene->libraryFile.append(".scene");
-
-				scene->assetsFile = SCENES_FOLDER;
-				scene->assetsFile.append(sceneName.c_str());
-
-				scene->name = sceneName.c_str();
-
-				//sceneTextColor = ImVec4(0, 0.8, 0, 1);
-
-				App->resources->SaveResource(scene);
-
-				ImGui::CloseCurrentPopup();
-				//allowSaveOrLoad = true;
-
-			}
-
-
-			ImGui::Spacing();
-			ImGui::TextColored(ImVec4(0.6, 0.6, 0.6, 1), "Press 'Enter' to save the scene.");
-			ImGui::Spacing();
-
-			//ImGui::Spacing();
-			//if (allowSaveOrLoad)
-			//{
-			//	if (ImGui::Button("Save"))
-			//	{
-			//		App->resources->SaveResource(scene);
-			//		allowSaveOrLoad = false;
-			//		ImGui::CloseCurrentPopup();
-			//	}
-			//}
-
-
-			if (ImGui::Button("Cancel"))
-			{
-				ImGui::CloseCurrentPopup();
-			}
-
-
-			
-			ImGui::EndPopup();
-		}
-
-		ImGui::SetNextWindowPos(ImGui::GetMainViewport()->Pos, ImGuiCond_Appearing, ImVec2(0.5, 0.5));
-		ImGui::SetNextWindowSize(ImVec2(250.0f, 150.0f));
-
-		if (menuAction == "Load Scene") ImGui::OpenPopup("Load Scene Options");
-
-		if (ImGui::BeginPopupModal("Load Scene Options", NULL, ImGuiWindowFlags_NoResize))
-		{
-			ImGui::Text("Choose the secne to load");
-			ImGui::Spacing();
-			
-			if (ImGui::BeginCombo("Scenes", selectedScene.c_str(), ImGuiComboFlags_PopupAlignLeft))
-			{
-				for (uint i = 0; i < scenesInMemory.size(); i++)
-				{
-					const bool is_selected = (scenesInMemory[i]->name == selectedScene);
-					if (ImGui::Selectable(scenesInMemory[i]->name.c_str(), is_selected))
-					{	
-						sceneToLoad = scenesInMemory[i];
-						selectedScene = scenesInMemory[i]->name;
-						allowSaveOrLoad = true;
-					}
-
-				}
-				
-				ImGui::EndCombo();
-			}
-
-			ImGui::Spacing();
-
-			if (allowSaveOrLoad)
-			{
-				if (ImGui::Button("Load"))
-				{
-					if (sceneToLoad) App->resources->LoadResource(sceneToLoad->UID);
-					sceneToLoad = nullptr;
-					scenesInMemory.clear();
-					allowSaveOrLoad = false;
-					ImGui::CloseCurrentPopup();
-				}
-			}
-
-
-			ImGui::Spacing();
-
-			if (ImGui::Button("Cancel"))
-			{
-				scenesInMemory.clear();
-				ImGui::CloseCurrentPopup();
-			}
-			ImGui::EndPopup();
-		}
-
-		if (ImGui::BeginMenu("View"))
-		{
-			if (ImGui::MenuItem("Configuration","",configWindow->isActive)) configWindow->Enable();
-			if (ImGui::MenuItem("Particle Node Editor", "", nodeEditorWindow->isActive)) nodeEditorWindow->Enable();
-			if (ImGui::MenuItem("Console", "", consoleWindow->isActive)) consoleWindow->Enable();
-			if (ImGui::MenuItem("Hierarchy", "", hirearchyWindow->isActive)) hirearchyWindow->Enable();
-			if (ImGui::MenuItem("Inspector", "", inspectorWindow->isActive)) inspectorWindow->Enable();
-
-			ImGui::EndMenu();
-		}
-		if (ImGui::BeginMenu("Add"))
-		{	
-			if (ImGui::MenuItem("Create Game Object")) App->scene->CreateGameObject("New_Empty_", App->scene->root_object);
-			
-			if (App->scene->selected_object != nullptr)
-			{
-				if (ImGui::MenuItem("Create Children Object")) App->scene->CreateGameObject("New_EmptyChildren_", App->scene->selected_object);
-			}
-
-			ImGui::EndMenu();
-
-		}
-		if (ImGui::BeginMenu("Tools"))
-		{
-			if (ImGui::MenuItem("Set Guizmo: Translate (W)","W"))	App->scene->gizmoOperation = ImGuizmo::OPERATION::TRANSLATE;
-			if (ImGui::MenuItem("Set Guizmo: Rotate (E)","E"))		App->scene->gizmoOperation = ImGuizmo::OPERATION::ROTATE;
-			if (ImGui::MenuItem("Set Guizmo: Scale (R)","R"))		App->scene->gizmoOperation = ImGuizmo::OPERATION::SCALE;
-
-			ImGui::EndMenu();
-		}
-		if (ImGui::BeginMenu("Help"))
-		{
-			if (ImGui::MenuItem("ImGui Demo"))show_demo_window = !show_demo_window;
-			if (ImGui::MenuItem("Documentation")) RequestBrowser("https://github.com/paufiol/AnotherSmallEngine/blob/master/README.md");
-			if (ImGui::MenuItem("Latest Release")) RequestBrowser("https://github.com/paufiol/AnotherSmallEngine");
-			if (ImGui::MenuItem("Report a bug")) RequestBrowser("https://github.com/paufiol/AnotherSmallEngine/issues");
-			if (ImGui::MenuItem("About", "", aboutWindow->isActive)) aboutWindow->Enable();
-			ImGui::EndMenu();
-		}
-		ImGui::EndMenuBar();
-		ImGui::End();
-
-	}
-	return ret;
-}
 
 
 
-void ModuleEditor::Docking()
-{
-	ImGuiWindowFlags window = ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoTitleBar |
-		ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus;
-
-	ImGuiViewport* viewport = ImGui::GetWindowViewport();
-	ImGui::SetNextWindowPos(viewport->Pos);
-	ImGui::SetNextWindowSize(viewport->Size);
-	ImGui::SetNextWindowViewport(viewport->ID);
-	ImGui::SetNextWindowBgAlpha(0.0f);
-	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
-	ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
-	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
-	ImGui::Begin("Docking", &dockingWindow, window);
-	ImGui::PopStyleVar(3);
-
-	ImGuiIO& io = ImGui::GetIO();
-	ImGuiID dockspace_id = ImGui::GetID("Dockspace");
-	ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), ImGuiDockNodeFlags_PassthruCentralNode);
-}
+//
+//void ModuleEditor::Docking()
+//{
+//	ImGuiWindowFlags window = ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoTitleBar |
+//		ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus;
+//
+//	ImGuiViewport* viewport = ImGui::GetWindowViewport();
+//	ImGui::SetNextWindowPos(viewport->Pos);
+//	ImGui::SetNextWindowSize(viewport->Size);
+//	ImGui::SetNextWindowViewport(viewport->ID);
+//	ImGui::SetNextWindowBgAlpha(0.0f);
+//	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
+//	ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
+//	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
+//	ImGui::Begin("Docking", &dockingWindow, window);
+//	ImGui::PopStyleVar(3);
+//
+//	ImGuiIO& io = ImGui::GetIO();
+//	ImGuiID dockspace_id = ImGui::GetID("Dockspace");
+//	ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), ImGuiDockNodeFlags_PassthruCentralNode);
+//}
 
 void ModuleEditor::RequestBrowser(const char* path)
 {
