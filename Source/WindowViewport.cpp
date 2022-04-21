@@ -41,19 +41,7 @@ void WindowViewport::Draw()
 
 	ImGui::Begin("Viewport", &isActive);
 
-	/*if ((EngineApp->gameState != GameState::PLAY) && !sceneFocused)
-	{
-		ImGui::FocusWindow(ImGui::GetCurrentWindow());
-		ImGui::FocusWindow(nullptr);
-
-		sceneFocused = true;
-		gameFocused = false;
-	}
-
-	if (sceneFocused)
-	{
-		SetIsHovered();
-	}*/
+	SetIsHovered();
 
 	AdaptTextureToWindowSize();
 
@@ -74,21 +62,11 @@ void WindowViewport::CleanUp()
 float2 WindowViewport::GetWorldMousePosition()
 {
 
-	float2 screenMousePos = float2(App->input->GetMouseX(), App->window->Height() - App->input->GetMouseY()) - float2(textureOrigin.x, textureOrigin.y + MARGIN_OFFSET);
+	float2 screenMousePos = float2(App->input->GetMouseX(), App->window->Height() - App->input->GetMouseY()) - float2(textureOrigin.x, textureOrigin.y);
 	float2 normScreenPos = float2(screenMousePos.x / textureSize.x, screenMousePos.y / textureSize.y);
 	float2 worldMousePos = float2(normScreenPos.x * App->window->Width(), normScreenPos.y * App->window->Height());
 
 	return worldMousePos;
-}
-
-float2 WindowViewport::GetScreenMousePosition()
-{
-
-	float2 normWorldPos = float2(App->input->GetMouseX() / App->window->Width(), App->input->GetMouseY() / App->window->Height());
-	float2 screenMousePos = float2(normWorldPos.x * textureSize.x, normWorldPos.y * textureSize.y);
-	screenMousePos += float2(textureOrigin.x, textureOrigin.y);
-
-	return screenMousePos;
 }
 
 float2 WindowViewport::GetWorldMouseMotion()
@@ -129,7 +107,7 @@ void WindowViewport::DrawSceneTexture()
 	}
 
 	textureOrigin = screenCursorPos + ImVec2(0, textureSize.y);		
-	textureOrigin.y = (float)App->window->Height() - textureSize.y;	
+	textureOrigin.y = (float)App->window->Height() - textureOrigin.y;
 
 	ImGui::Image((ImTextureID)App->renderer3D->GetSceneRenderTexture(), textureSize, ImVec2(0.0f, 1.0f), ImVec2(1.0f, 0.0f));
 }
@@ -176,16 +154,18 @@ void WindowViewport::HandleGuizmos()
 
 	float4x4 viewMatrix = App->camera->currentCamera->frustum.ViewMatrix();
 	float4x4 projectionMatrix = App->camera->currentCamera->frustum.ProjectionMatrix();
-	float4x4 worldTransform = selectedTransform->GetGlobalTransform();
-	viewMatrix.Transpose();																				// MathGeoLib works with Row-Major matrices and ImGuizmo works with
-	projectionMatrix.Transpose();																		// Column-Major matrices. Hence the need to transpose them.
-	worldTransform.Transpose();																			// ----------------------------------------------------------------
+	float4x4 worldTransform = selectedTransform->GetLocalTransform();
+	viewMatrix.Transpose();													
+	projectionMatrix.Transpose();											
+	worldTransform.Transpose();												
 
 	ImGuizmo::SetDrawlist();
 
-	ImVec2 originPos = ImVec2(textureOrigin.x, App->window->Height() - textureOrigin.y - textureSize.y);
+	int height = App->window->Height();
 
-	ImGuizmo::SetRect(textureOrigin.x, originPos.y, textureSize.x, textureSize.y);
+	ImVec2 originPos = ImVec2(textureOrigin.x, height - textureOrigin.y - textureSize.y);
+
+	ImGuizmo::SetRect(originPos.x, originPos.y, textureSize.x, textureSize.y);
 
 	ImGuizmo::Manipulate(viewMatrix.ptr(), projectionMatrix.ptr(), guizmoOperation, guizmoMode, worldTransform.ptr());
 
@@ -195,7 +175,6 @@ void WindowViewport::HandleGuizmos()
 
 		worldTransform = worldTransform.Transposed();
 		selectedTransform->SetLocalTransform(worldTransform);
-		//SET GLOBAL??
 	}
 
 }

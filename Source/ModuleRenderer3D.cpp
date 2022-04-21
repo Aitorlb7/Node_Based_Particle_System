@@ -235,7 +235,6 @@ void ModuleRenderer3D::SetUpFrameBuffers()
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
-	//glTexStorage2D(GL_TEXTURE_2D, 1, GL_DEPTH_COMPONENT, App->window->GetWidth(), App->window->GetHeight());
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT24, App->window->Width(), App->window->Height(), 0, GL_DEPTH_COMPONENT, GL_FLOAT, 0);
 	glBindTexture(GL_TEXTURE_2D, 0);
 
@@ -255,7 +254,7 @@ void ModuleRenderer3D::SetUpFrameBuffers()
 		LOG("[ERROR] Renderer 3D: Could not generate the scene's frame buffer! Error: %s", gluErrorString(glGetError()));
 	}
 
-	// --- UNBINDING THE FRAMEBUFFER ---
+
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
@@ -302,7 +301,6 @@ void ModuleRenderer3D::DrawGameCamera()
 
 void ModuleRenderer3D::OnResize(int width, int height)
 {
-	//Only do if cameras are up and running
 	glViewport(0, 0, width, height);
 	
 	if (App->camera->currentCamera != nullptr) {

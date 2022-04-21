@@ -7,6 +7,7 @@
 #include "ModuleWindow.h"
 #include "ModuleScene.h"
 #include "ModuleEditor.h"
+#include "WindowViewport.h"
 
 ModuleCamera3D::ModuleCamera3D(bool start_enabled) : Module(start_enabled)
 {
@@ -57,45 +58,43 @@ void ModuleCamera3D::FocusObject()
 // -----------------------------------------------------------------
 update_status ModuleCamera3D::Update(float dt)
 {
-
-	if (App->scene->selected_object != nullptr)
-	{
-		reference = App->scene->selected_object->transform->GetPosition();
-	}
-	else reference = float3(0.0f, 0.0f, 0.0f);	//TODO: Set a center point at center of far Plane?
-
-	int x = App->input->GetMouseXMotion();
-	int y = App->input->GetMouseYMotion();
-
-	if (App->input->GetKey(SDL_SCANCODE_LALT) && (x != 0 || y != 0))
+	if (App->editor->viewportWindow->IsHovered())
 	{
 
-		float dx = (float)x * dt;
-		float dy = (float)y * dt;
-
-
-		//TODO: Add Magic Numbers as Control Settings via IMGUI
-		//Pan
-		if(App->input->GetMouseButton(SDL_BUTTON_MIDDLE))
+		if (App->scene->selected_object != nullptr)
 		{
-			currentCamera->Pan(dx*50.0f, dy*50.0f);
+			reference = App->scene->selected_object->transform->GetGlobalPosition();
+		}
+		else reference = float3(0.0f, 0.0f, 0.0f);
+
+
+		int x = App->editor->viewportWindow->GetWorldMouseMotion().x;
+		int y = App->editor->viewportWindow->GetWorldMouseMotion().y;
+
+		if (App->input->GetKey(SDL_SCANCODE_LALT) && (x != 0 || y != 0))
+		{
+
+			float dx = (float)x * dt;
+			float dy = (float)y * dt;
+
+
+			//TODO: Add Magic Numbers as Control Settings via IMGUI
+			//Pan
+			if(App->input->GetMouseButton(SDL_BUTTON_MIDDLE))
+			{
+				currentCamera->Pan(dx*50.0f, dy*50.0f);
+			}
+
+			//Rotate
+			if (App->input->GetMouseButton(SDL_BUTTON_RIGHT))
+			{
+				currentCamera->LookAt(-dx*.3f, -dy*.3f); 
+			}
 		}
 
-		//Rotate
-		if (App->input->GetMouseButton(SDL_BUTTON_RIGHT))
-		{
-			currentCamera->LookAt(-dx*.3f, -dy*.3f); 
-		}
-	}
-
-	
-	
-	if(!App->editor->GUIhovered)
-	{
 		if (App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_DOWN)
 		{
-			
-			currentCamera->OnClick(App->input->GetMouseX(), App->window->Height() - App->input->GetMouseY());
+			currentCamera->OnClick(App->editor->viewportWindow->GetWorldMousePosition());
 		}
 		if (App->input->GetMouseZMotion() != 0)
 		{

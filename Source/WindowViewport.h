@@ -21,7 +21,7 @@ public:
 
 public:
 	float2	GetWorldMousePosition();
-	float2	GetScreenMousePosition();
+	//float2	GetScreenMousePosition();
 	float2	GetWorldMouseMotion();
 
 	inline float2 GetSceneTextureSize() const { return float2(textureSize.x, textureSize.y); };

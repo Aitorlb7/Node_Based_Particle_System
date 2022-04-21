@@ -276,10 +276,11 @@ void ComponentCamera::LookAt(float motion_x, float motion_y)
 	}
 }
 
-void ComponentCamera::OnClick(float pos_x, float pos_y)
+void ComponentCamera::OnClick(float2 mousePOs)
 {
-	float normalPos_x = pos_x / (float)App->window->Width();
-	float normalPos_y = pos_y / (float)App->window->Height();
+
+	float normalPos_x = mousePOs.x / (float)App->window->Width();
+	float normalPos_y = mousePOs.y / (float)App->window->Height();
 
 	normalPos_x = (normalPos_x - 0.5) / 0.5;
 	normalPos_y = (normalPos_y - 0.5) / 0.5;
