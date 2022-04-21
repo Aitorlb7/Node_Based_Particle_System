@@ -93,9 +93,9 @@ update_status ModuleScene::Update(float dt)
 	{
 		if (App->input->GetKey(SDL_SCANCODE_DELETE) == KEY_DOWN) App->scene->DeleteGameObject(App->scene->selected_object);
 	}
-		if (App->input->GetKey(SDL_SCANCODE_W)) gizmoOperation = ImGuizmo::OPERATION::TRANSLATE;
-		else if (App->input->GetKey(SDL_SCANCODE_E)) gizmoOperation = ImGuizmo::OPERATION::ROTATE;
-		else if (App->input->GetKey(SDL_SCANCODE_R)) gizmoOperation = ImGuizmo::OPERATION::SCALE;
+		//if (App->input->GetKey(SDL_SCANCODE_W)) gizmoOperation = ImGuizmo::OPERATION::TRANSLATE;
+		//else if (App->input->GetKey(SDL_SCANCODE_E)) gizmoOperation = ImGuizmo::OPERATION::ROTATE;
+		//else if (App->input->GetKey(SDL_SCANCODE_R)) gizmoOperation = ImGuizmo::OPERATION::SCALE;
 
 	return UPDATE_CONTINUE;
 }
@@ -259,49 +259,49 @@ void ModuleScene::TestGameObjectSelection(const LineSegment& ray)
 	}
 }
 
-void ModuleScene::ImGuizmoHandling()
-{
-	
-	ImGuizmo::BeginFrame();
-	if (selected_object == nullptr) return; 
-
-	ComponentTransform* selected_transform = (ComponentTransform*)selected_object->GetComponent(ComponentType::Transform);
-
-	float4x4 viewMatrix = App->camera->currentCamera->frustum.ViewMatrix();
-	viewMatrix.Transpose();
-	float4x4 projectionMatrix = App->camera->currentCamera->frustum.ProjectionMatrix();
-	projectionMatrix.Transpose();
-	float4x4 modelProjection = selected_transform->GetLocalTransform();
-	modelProjection.Transpose();
-
-	//ImGuizmo::SetDrawlist(ImGui::GetBackgroundDrawList());
-	//ImGuizmo::
-	
-	ImGuizmo::SetRect(0.0f, 0.0f, App->window->Width(), App->window->Height());
-
-	//gizmoOperation
-	float modelPtr[16];
-	memcpy(modelPtr, modelProjection.ptr(), 16 * sizeof(float));
-
-	ImGuizmo::MODE finalMode = (gizmoOperation == ImGuizmo::OPERATION::SCALE ? ImGuizmo::MODE::LOCAL : gizmoMode);
-	
-	//Nothing Else Matters
-	ImGuizmo::Manipulate(viewMatrix.ptr(), projectionMatrix.ptr(), gizmoOperation, finalMode, modelPtr);
-
-
-	if (ImGuizmo::IsUsing())
-	{
-		//Reformat ImGuizmo Transform output to our matrix
-		float4x4 newMatrix;
-		newMatrix.Set(modelPtr);
-		modelProjection = newMatrix.Transposed();
-		
-		
-		//Set Global Transform
-		selected_transform->SetLocalTransform(modelProjection);
-		//selected_transform->SetGlobalTransform(modelProjection);
-	}
-}
+//void ModuleScene::ImGuizmoHandling()
+//{
+//	
+//	ImGuizmo::BeginFrame();
+//	if (selected_object == nullptr) return; 
+//
+//	ComponentTransform* selected_transform = (ComponentTransform*)selected_object->GetComponent(ComponentType::Transform);
+//
+//	float4x4 viewMatrix = App->camera->currentCamera->frustum.ViewMatrix();
+//	viewMatrix.Transpose();
+//	float4x4 projectionMatrix = App->camera->currentCamera->frustum.ProjectionMatrix();
+//	projectionMatrix.Transpose();
+//	float4x4 modelProjection = selected_transform->GetLocalTransform();
+//	modelProjection.Transpose();
+//
+//	//ImGuizmo::SetDrawlist(ImGui::GetBackgroundDrawList());
+//	//ImGuizmo::
+//	
+//	ImGuizmo::SetRect(0.0f, 0.0f, App->window->Width(), App->window->Height());
+//
+//	//gizmoOperation
+//	float modelPtr[16];
+//	memcpy(modelPtr, modelProjection.ptr(), 16 * sizeof(float));
+//
+//	ImGuizmo::MODE finalMode = (gizmoOperation == ImGuizmo::OPERATION::SCALE ? ImGuizmo::MODE::LOCAL : gizmoMode);
+//	
+//	//Nothing Else Matters
+//	ImGuizmo::Manipulate(viewMatrix.ptr(), projectionMatrix.ptr(), gizmoOperation, finalMode, modelPtr);
+//
+//
+//	if (ImGuizmo::IsUsing())
+//	{
+//		//Reformat ImGuizmo Transform output to our matrix
+//		float4x4 newMatrix;
+//		newMatrix.Set(modelPtr);
+//		modelProjection = newMatrix.Transposed();
+//		
+//		
+//		//Set Global Transform
+//		selected_transform->SetLocalTransform(modelProjection);
+//		//selected_transform->SetGlobalTransform(modelProjection);
+//	}
+//}
 
 void ModuleScene::SelectObject(GameObject* object)
 {

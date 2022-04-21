@@ -23,6 +23,7 @@ class WindowHirearchy;
 class WindowInspector;
 class WindowPlay;
 class WindowNodeEditor;
+class WindowViewport;
 
 class ModuleEditor : public Module 
 {
@@ -46,7 +47,7 @@ public:
 
 	void SetupStyleFromHue();
 
-	void DropTargetWindow();
+	void HandleDragAndDrop(const ImGuiPayload* payload);
 	void TextEditorWindow();
 
 	void CallTextEditor(ResourceMaterial* resource);
@@ -65,6 +66,7 @@ public:
 	WindowInspector* inspectorWindow = nullptr;
 	WindowPlay* playWindow = nullptr;
 	WindowNodeEditor* nodeEditorWindow = nullptr;
+	WindowViewport* viewportWindow = nullptr;
 
 	Color frustumColor = Color(1.0f, 1.0f, 0.2f, 0.75f);
 	Color NormalColor = Color(.8f, .8f, 0.0f, 0.75f);

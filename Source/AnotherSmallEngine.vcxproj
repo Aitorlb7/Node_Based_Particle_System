@@ -365,6 +365,7 @@
     <ClInclude Include="WindowInspector.h" />
     <ClInclude Include="WindowNodeEditor.h" />
     <ClInclude Include="WindowPlay.h" />
+    <ClInclude Include="WindowViewport.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
@@ -480,6 +481,7 @@
     <ClCompile Include="WindowInspector.cpp" />
     <ClCompile Include="WindowNodeEditor.cpp" />
     <ClCompile Include="WindowPlay.cpp" />
+    <ClCompile Include="WindowViewport.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Dependencies\Assimp\include\color4.inl" />

@@ -74,6 +74,8 @@
         operator MyVec4() const { return MyVec4(x,y,z,w); }
 */
 
+#define IMGUI_DEFINE_MATH_OPERATORS
+
 //---- Use 32-bit vertex indices (default is 16-bit) is one way to allow large meshes with more than 64K vertices.
 // Your renderer back-end will need to support it (most example renderer back-ends support both 16/32-bit indices).
 // Another way to allow large meshes while keeping 16-bit indices is to handle ImDrawCmd::VtxOffset in your renderer.

@@ -23,6 +23,7 @@
 #include "WindowInspector.h"
 #include "WindowPlay.h"
 #include "WindowNodeEditor.h"
+#include "WindowViewport.h"
 
 #include "ResourceScene.h"
 #include "ResourceMaterial.h"
@@ -59,6 +60,7 @@ ModuleEditor::ModuleEditor(bool start_enabled) : Module(start_enabled)
 	inspectorWindow = new WindowInspector(true);
 	playWindow = new WindowPlay(true);
 	nodeEditorWindow = new WindowNodeEditor(false);
+	viewportWindow = new WindowViewport(true);
 
 	AddWindow(aboutWindow);
 	AddWindow(explorerWindow);
@@ -68,6 +70,7 @@ ModuleEditor::ModuleEditor(bool start_enabled) : Module(start_enabled)
 	AddWindow(inspectorWindow);
 	AddWindow(playWindow);
 	AddWindow(nodeEditorWindow);
+	AddWindow(viewportWindow);
 }
 
 ModuleEditor::~ModuleEditor()
@@ -122,7 +125,6 @@ update_status ModuleEditor::Update(float dt)
 	SetupStyleFromHue();
 
 	if (show_demo_window) ImGui::ShowDemoWindow(&show_demo_window);
-	DropTargetWindow();
 	TextEditorWindow();	
 
 	GUIisHovered();
@@ -135,7 +137,7 @@ update_status ModuleEditor::PostUpdate(float dt)
 {
 	update_status ret = UPDATE_CONTINUE;
 
-	App->scene->ImGuizmoHandling();
+	
 	return ret;
 }
 
@@ -174,6 +176,17 @@ void ModuleEditor::DrawGUI()
 	ImGui::Render();
 	glViewport(0, 0, (int)io.DisplaySize.x, (int)io.DisplaySize.y);
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+	// Updating and rendering additional platform windows
+	/*if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+	{
+		SDL_Window* backupCurrentWindow = SDL_GL_GetCurrentWindow();
+		SDL_GLContext backupCurrentContext = SDL_GL_GetCurrentContext();
+
+		ImGui::UpdatePlatformWindows();
+		ImGui::RenderPlatformWindowsDefault();
+
+		SDL_GL_MakeCurrent(backupCurrentWindow, backupCurrentContext);
+	}*/
 }
 
 void ModuleEditor::GUIisHovered()
@@ -311,67 +324,38 @@ void  ModuleEditor::SetupStyleFromHue()
 	style.Colors[ImGuiCol_NavWindowingDimBg] =		ImVec4(col_text.x, col_text.y, col_text.z, 0.62f);
 }
 
-void ModuleEditor::DropTargetWindow()
+
+void ModuleEditor::HandleDragAndDrop(const ImGuiPayload* payload)
 {
-	if (show_dropTarget_window)
+	ComponentMaterial* compMaterial;
+
+	uint32 UID = *(const uint32*)payload->Data;
+	Resource* resource = App->resources->GetResourceInMemory(UID);
+
+	switch (resource->type)
 	{
-		ImGui::SetNextWindowSize({ 500, 400 });
-		ImGui::SetNextWindowPos({ 300, 50 });
+	case ResourceType::Model:
+		App->resources->LoadResource(UID);
+		break;
+	case ResourceType::Texture:
 
-		ImGuiWindowFlags flags = ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoBackground;
+		compMaterial = (ComponentMaterial*)App->scene->selected_object->GetComponent(ComponentType::Material);
+		compMaterial->GetMaterial()->SetTexture((ResourceTexture*)App->resources->LoadResource(UID));
+		break;
+	case ResourceType::Shader:
 
-		ImGui::Begin("DropTarget", &show_dropTarget_window, flags);
-		
-		//ImGui::Rect
-		//ImGui::
-		ImGui::SetCursorPosX(ImGui::GetWindowWidth() / 2);
-		ImGui::SetCursorPosY(ImGui::GetWindowHeight() / 2);
-		ImGui::Text("Drop asset here:");
-
-		ImGui::SetCursorPosX(0);
-		ImGui::SetCursorPosY(0);
-		ImGui::InvisibleButton("Drop asset here:", ImVec2(ImGui::GetWindowWidth(), ImGui::GetWindowHeight()));
-		
-		if (ImGui::BeginDragDropTarget())
+		if ((ComponentMaterial*)App->scene->selected_object->GetComponent(ComponentType::Material) == nullptr)
 		{
-			ResourceMaterial* material = new ResourceMaterial();
-			ComponentMaterial* compMaterial;
-		
-			//ImGuiDragDropFlags_
-				
-			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("Asset", ImGuiDragDropFlags_AcceptBeforeDelivery))
-			{
-				uint32 UID = *(const uint32*)payload->Data;
-				Resource* resource = App->resources->GetResourceInMemory(UID);
-
-				switch (resource->type)
-				{
-				case ResourceType::Model:
-					App->resources->LoadResource(UID);
-					break;
-				case ResourceType::Texture:
-
-					compMaterial = (ComponentMaterial*)App->scene->selected_object->GetComponent(ComponentType::Material);
-					compMaterial->GetMaterial()->SetTexture((ResourceTexture*)App->resources->LoadResource(UID));
-					break;
-				case ResourceType::Shader:
-
-					if ((ComponentMaterial*)App->scene->selected_object->GetComponent(ComponentType::Material) == nullptr)
-					{
-						break;
-					}
-
-					compMaterial = (ComponentMaterial*)App->scene->selected_object->GetComponent(ComponentType::Material);
-					compMaterial->GetMaterial()->SetShader((ResourceShader*)App->resources->LoadResource(UID));
-
-					break;
-				}
-				// Else make a pop up Error
-			}
-			ImGui::EndDragDropTarget();
-			show_dropTarget_window = false;
+			break;
 		}
-		ImGui::End();
+
+		compMaterial = (ComponentMaterial*)App->scene->selected_object->GetComponent(ComponentType::Material);
+		compMaterial->GetMaterial()->SetShader((ResourceShader*)App->resources->LoadResource(UID));
+		break;
+
+	default:
+		//MAKE POPUP
+		break;
 	}
 }
 
@@ -688,9 +672,9 @@ bool ModuleEditor::MainMenuBar()
 		}
 		if (ImGui::BeginMenu("Tools"))
 		{
-			if (ImGui::MenuItem("Set Guizmo: Translate (W)","W"))	App->scene->gizmoOperation = ImGuizmo::OPERATION::TRANSLATE;
-			if (ImGui::MenuItem("Set Guizmo: Rotate (E)","E"))		App->scene->gizmoOperation = ImGuizmo::OPERATION::ROTATE;
-			if (ImGui::MenuItem("Set Guizmo: Scale (R)","R"))		App->scene->gizmoOperation = ImGuizmo::OPERATION::SCALE;
+			if (ImGui::MenuItem("Set Guizmo: Translate (W)","W"))	App->editor->viewportWindow->SetImGuizmoOperation(ImGuizmo::OPERATION::TRANSLATE);
+			if (ImGui::MenuItem("Set Guizmo: Rotate (E)","E"))		App->editor->viewportWindow->SetImGuizmoOperation(ImGuizmo::OPERATION::ROTATE);
+			if (ImGui::MenuItem("Set Guizmo: Scale (R)","R"))		App->editor->viewportWindow->SetImGuizmoOperation(ImGuizmo::OPERATION::SCALE);
 
 			ImGui::EndMenu();
 		}

@@ -33,7 +33,7 @@ public:
 	GameObject* CreateGameCamera();
 
 	void TestGameObjectSelection(const LineSegment& ray);
-	void ImGuizmoHandling();
+	//void ImGuizmoHandling();
 
 private:
 
@@ -42,10 +42,7 @@ private:
 private:
 	std::vector<Primitive*> primitives;
 
-	ImGuizmo::MODE gizmoMode = ImGuizmo::MODE::WORLD;
-
 public:
-	ImGuizmo::OPERATION gizmoOperation = ImGuizmo::OPERATION::TRANSLATE;
 
 	std::vector<GameObject*> game_objects;
 

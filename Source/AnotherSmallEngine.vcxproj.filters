@@ -340,6 +340,9 @@
     <ClCompile Include="ResourceParticleSystem.cpp">
       <Filter>Resources</Filter>
     </ClCompile>
+    <ClCompile Include="WindowViewport.cpp">
+      <Filter>Editor\Windows</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ModuleWindow.h">
@@ -1158,6 +1161,9 @@
     </ClInclude>
     <ClInclude Include="ResourceParticleSystem.h">
       <Filter>Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="WindowViewport.h">
+      <Filter>Editor\Windows</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
