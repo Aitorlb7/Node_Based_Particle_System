@@ -8,6 +8,7 @@
 #include <vector>
 
 class GameObject;
+class Node;
 
 class ComponentParticleSystem : public Component
 {
@@ -35,6 +36,7 @@ public:
 public:
 
 	std::vector<EmitterInstance> emitters;
+	std::vector<Node*> emittersNodes;
 
 private:
 	ResourceParticleSystem* rParticleSystem = nullptr;

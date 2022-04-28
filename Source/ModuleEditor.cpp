@@ -59,7 +59,7 @@ ModuleEditor::ModuleEditor(bool start_enabled) : Module(start_enabled)
 	hirearchyWindow = new WindowHirearchy(true);
 	inspectorWindow = new WindowInspector(true);
 	playWindow = new WindowPlay(true);
-	nodeEditorWindow = new WindowNodeEditor(false);
+	nodeEditorWindow = new WindowNodeEditor(true);
 	viewportWindow = new WindowViewport(true);
 
 	AddWindow(aboutWindow);

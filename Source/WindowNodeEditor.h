@@ -1,3 +1,7 @@
+#ifndef WINDOW_NODE_EDITOR_H	
+#define WINDOW_NODE_EDITOR_H
+
+
 #include "Window.h"
 #include "NodeBuilder.h"
 #include <map>
@@ -18,21 +22,14 @@ public:
 
 	void UpdateTouch();
 	float GetTouchProgress(ed::NodeId id);
-	//Node* FindNode(ed::NodeId id);
+	Node* FindNode(ed::NodeId id);
 	Link* FindLink(ed::LinkId id);
 	Pin* FindPin(ed::PinId id);
 	bool IsPinLinked(ed::PinId id);
 	bool CanCreateLink(Pin* a, Pin* b);
 
 	void BuildNode(Node* node);
-
 	void BuildNodes();
-
-	Node* CreateEmiterNode();
-
-	Node* CreateGroupNode();
-
-	Node* CreateMessageNode();
 
 	ImColor GetIconColor(PinType type);
 	void DrawIcon(ImDrawList* drawList, const ImVec2& a, const ImVec2& b, IconType type, bool filled, ImU32 color, ImU32 innerColor);
@@ -43,9 +40,21 @@ public:
 
 	inline int GetNextId() { return nextId++;}
 	inline ed::LinkId GetNextLinkId() { return ed::LinkId(GetNextId()); }
-	//inline void TouchNode(ed::NodeId id) { nodeTouchTime[id] = touchTime;}
+	inline void TouchNode(ed::NodeId id) { nodeTouchTime[id] = touchTime;}
 
 	ImRect ImRect_Expanded(const ImRect& rect, float x, float y);
+
+	//Particle Nodes
+	void RightClickMenu(Node* node);
+
+
+	Node* CreateEmiterNode();
+
+	Node* CreateFloat3Node();
+
+	Node* CreateFloatNode();
+
+	Node* CreateColorNode();
 
 public:
 	std::vector<Node> nodes;
@@ -62,7 +71,5 @@ private:
 	ed::EditorContext* contextEditor = nullptr;
 	ImTextureID      headerBackground = nullptr;
 
-
-
-
-};
+}; 
+#endif /* WINDOW_NODE_EDITOR_H */

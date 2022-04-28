@@ -1,9 +1,19 @@
 #include "ComponentParticleSystem.h"
+#include "Application.h"
+#include "ModuleEditor.h"
+#include "WindowNodeEditor.h"
 
 ComponentParticleSystem::ComponentParticleSystem(GameObject* gameObject) : Component(gameObject)
 {
 	rParticleSystem = new ResourceParticleSystem();
 	type = ComponentType::ParticleSystem;
+
+	//TODO Reallocate to Modules creator
+	if (App->editor->nodeEditorWindow)
+	{
+		Node* defaultEmiiter = App->editor->nodeEditorWindow->CreateEmiterNode();
+		emittersNodes.push_back(defaultEmiiter);
+	}
 }
 
 ComponentParticleSystem::ComponentParticleSystem(GameObject* gameObject, const char* meshPath, ResourceParticleSystem* _mesh) : Component(gameObject)

@@ -1,3 +1,5 @@
+#ifndef _NODE_
+#define _NODE_
 #include "Dependencies/NodeEditor/imgui_node_editor.h"
 #include "Globals.h"
 
@@ -12,6 +14,8 @@ enum class PinType
     String,
     Object,
     Function,
+    Float3,
+    Color,
     Delegate,
 };
 
@@ -97,4 +101,5 @@ public:
     std::string State;
     std::string SavedState;
 };
-    
+
+#endif //_NODE_

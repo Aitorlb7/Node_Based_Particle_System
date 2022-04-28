@@ -1,3 +1,6 @@
+#ifndef _NODE_BUILDER_
+#define _NODE_BUILDER_
+
 #include "Node.h"
 
 enum class Stage
@@ -56,3 +59,4 @@ private:
     ImVec2      ContentMax;
     bool        HasHeader;
 };
+#endif //_NODE_BUILDER_

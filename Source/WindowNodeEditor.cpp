@@ -7,6 +7,8 @@
 #include <imgui_internal.h>
 #include <imgui_impl_dx11.h>
 
+#include "Dependencies/MathGeoLib/include/Math/float3.h"
+
 WindowNodeEditor::WindowNodeEditor(bool isActive): Window("Particle System Node Editor", isActive)
 {
 }
@@ -16,28 +18,18 @@ WindowNodeEditor::~WindowNodeEditor()
 }
 
 //TODO: STATIC really????
-static void TouchNode(ed::NodeId id)
+ void TouchNode(ed::NodeId id)
 {
     App->editor->nodeEditorWindow->nodeTouchTime[id] = App->editor->nodeEditorWindow->touchTime;
-}
-static Node* FindNode(ed::NodeId id)
-{
-    for (Node& node : App->editor->nodeEditorWindow->nodes)
-    {
-        if (node.ID == id)
-            return &node;
-    }
-
-    return nullptr;
 }
 
 void WindowNodeEditor::Start()
 {
 	ed::Config config;
 
-	config.SettingsFile = "Blueprints.json";
+	config.SettingsFile = "ParticleNodeEditor.json";
 
-	config.LoadNodeSettings = [](ed::NodeId nodeId, char* data, void* userPointer) -> size_t
+	/*config.LoadNodeSettings = [](ed::NodeId nodeId, char* data, void* userPointer) -> size_t
 	{
 
         Node* FindNode(ed::NodeId id);
@@ -64,15 +56,10 @@ void WindowNodeEditor::Start()
 		TouchNode(nodeId);
 
 		return true;
-	};
+	};*/
 
 	contextEditor = ed::CreateEditor(&config);
     ed::SetCurrentEditor(contextEditor);
-
-	Node* node;
-	node = CreateEmiterNode();      ed::SetNodePosition(node->ID, ImVec2(210, 60));
-    node = CreateGroupNode();      ed::SetNodePosition(node->ID, ImVec2(300, 60));
-    node = CreateMessageNode();      ed::SetNodePosition(node->ID, ImVec2(100, 60));
 
 	ed::NavigateToContent();
 
@@ -236,10 +223,18 @@ void WindowNodeEditor::Draw()
 
                 ImGui::PushStyleVar(ImGuiStyleVar_Alpha, alpha);
                 builder.Output(output.ID);
-                if (output.Type == PinType::String)
+
+                //TODO: This wont be static (Just Testing)
+
+                static float f = 1.0f;
+                static float3 f3 = float3(1.0, 1.0, 1.0);
+                static float4 col = float4(1.0, 1.0, 1.0, 1.0);
+                static bool wasActive = false;
+                static char buffer[128] = "Edit Me\nMultiline!";
+                
+                switch (output.Type)
                 {
-                    static char buffer[128] = "Edit Me\nMultiline!";
-                    static bool wasActive = false;
+                case PinType::String:
 
                     ImGui::PushItemWidth(100.0f);
                     ImGui::InputText("##edit", buffer, 127);
@@ -255,7 +250,73 @@ void WindowNodeEditor::Draw()
                         wasActive = false;
                     }
                     ImGui::Spring(0);
+
+                    break;
+
+                case PinType::Float:
+
+                    ImGui::PushItemWidth(100.0f);
+                    ImGui::InputFloat("", &f, 0.0f, 0.0f, "%.2f");
+                    ImGui::PopItemWidth();
+                    if (ImGui::IsItemActive() && !wasActive)
+                    {
+                        ed::EnableShortcuts(false);
+                        wasActive = true;
+                    }
+                    else if (!ImGui::IsItemActive() && wasActive)
+                    {
+                        ed::EnableShortcuts(true);
+                        wasActive = false;
+                    }
+                    ImGui::Spring(0);
+
+                    break;
+                case PinType::Float3:
+
+                    ImGui::PushItemWidth(200.0f);
+                    //ImGui::InputFloat3("", (float*)&f3, 2);
+
+                    ImGui::DragFloat3("", (float*)&f3,1.0,0,0, "%.2f");
+
+                    ImGui::PopItemWidth();
+                    if (ImGui::IsItemActive() && !wasActive)
+                    {
+                        ed::EnableShortcuts(false);
+                        wasActive = true;
+                    }
+                    else if (!ImGui::IsItemActive() && wasActive)
+                    {
+                        ed::EnableShortcuts(true);
+                        wasActive = false;
+                    }
+                    ImGui::Spring(0);
+
+                    break;
+                case PinType::Color:
+
+                    ImGui::PushItemWidth(200.0f);
+                    //ImGui::InputFloat3("", (float*)&f3, 2);
+
+                    ImGui::DragFloat4("", (float*)&col, ImGuiColorEditFlags_Float);
+                    ImGui::ColorButton("", *(ImVec4*)&col , ImGuiColorEditFlags_NoBorder, ImVec2(20, 20));
+                    ImGui::PopItemWidth();
+                    if (ImGui::IsItemActive() && !wasActive)
+                    {
+                        ed::EnableShortcuts(false);
+                        wasActive = true;
+                    }
+                    else if (!ImGui::IsItemActive() && wasActive)
+                    {
+                        ed::EnableShortcuts(true);
+                        wasActive = false;
+                    }
+                    ImGui::Spring(0);
+
+                    break;
+                default:
+                    break;
                 }
+
                 if (!output.Name.empty())
                 {
                     ImGui::Spring(0);
@@ -837,9 +898,8 @@ void WindowNodeEditor::Draw()
         //drawList->AddCircleFilled(ImGui::GetMousePosOnOpeningCurrentPopup(), 10.0f, 0xFFFF00FF);
 
         Node* node = nullptr;
-        if (ImGui::MenuItem("Input Action"))
-            node = CreateEmiterNode();
-        
+
+        RightClickMenu(node);
 
         if (node)
         {
@@ -941,6 +1001,17 @@ float WindowNodeEditor::GetTouchProgress(ed::NodeId id)
         return 0.0f;
 }
 
+Node* WindowNodeEditor::FindNode(ed::NodeId id)
+{
+    for (Node& node : App->editor->nodeEditorWindow->nodes)
+    {
+        if (node.ID == id)
+            return &node;
+    }
+
+    return nullptr;
+}
+
 //Node* WindowNodeEditor::FindNode(ed::NodeId id)
 //{
 //	for (Node& node : nodes)
@@ -1030,50 +1101,10 @@ void WindowNodeEditor::BuildNodes()
 		BuildNode(&node);
 }
 
-Node* WindowNodeEditor::CreateEmiterNode()
-{
-
-    nodes.emplace_back(GetNextId(), "Emitter", ImColor(128, 195, 248));
-    nodes.back().Inputs.emplace_back(GetNextId(), "", PinType::Flow);
-    nodes.back().Inputs.emplace_back(GetNextId(), "Particle", PinType::Object);
-    nodes.back().Inputs.emplace_back(GetNextId(), "Function 'X'", PinType::Function);
-    nodes.back().Inputs.emplace_back(GetNextId(), "LifeTime", PinType::Float);
-    nodes.back().Inputs.emplace_back(GetNextId(), "Active", PinType::Bool);
-    nodes.back().Outputs.emplace_back(GetNextId(), "", PinType::Flow);
-
-    BuildNode(&nodes.back());
-
-	return &nodes.back();
-}
-
-Node* WindowNodeEditor::CreateGroupNode()
-{
-    nodes.emplace_back(GetNextId(), "Group", ImColor(128, 195, 248));
-    nodes.back().Type = NodeType::Comment;
-    nodes.back().Outputs.emplace_back(GetNextId(), "Bool", PinType::Bool);
-    nodes.back().Size = ImVec2(200 , 200);
-
-    BuildNode(&nodes.back());
-
-    return &nodes.back();
-}
-
-Node* WindowNodeEditor::CreateMessageNode()
-{
-
-    nodes.emplace_back(GetNextId(), "", ImColor(128, 195, 248));
-    nodes.back().Type = NodeType::Simple;
-    nodes.back().Outputs.emplace_back(GetNextId(), "Message", PinType::String);
-
-    BuildNode(&nodes.back());
-
-    return &nodes.back();
-}
-
 
 ImColor WindowNodeEditor::GetIconColor(PinType type)
 {
-	switch (type)
+	/*switch (type)
 	{
 	default:
 	case PinType::Flow:     return ImColor(255, 255, 255);
@@ -1083,8 +1114,26 @@ ImColor WindowNodeEditor::GetIconColor(PinType type)
 	case PinType::String:   return ImColor(124, 21, 153);
 	case PinType::Object:   return ImColor(51, 150, 215);
 	case PinType::Function: return ImColor(218, 0, 183);
+    case PinType::Vector3: return ImColor(218, 0, 183);
 	case PinType::Delegate: return ImColor(255, 48, 48);
-	}
+	}*/
+
+    //Full Red Test
+
+    switch (type)
+    {
+    default:
+    case PinType::Flow:     return ImColor(255, 255, 255);
+    case PinType::Bool:     return ImColor(220, 80, 80);
+    case PinType::Int:      return ImColor(220, 80, 80);
+    case PinType::Float:    return ImColor(220, 80, 80);
+    case PinType::String:   return ImColor(220, 80, 80);
+    case PinType::Object:   return ImColor(51, 150, 215);
+    case PinType::Function: return ImColor(218, 0, 183);
+    case PinType::Float3: return ImColor(220, 80, 80);
+    case PinType::Color:   return ImColor(220, 80, 80);
+    case PinType::Delegate: return ImColor(255, 48, 48);
+    }
 }
 
 void WindowNodeEditor::DrawIcon(ImDrawList* drawList, const ImVec2& a, const ImVec2& b, IconType type, bool filled, ImU32 color, ImU32 innerColor)
@@ -1322,6 +1371,8 @@ void WindowNodeEditor::DrawPinIcon(const Pin& pin, bool connected, int alpha)
 	case PinType::String:   iconType = IconType::Circle; break;
 	case PinType::Object:   iconType = IconType::Circle; break;
 	case PinType::Function: iconType = IconType::Circle; break;
+    case PinType::Float3: iconType = IconType::Circle; break;
+    case PinType::Color: iconType = IconType::Circle; break;
 	case PinType::Delegate: iconType = IconType::Square; break;
 	default:
 		return;
@@ -1543,4 +1594,77 @@ ImRect WindowNodeEditor::ImRect_Expanded(const ImRect& rect, float x, float y)
     result.Max.x += x;
     result.Max.y += y;
     return result;
+}
+
+
+Node* WindowNodeEditor::CreateEmiterNode()
+{
+
+    nodes.emplace_back(GetNextId(), "Emitter", ImColor(128, 195, 248));
+    nodes.back().Inputs.emplace_back(GetNextId(), "Spawn", PinType::Float);
+    nodes.back().Inputs.emplace_back(GetNextId(), "Initial Position", PinType::Float3);
+    nodes.back().Inputs.emplace_back(GetNextId(), "Velocity", PinType::Float3);
+    nodes.back().Inputs.emplace_back(GetNextId(), "Lifetime", PinType::Float);
+    nodes.back().Inputs.emplace_back(GetNextId(), "Size", PinType::Float3);
+    nodes.back().Inputs.emplace_back(GetNextId(), "Color", PinType::Float3);
+    nodes.back().Inputs.emplace_back(GetNextId(), "Active", PinType::Bool);
+
+    BuildNode(&nodes.back());
+
+    return &nodes.back();
+}
+
+Node* WindowNodeEditor::CreateFloat3Node()
+{
+    nodes.emplace_back(GetNextId(), "", ImColor(128, 195, 248));
+    nodes.back().Type = NodeType::Simple;
+    nodes.back().Outputs.emplace_back(GetNextId(), "Float3", PinType::Float3);
+    BuildNode(&nodes.back());
+    BuildNode(&nodes.back());
+
+    return &nodes.back();
+}
+
+Node* WindowNodeEditor::CreateFloatNode()
+{
+    nodes.emplace_back(GetNextId(), "", ImColor(128, 195, 248));
+    nodes.back().Type = NodeType::Simple;
+    nodes.back().Outputs.emplace_back(GetNextId(), "Float", PinType::Float);
+    BuildNode(&nodes.back());
+
+    return &nodes.back();
+}
+
+Node* WindowNodeEditor::CreateColorNode()
+{
+
+    nodes.emplace_back(GetNextId(), "", ImColor(128, 195, 248));
+    nodes.back().Type = NodeType::Simple;
+    nodes.back().Outputs.emplace_back(GetNextId(), "Color", PinType::Color);
+    BuildNode(&nodes.back());
+
+    return &nodes.back();
+    return nullptr;
+}
+
+
+void WindowNodeEditor::RightClickMenu(Node* node)
+{
+   
+    if (ImGui::BeginMenu("Create"))
+    {
+        if (ImGui::MenuItem("Particle Emitter"))
+            node = CreateEmiterNode();
+        if (ImGui::MenuItem("Float"))
+            node = CreateFloatNode();
+        if (ImGui::MenuItem("Float3"))
+            node = CreateFloat3Node();
+
+        ImGui::EndMenu();
+    }
+    if (ImGui::MenuItem("Focus"))
+    {
+        ed::NavigateToContent();
+       
+    }
 }
