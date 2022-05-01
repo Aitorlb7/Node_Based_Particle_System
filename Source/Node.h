@@ -2,28 +2,10 @@
 #define _NODE_
 #include "Dependencies/NodeEditor/imgui_node_editor.h"
 #include "Globals.h"
+#include "Pin.h"
 
 namespace ed = ax::NodeEditor;
 
-enum class PinType
-{
-    Flow,
-    Bool,
-    Int,
-    Float,
-    String,
-    Object,
-    Function,
-    Float3,
-    Color,
-    Delegate,
-};
-
-enum class PinKind
-{
-    Output,
-    Input
-};
 
 enum class NodeType
 {
@@ -46,19 +28,6 @@ enum class IconType : ImU32
 
 class Node;
 
-struct Pin
-{
-    ed::PinId   ID;
-    Node* Node;
-    std::string Name;
-    PinType     Type;
-    PinKind     Kind;
-
-    Pin(int id, const char* name, PinType type) :
-        ID(id), Node(nullptr), Name(name), Type(type), Kind(PinKind::Input)
-    {
-    }
-};
 
 struct Link
 {
@@ -92,8 +61,8 @@ public:
 public:
     ed::NodeId ID;
     std::string Name;
-    std::vector<Pin> Inputs;
-    std::vector<Pin> Outputs;
+    std::vector<Pin*> Inputs;
+    std::vector<Pin*> Outputs;
     ImColor Color;
     NodeType Type;
     ImVec2 Size;

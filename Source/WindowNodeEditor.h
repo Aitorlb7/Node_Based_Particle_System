@@ -33,7 +33,7 @@ public:
 
 	ImColor GetIconColor(PinType type);
 	void DrawIcon(ImDrawList* drawList, const ImVec2& a, const ImVec2& b, IconType type, bool filled, ImU32 color, ImU32 innerColor);
-	void DrawPinIcon(const Pin& pin, bool connected, int alpha);
+	void DrawPinIcon(const Pin* pin, bool connected, int alpha);
 	bool Splitter(bool split_vertically, float thickness, float* size1, float* size2, float min_size1, float min_size2, float splitter_long_axis_size);
 	void ShowLeftPane(float paneWidth);
 	void ShowStyleEditor(bool* show);
@@ -70,6 +70,9 @@ private:
 	std::vector<Link> links;
 	ed::EditorContext* contextEditor = nullptr;
 	ImTextureID      headerBackground = nullptr;
+
+
+
 
 }; 
 #endif /* WINDOW_NODE_EDITOR_H */
