@@ -7,14 +7,14 @@ class PinFloat : public Pin
 public:
 
     PinFloat(int id, const char* name) : Pin(id, name, PinType::Float),
-        floatNum(0)
+        pinFloat(0)
     {
     }
     ~PinFloat() {}
 
 public:
 
-    float floatNum;
+    float pinFloat;
 
 };
 

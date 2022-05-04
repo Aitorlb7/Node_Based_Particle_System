@@ -7,14 +7,14 @@ class PinInt : public Pin
 public:
 
     PinInt(int id, const char* name) : Pin(id,name,PinType::Int),
-		integer(0)
+		pinInt(0)
     {
     }
     ~PinInt(){}
 
 public:
 
-    int integer;
+    int pinInt;
 
 };
 

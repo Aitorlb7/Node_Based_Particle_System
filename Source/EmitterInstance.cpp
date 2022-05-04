@@ -6,13 +6,25 @@
 #include "ModuleRenderer3D.h"
 #include "ResourceMaterial.h"
 #include "Dependencies/MathGeoLib/include/Math/float4x4.h"
+
+#include "Application.h"
+#include "ModuleEditor.h"
+#include "WindowNodeEditor.h"
 #include <map>
-EmitterInstance::EmitterInstance()
+EmitterInstance::EmitterInstance() : 
+	emitterNode(nullptr),
+	isActive(false)
 {
 }
 
 void EmitterInstance::Init(Emitter* emitterReference, ComponentParticleSystem* component)
 {
+	//TODO Reallocate to Modules creator
+	if (App->editor->nodeEditorWindow)
+	{
+		emitterNode = App->editor->nodeEditorWindow->CreateParticleSystem();
+	}
+
 	this->emitterReference = emitterReference;
 	this->component = component;
 
@@ -58,10 +70,20 @@ void EmitterInstance::SpawnParticle()
 
 	for (int i = 0; i < emitterReference->modules.size(); ++i)
 	{
-		emitterReference->modules[i]->Spawn(this, &particles[particleIndex]);
+		emitterReference->modules[i]->Spawn(this, &particles[particleIndex], emitterNode);
 	}
 
 	++activeParticles;
+}
+
+void EmitterInstance::UpdateWithNode()
+{
+	for (int i = 0; i < emitterReference->modules.size(); ++i)
+	{
+		emitterReference->modules[i]->UpdateWithNode(this, emitterNode);
+	}
+
+	emitterNode->updateEmitter = false;
 }
 
 void EmitterInstance::KillDeadParticles()
@@ -90,6 +112,6 @@ void EmitterInstance::UpdateModules()
 {
 	for (int i = 0; i < emitterReference->modules.size(); ++i)
 	{
-		emitterReference->modules[i]->Update(this);
+		emitterReference->modules[i]->Update(this, emitterNode);
 	}
 }

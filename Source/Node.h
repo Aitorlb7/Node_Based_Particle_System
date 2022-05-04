@@ -13,7 +13,8 @@ enum class NodeType
     Simple,
     Tree,
     Comment,
-    Houdini
+    Houdini,
+    Velocity
 };
 
 enum class IconType : ImU32 
@@ -55,8 +56,11 @@ struct NodeIdLess
 class Node
 {
 public:
-    Node(int id, const char* name, ImColor color = ImColor(255, 255, 255));
+    Node(int id, const char* name, ImColor color = ImColor(255, 255, 255), NodeType type = NodeType::Blueprint);
     ~Node();
+
+    const Pin* GetInputPinByName(std::string pinName) const;
+    const Pin* GetOutputPinByName(std::string pinName) const;
 
 public:
     ed::NodeId ID;
@@ -69,6 +73,9 @@ public:
 
     std::string State;
     std::string SavedState;
+
+    bool updateLinks;
+    bool updateEmitter;
 };
 
 #endif //_NODE_

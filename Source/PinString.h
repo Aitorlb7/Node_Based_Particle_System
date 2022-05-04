@@ -7,16 +7,16 @@ class PinString : public Pin
 public:
 
     PinString(int id, const char* name) : Pin(id, name, PinType::String),
-        string("")
+        pinString("")
     {
     }
     ~PinString() {}
 
 public:
 
-    std::string string;
+    std::string pinString;
 
 };
 
 
-#endif //_PIN_INT_
+#endif //_PIN_STRING_

@@ -37,6 +37,8 @@ public:
     void Output(ed::PinId id);
     void EndOutput();
 
+    void SetCustomNode();
+
 
 private:
 
@@ -58,5 +60,7 @@ private:
     ImVec2      ContentMin;
     ImVec2      ContentMax;
     bool        HasHeader;
+
+    bool        CustomNode;
 };
 #endif //_NODE_BUILDER_

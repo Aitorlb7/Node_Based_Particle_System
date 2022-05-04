@@ -346,6 +346,9 @@
     <ClCompile Include="Pin.cpp">
       <Filter>Tools\NodeEditor</Filter>
     </ClCompile>
+    <ClCompile Include="VelocityNode.cpp">
+      <Filter>Tools\NodeEditor\Nodes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ModuleWindow.h">
@@ -1183,6 +1186,15 @@
     <ClInclude Include="PinString.h">
       <Filter>Tools\NodeEditor\Pins</Filter>
     </ClInclude>
+    <ClInclude Include="PinBool.h">
+      <Filter>Tools\NodeEditor\Pins</Filter>
+    </ClInclude>
+    <ClInclude Include="VelocityNode.h">
+      <Filter>Tools\NodeEditor\Nodes</Filter>
+    </ClInclude>
+    <ClInclude Include="PinFloat4.h">
+      <Filter>Tools\NodeEditor\Pins</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Dependencies">
@@ -1280,6 +1292,9 @@
     </Filter>
     <Filter Include="Tools\NodeEditor\Pins">
       <UniqueIdentifier>{e9804eed-016f-4460-8aa0-fa7827a45dea}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Tools\NodeEditor\Nodes">
+      <UniqueIdentifier>{1fcac068-d77b-424f-844e-73d61e70b9f0}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
