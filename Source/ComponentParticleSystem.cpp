@@ -1,9 +1,13 @@
 #include "ComponentParticleSystem.h"
+#include "Node.h"
+
 
 ComponentParticleSystem::ComponentParticleSystem(GameObject* gameObject) : Component(gameObject)
 {
 	rParticleSystem = new ResourceParticleSystem();
 	type = ComponentType::ParticleSystem;
+
+
 }
 
 ComponentParticleSystem::ComponentParticleSystem(GameObject* gameObject, const char* meshPath, ResourceParticleSystem* _mesh) : Component(gameObject)
@@ -24,11 +28,19 @@ void ComponentParticleSystem::Update()
 {
 	for (uint i = 0; i < emitters.size(); ++i)
 	{
-		emitters[i].Update();
+		if (emitters[i].emitterNode->updateEmitter)
+		{
+			emitters[i].UpdateWithNode();
+		}
 
-		//TODO: This shoudnt be here
+		if (emitters[i].isActive)
+		{
+			emitters[i].Update();
 
-		emitters[i].DrawParticles();
+			//TODO: This shoudnt be here
+
+			emitters[i].DrawParticles();
+		}
 	}
 }
 
@@ -36,7 +48,10 @@ void ComponentParticleSystem::Reset()
 {
 	for (uint i = 0; i < emitters.size(); ++i)
 	{
-		emitters[i].Reset();
+		if (emitters[i].isActive)
+		{
+			emitters[i].Reset();
+		}
 	}
 }
 

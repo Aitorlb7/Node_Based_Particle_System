@@ -1,25 +1,11 @@
+#ifndef _NODE_
+#define _NODE_
 #include "Dependencies/NodeEditor/imgui_node_editor.h"
 #include "Globals.h"
+#include "Pin.h"
 
 namespace ed = ax::NodeEditor;
 
-enum class PinType
-{
-    Flow,
-    Bool,
-    Int,
-    Float,
-    String,
-    Object,
-    Function,
-    Delegate,
-};
-
-enum class PinKind
-{
-    Output,
-    Input
-};
 
 enum class NodeType
 {
@@ -27,7 +13,8 @@ enum class NodeType
     Simple,
     Tree,
     Comment,
-    Houdini
+    Houdini,
+    Velocity
 };
 
 enum class IconType : ImU32 
@@ -42,19 +29,6 @@ enum class IconType : ImU32
 
 class Node;
 
-struct Pin
-{
-    ed::PinId   ID;
-    Node* Node;
-    std::string Name;
-    PinType     Type;
-    PinKind     Kind;
-
-    Pin(int id, const char* name, PinType type) :
-        ID(id), Node(nullptr), Name(name), Type(type), Kind(PinKind::Input)
-    {
-    }
-};
 
 struct Link
 {
@@ -82,19 +56,26 @@ struct NodeIdLess
 class Node
 {
 public:
-    Node(int id, const char* name, ImColor color = ImColor(255, 255, 255));
+    Node(int id, const char* name, ImColor color = ImColor(255, 255, 255), NodeType type = NodeType::Blueprint);
     ~Node();
+
+    const Pin* GetInputPinByName(std::string pinName) const;
+    const Pin* GetOutputPinByName(std::string pinName) const;
 
 public:
     ed::NodeId ID;
     std::string Name;
-    std::vector<Pin> Inputs;
-    std::vector<Pin> Outputs;
+    std::vector<Pin*> Inputs;
+    std::vector<Pin*> Outputs;
     ImColor Color;
     NodeType Type;
     ImVec2 Size;
 
     std::string State;
     std::string SavedState;
+
+    bool updateLinks;
+    bool updateEmitter;
 };
-    
+
+#endif //_NODE_

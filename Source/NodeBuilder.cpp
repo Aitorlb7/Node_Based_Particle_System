@@ -12,7 +12,8 @@ NodeBuilder::NodeBuilder(ImTextureID texture, int textureWidth, int textureHeigh
     HeaderTextureHeight(textureHeight),
     CurrentNodeId(0),
     CurrentStage(Stage::Invalid),
-    HasHeader(false)
+    HasHeader(false),
+    CustomNode(false)
 {
 }
 
@@ -147,6 +148,11 @@ void NodeBuilder::EndOutput()
     EndPin();
 }
 
+void NodeBuilder::SetCustomNode()
+{
+    CustomNode = true;
+}
+
 bool NodeBuilder::SetStage(Stage stage)
 {
     if (stage == CurrentStage)
@@ -180,9 +186,9 @@ bool NodeBuilder::SetStage(Stage stage)
         ImGui::Spring(1, 0);
         ImGui::EndVertical();
 
-        // #debug
-        // ImGui::GetWindowDrawList()->AddRect(
-        //     ImGui::GetItemRectMin(), ImGui::GetItemRectMax(), IM_COL32(255, 0, 0, 255));
+         //#debug
+         /*ImGui::GetWindowDrawList()->AddRect(
+             ImGui::GetItemRectMin(), ImGui::GetItemRectMax(), IM_COL32(255, 0, 0, 255));*/
 
         break;
 
@@ -230,8 +236,12 @@ bool NodeBuilder::SetStage(Stage stage)
         if (oldStage == Stage::Begin)
             ImGui::Spring(0);
 
-        ImGui::BeginHorizontal("content");
-        ImGui::Spring(0, 0);
+        if (!CustomNode)
+        {
+            ImGui::BeginHorizontal("content");
+            ImGui::Spring(0, 0);
+        }
+
         break;
 
     case Stage::Input:
@@ -266,8 +276,9 @@ bool NodeBuilder::SetStage(Stage stage)
     case Stage::End:
         if (oldStage == Stage::Input)
             ImGui::Spring(1, 0);
-        if (oldStage != Stage::Begin)
+        if (oldStage != Stage::Begin && !CustomNode)
             ImGui::EndHorizontal();
+
         ContentMin = ImGui::GetItemRectMin();
         ContentMax = ImGui::GetItemRectMax();
 

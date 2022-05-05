@@ -1,3 +1,6 @@
+#ifndef _NODE_BUILDER_
+#define _NODE_BUILDER_
+
 #include "Node.h"
 
 enum class Stage
@@ -34,6 +37,8 @@ public:
     void Output(ed::PinId id);
     void EndOutput();
 
+    void SetCustomNode();
+
 
 private:
 
@@ -55,4 +60,7 @@ private:
     ImVec2      ContentMin;
     ImVec2      ContentMax;
     bool        HasHeader;
+
+    bool        CustomNode;
 };
+#endif //_NODE_BUILDER_

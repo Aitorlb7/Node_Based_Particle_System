@@ -10,17 +10,24 @@
 #include "ComponentTransform.h"
 #include "ComponentCamera.h"
 
+#include "Node.h"
+#include "PinFloat.h"
+#include "PinFloat3.h"
+#include "PinFloat4.h"
+#include "PinInt.h"
+#include "PinBool.h"
+
 #include "Dependencies/MathGeoLib/include/Math/float3x3.h"
 
 #pragma region Emitter Base
 
-void EmitterBase::Spawn(EmitterInstance* emitter, Particle* particle)
+void EmitterBase::Spawn(EmitterInstance* emitter, Particle* particle, Node* emitterNode)
 {
 	ComponentTransform* emitterTransform = (ComponentTransform*)emitter->component->gameObject->GetComponent(ComponentType::Transform);
 	particle->position += emitterTransform->GetPosition() + emitterOrigin;
 }
 
-void EmitterBase::Update(EmitterInstance* emitter)
+void EmitterBase::Update(EmitterInstance* emitter, Node* emitterNode)
 {
 	ComponentTransform* cameraTransform = nullptr;
 	if (App->camera->gameCamera)
@@ -36,6 +43,17 @@ void EmitterBase::Update(EmitterInstance* emitter)
 		particle->worldRotation = GetParticleAlignment(particle->position, cameraTransform->GetLocalTransform());
 		particle->distanceToCamera = float3(cameraTransform->GetLocalTransform().TranslatePart() - particle->position).LengthSq();
 	}
+}
+
+void EmitterBase::UpdateWithNode(EmitterInstance* emitter, Node* emitterNode)
+{
+	PinBool* pin = (PinBool*)emitterNode->GetInputPinByName("Active");
+
+	if (pin)
+	{
+		emitter->isActive = pin->pinBool;
+	}
+
 }
 
 Quat EmitterBase::GetParticleAlignment(const float3& position, const float4x4& cameraTransform)
@@ -105,13 +123,18 @@ Quat EmitterBase::GetParticleAlignment(const float3& position, const float4x4& c
 
 #pragma region Emitter Spawn
 
-void EmitterSpawn::Spawn(EmitterInstance* emitter, Particle* particle)
+void EmitterSpawn::Spawn(EmitterInstance* emitter, Particle* particle, Node* emitterNode)
 {
 	//TODO Create Spawn
+	/*PinFloat* pin = (PinFloat*)emitterNode->GetInputPinByName("Spawn");
+
+	spawnRatio = pin->floatNum;*/
+
 }
 
-void EmitterSpawn::Update(EmitterInstance* emitter)
+void EmitterSpawn::Update(EmitterInstance* emitter, Node* emitterNode)
 {
+
 	currentTimer += App->GetDT();
 	if (currentTimer > spawnRatio)
 	{
@@ -120,15 +143,30 @@ void EmitterSpawn::Update(EmitterInstance* emitter)
 	}
 }
 
+void EmitterSpawn::UpdateWithNode(EmitterInstance* emitter, Node* emitterNode)
+{
+	PinFloat* pin = (PinFloat*)emitterNode->GetInputPinByName("Spawn");
+
+	if (pin)
+	{
+		spawnRatio = pin->pinFloat;
+	}
+
+}
+
 #pragma endregion
 
 #pragma region Emitter Area
 
-void EmitterArea::Spawn(EmitterInstance* emitter, Particle* particle)
+void EmitterArea::Spawn(EmitterInstance* emitter, Particle* particle, Node* emitterNode)
 {
 }
 
-void EmitterArea::Update(EmitterInstance* emitter)
+void EmitterArea::Update(EmitterInstance* emitter, Node* emitterNode)
+{
+}
+
+void EmitterArea::UpdateWithNode(EmitterInstance* emitter, Node* emitterNode)
 {
 }
 
@@ -136,68 +174,128 @@ void EmitterArea::Update(EmitterInstance* emitter)
 
 #pragma region Particle Position
 
-void ParticlePosition::Spawn(EmitterInstance* emitter, Particle* particle)
+void ParticlePosition::Spawn(EmitterInstance* emitter, Particle* particle, Node* emitterNode)
 {
-	particle->position += Random::GenerateRandomFloat3(initialPosition1, initialPosition2);
+	particle->position += initialPosition;
+
+	
+	//particle->position += Random::GenerateRandomFloat3(initialPosition1, initialPosition2);
+
 
 }
 
-void ParticlePosition::Update(EmitterInstance* emitter)
+void ParticlePosition::Update(EmitterInstance* emitter, Node* emitterNode)
 {
+
+}
+
+void ParticlePosition::UpdateWithNode(EmitterInstance* emitter, Node* emitterNode)
+{
+
+	PinFloat3* pin = (PinFloat3*)emitterNode->GetInputPinByName("Initial Position");
+
+	if (pin)
+	{
+		initialPosition = pin->pinFloat3;
+	}
+
 }
 
 #pragma endregion
 
 #pragma region Particle Rotation
 
-void ParticleRotation::Spawn(EmitterInstance* emitter, Particle* particle)
+void ParticleRotation::Spawn(EmitterInstance* emitter, Particle* particle, Node* emitterNode)
 {
-	particle->rotation = math::Lerp(initialRotation1, initialRotation2, Random::GenerateRandomInt());
+	particle->rotation = initialRotation;
+
+	
+	//particle->rotation = math::Lerp(initialRotation1, initialRotation2, Random::GenerateRandomInt());
 }
 
-void ParticleRotation::Update(EmitterInstance* emitter)
+void ParticleRotation::Update(EmitterInstance* emitter, Node* emitterNode)
 {
+}
+
+void ParticleRotation::UpdateWithNode(EmitterInstance* emitter, Node* emitterNode)
+{
+	PinFloat* pin = (PinFloat*)emitterNode->GetInputPinByName("Rotation");
+
+	if (pin)
+	{
+		initialRotation = pin->pinFloat;
+	}
 }
 
 #pragma endregion
 
 #pragma region Particle Size
 
-void ParticleSize::Spawn(EmitterInstance* emitter, Particle* particle)
+void ParticleSize::Spawn(EmitterInstance* emitter, Particle* particle, Node* emitterNode)
 {
-	particle->size = math::Lerp(initialSize, finalSize, Random::GenerateRandomInt());
+	particle->size = size;
+	
+	//particle->size = math::Lerp(initialSize, finalSize, Random::GenerateRandomInt());
 }
 
-void ParticleSize::Update(EmitterInstance* emitter)
+void ParticleSize::Update(EmitterInstance* emitter, Node* emitterNode)
 {
+}
+
+void ParticleSize::UpdateWithNode(EmitterInstance* emitter, Node* emitterNode)
+{
+	PinFloat* pin = (PinFloat*)emitterNode->GetInputPinByName("Size");
+
+	if (pin)
+	{
+		size = pin->pinFloat;
+	}
 }
 
 #pragma endregion
 
 #pragma region Particle Color
 
-void ParticleColor::Spawn(EmitterInstance* emitter, Particle* particle)
+void ParticleColor::Spawn(EmitterInstance* emitter, Particle* particle, Node* emitterNode)
 {
-	particle->color = Random::GenerateRandomFloat4(initialColor, finalColor);
+	//particle->color = Random::GenerateRandomFloat4(initialColor, finalColor);
+
+	particle->color = initialColor;
+
 }
 
-void ParticleColor::Update(EmitterInstance* emitter)
+void ParticleColor::Update(EmitterInstance* emitter, Node* emitterNode)
 {
+}
+
+void ParticleColor::UpdateWithNode(EmitterInstance* emitter, Node* emitterNode)
+{
+	PinFloat3* pin = (PinFloat3*)emitterNode->GetInputPinByName("Color");
+
+	if (pin)
+	{
+		initialColor = float4(pin->pinFloat3, initialColor.w);
+	}
 }
 
 #pragma endregion
 
 #pragma region Particle Lifetime
 
-void ParticleLifetime::Spawn(EmitterInstance* emitter, Particle* particle)
+void ParticleLifetime::Spawn(EmitterInstance* emitter, Particle* particle, Node* emitterNode)
 {
-	float lifetime = Random::GenerateRandomIntRange(lifetime1,lifetime2);
+	//float lifetime = Random::GenerateRandomIntRange(lifetime1,lifetime2);
+	//particle->normalizedLifetime = 1.0f / lifetime;
+	//particle->maxLifetime = math::Max(lifetime1, lifetime2);
+	//particle->relativeLifetime = 0.0f;
+
+
 	particle->normalizedLifetime = 1.0f / lifetime;
-	particle->maxLifetime = math::Max(lifetime1, lifetime2);
+	particle->maxLifetime = lifetime;
 	particle->relativeLifetime = 0.0f;
 }
 
-void ParticleLifetime::Update(EmitterInstance* emitter)
+void ParticleLifetime::Update(EmitterInstance* emitter, Node* emitterNode)
 {
 	for (uint i = 0; i < emitter->activeParticles; ++i)
 	{
@@ -208,22 +306,26 @@ void ParticleLifetime::Update(EmitterInstance* emitter)
 	}
 }
 
+void ParticleLifetime::UpdateWithNode(EmitterInstance* emitter, Node* emitterNode)
+{
+	PinFloat* pin = (PinFloat*)emitterNode->GetInputPinByName("Lifetime");
+
+	if (pin)
+	{
+		lifetime = pin->pinFloat;
+	}
+}
+
 #pragma endregion
 
 #pragma region Particle Velocity
 
-void ParticleVelocity::Spawn(EmitterInstance* emitter, Particle* particle)
+void ParticleVelocity::Spawn(EmitterInstance* emitter, Particle* particle, Node* emitterNode)
 {
-	/*float3 direction = float3(Random::GenerateRandomIntRange(initialVelocity1.x, initialVelocity2.x), 
-							  Random::GenerateRandomIntRange(initialVelocity1.y, initialVelocity2.y), 
-							  Random::GenerateRandomIntRange(initialVelocity1.z, initialVelocity2.z));*/
-
-	float3 direction = Random::GenerateRandomFloat3(initialVelocity1.xyz(), initialVelocity2.xyz());
-
-	particle->velocity = float4(direction, initialVelocity1.w);
+	particle->velocity = float4(initialVelocity);
 }
 
-void ParticleVelocity::Update(EmitterInstance* emitter)
+void ParticleVelocity::Update(EmitterInstance* emitter, Node* emitterNode)
 {
 	for (int i = emitter->activeParticles - 1; i >= 0; --i)
 	{
@@ -231,6 +333,18 @@ void ParticleVelocity::Update(EmitterInstance* emitter)
 
 		particle->position += particle->velocity.Float3Part() * particle->velocity.w * App->GetDT();
 	}
+}
+
+void ParticleVelocity::UpdateWithNode(EmitterInstance* emitter, Node* emitterNode)
+{
+
+	PinFloat4* pin = (PinFloat4*)emitterNode->GetInputPinByName("Velocity");
+	
+	if (pin)
+	{
+		initialVelocity = pin->pinFloat4;
+	}
+
 }
 
 #pragma endregion

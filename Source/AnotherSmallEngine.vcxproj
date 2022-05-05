@@ -334,6 +334,13 @@
     <ClInclude Include="ParticleModule.h" />
     <ClInclude Include="PathNode.h" />
     <ClInclude Include="ComponentCamera.h" />
+    <ClInclude Include="Pin.h" />
+    <ClInclude Include="PinBool.h" />
+    <ClInclude Include="PinFloat.h" />
+    <ClInclude Include="PinFloat3.h" />
+    <ClInclude Include="PinFloat4.h" />
+    <ClInclude Include="PinInt.h" />
+    <ClInclude Include="PinString.h" />
     <ClInclude Include="Random.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="resource1.h" />
@@ -356,6 +363,7 @@
     <ClInclude Include="ResourceTexture.h" />
     <ClInclude Include="SkyBox.h" />
     <ClInclude Include="Timer.h" />
+    <ClInclude Include="VelocityNode.h" />
     <ClInclude Include="Window.h" />
     <ClInclude Include="WindowAbout.h" />
     <ClInclude Include="WindowAssetExplorer.h" />
@@ -365,6 +373,7 @@
     <ClInclude Include="WindowInspector.h" />
     <ClInclude Include="WindowNodeEditor.h" />
     <ClInclude Include="WindowPlay.h" />
+    <ClInclude Include="WindowViewport.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
@@ -452,6 +461,7 @@
     <ClCompile Include="NodeBuilder.cpp" />
     <ClCompile Include="Particle.cpp" />
     <ClCompile Include="ParticleModule.cpp" />
+    <ClCompile Include="Pin.cpp" />
     <ClCompile Include="Random.cpp" />
     <ClCompile Include="Resource.cpp" />
     <ClCompile Include="ResourceFolder.cpp" />
@@ -471,6 +481,7 @@
     <ClCompile Include="ResourceTexture.cpp" />
     <ClCompile Include="SkyBox.cpp" />
     <ClCompile Include="Timer.cpp" />
+    <ClCompile Include="VelocityNode.cpp" />
     <ClCompile Include="Window.cpp" />
     <ClCompile Include="WindowAbout.cpp" />
     <ClCompile Include="WindowAssetExplorer.cpp" />
@@ -480,6 +491,7 @@
     <ClCompile Include="WindowInspector.cpp" />
     <ClCompile Include="WindowNodeEditor.cpp" />
     <ClCompile Include="WindowPlay.cpp" />
+    <ClCompile Include="WindowViewport.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Dependencies\Assimp\include\color4.inl" />

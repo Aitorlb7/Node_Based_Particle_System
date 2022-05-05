@@ -340,6 +340,15 @@
     <ClCompile Include="ResourceParticleSystem.cpp">
       <Filter>Resources</Filter>
     </ClCompile>
+    <ClCompile Include="WindowViewport.cpp">
+      <Filter>Editor\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="Pin.cpp">
+      <Filter>Tools\NodeEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="VelocityNode.cpp">
+      <Filter>Tools\NodeEditor\Nodes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ModuleWindow.h">
@@ -1159,6 +1168,33 @@
     <ClInclude Include="ResourceParticleSystem.h">
       <Filter>Resources</Filter>
     </ClInclude>
+    <ClInclude Include="WindowViewport.h">
+      <Filter>Editor\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="Pin.h">
+      <Filter>Tools\NodeEditor</Filter>
+    </ClInclude>
+    <ClInclude Include="PinInt.h">
+      <Filter>Tools\NodeEditor\Pins</Filter>
+    </ClInclude>
+    <ClInclude Include="PinFloat.h">
+      <Filter>Tools\NodeEditor\Pins</Filter>
+    </ClInclude>
+    <ClInclude Include="PinFloat3.h">
+      <Filter>Tools\NodeEditor\Pins</Filter>
+    </ClInclude>
+    <ClInclude Include="PinString.h">
+      <Filter>Tools\NodeEditor\Pins</Filter>
+    </ClInclude>
+    <ClInclude Include="PinBool.h">
+      <Filter>Tools\NodeEditor\Pins</Filter>
+    </ClInclude>
+    <ClInclude Include="VelocityNode.h">
+      <Filter>Tools\NodeEditor\Nodes</Filter>
+    </ClInclude>
+    <ClInclude Include="PinFloat4.h">
+      <Filter>Tools\NodeEditor\Pins</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Dependencies">
@@ -1253,6 +1289,12 @@
     </Filter>
     <Filter Include="GameObjects\Particles">
       <UniqueIdentifier>{6c6d0a51-063d-42b6-a38f-fcaffa563a25}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Tools\NodeEditor\Pins">
+      <UniqueIdentifier>{e9804eed-016f-4460-8aa0-fa7827a45dea}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Tools\NodeEditor\Nodes">
+      <UniqueIdentifier>{1fcac068-d77b-424f-844e-73d61e70b9f0}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

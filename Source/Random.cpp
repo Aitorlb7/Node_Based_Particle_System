@@ -11,7 +11,7 @@ uint32 Random::GenerateRandomIntRange(int first, int last)
 	pcg_extras::seed_seq_from<std::random_device> seed;
 	pcg32 rng(seed);
 
-	std::uniform_int_distribution<uint32> uniform_dist1(first, last);
+	std::uniform_int_distribution<uint32> uniform_dist1(math::Min(first, last), math::Max(first, last));
 	
 	return uniform_dist1(rng);
 }

@@ -43,6 +43,13 @@ public:
 	update_status PostUpdate(float dt) override;
 	bool CleanUp();
 
+	void SetUpFrameBuffers();
+	void RenderFrameBufferTexture();
+
+	void DrawGrid();
+	void DrawGameCamera();
+
+
 	void OnResize(int width, int height);
 
 	void UseCheckerTexture();
@@ -50,6 +57,9 @@ public:
 	void DrawMesh(ComponentMesh* mesh, float4x4 transform, ComponentMaterial* rMaterial = nullptr, GameObject* meshOwner = nullptr);
 
 	void DrawNormals(ComponentMesh* mesh, float4x4 transform);
+
+	inline uint GetSceneRenderTexture() const { return sceneTexture; };
+	inline uint GetSceneFramebuffer() const { return sceneFramebuffer; };
 
 	void SetDepthtest(bool active);
 	void SetCullface(bool active);
@@ -99,6 +109,12 @@ public:
 	std::map<float, ParticleRenderInfo> particles;
 
 private:
+	uint	sceneFramebuffer;
+	uint	depthBuffer;
+	uint	sceneTexture;
+	uint	depthBufferTexture;
+
+
 	std::vector<float> particleVertices;
 	std::vector<float> particleUVs;
 

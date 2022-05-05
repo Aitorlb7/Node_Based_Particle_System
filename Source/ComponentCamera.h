@@ -61,7 +61,7 @@ public:
 	void Zoom(float motion_z);
 	void LookAt(float motion_x, float motion_y);
 
-	void OnClick(float pos_x, float pos_y);
+	void OnClick(float2 mousePos);
 
 	ComponentCamera(GameObject* parent);
 private:

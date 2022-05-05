@@ -1,5 +1,7 @@
 #include "WindowInspector.h"
 #include "ModuleEditor.h"
+#include "WindowNodeEditor.h"
+
 #include "ModuleResource.h"
 #include "Application.h"
 #include "ModuleScene.h"

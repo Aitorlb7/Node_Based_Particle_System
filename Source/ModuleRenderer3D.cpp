@@ -141,6 +141,8 @@ bool ModuleRenderer3D::Start()
 
 	SetUpParticlesBuffer();
 
+	SetUpFrameBuffers();
+
 	//defaultSkyBox.SetUpSkyBoxBuffers();
 
 	//defaultSkyBox.CreateSkybox();
@@ -168,26 +170,6 @@ update_status ModuleRenderer3D::PreUpdate(float dt)
 	SetLighting(App->editor->configWindow->lighting);
 	SetTexture2D(App->editor->configWindow->texture2D);
 
-	//Scene Grid
-	glLineWidth(2.0f);
-	glBegin(GL_LINES);
-	glColor4f(0.7f, 0.7f, 0.7f, 0.7f);
-	float z = 70.0f;
-	for (float x = -70; x <= z; x += 2.0f)
-	{
-		glVertex3f(x, -1.0f, -z);
-		glVertex3f(x, -1.0f, z);
-		glVertex3f(-z, -1.0f, x);
-		glVertex3f(z, -1.0f, x);
-	}
-
-	if (App->camera->gameCamera != nullptr) {
-		glLineWidth(2.0f);
-		vec* frustum_corners;
-		frustum_corners = App->camera->gameCamera->GetFrustumPoints();
-		DrawCuboid(frustum_corners, App->editor->frustumColor);
-	}
-
 	glColor4f(0.3f, 0.3f, 0.3f, 0.3f);
 	glEnd();
 
@@ -197,6 +179,13 @@ update_status ModuleRenderer3D::PreUpdate(float dt)
 // PostUpdate present buffer to screen
 update_status ModuleRenderer3D::PostUpdate(float dt)
 {
+	glBindFramebuffer(GL_FRAMEBUFFER, sceneFramebuffer);
+	glClear(GL_DEPTH_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT);
+
+	DrawGrid();
+	DrawGameCamera();
+
 	if (App->editor->configWindow->drawWireframe) { glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); glEnable(GL_TEXTURE_CUBE_MAP); }
 	else { glPolygonMode(GL_FRONT_AND_BACK, GL_FILL); glDisable(GL_TEXTURE_CUBE_MAP); }
 	
@@ -205,9 +194,9 @@ update_status ModuleRenderer3D::PostUpdate(float dt)
 
 	ImGui::GetBackgroundDrawList();
 	
-	App->editor->DrawGUI();
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-	UpdateProjectionMatrix();
+	App->editor->DrawGUI();
 
 	SDL_GL_SwapWindow(App->window->window);
 
@@ -224,10 +213,94 @@ bool ModuleRenderer3D::CleanUp()
 	return true;
 }
 
+void ModuleRenderer3D::SetUpFrameBuffers()
+{
+	glGenFramebuffers(1, (GLuint*)&sceneFramebuffer);
+	glBindFramebuffer(GL_FRAMEBUFFER, sceneFramebuffer);
+
+	// --- SCENE RENDER TEXTURE ---
+	glGenTextures(1, (GLuint*)&sceneTexture);
+	glBindTexture(GL_TEXTURE_2D, sceneTexture);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, App->window->Width(), App->window->Height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
+	glBindTexture(GL_TEXTURE_2D, 0);
+
+	// --- DEPTH BUFFER TEXTURE ---
+	glGenTextures(1, (GLuint*)&depthBufferTexture);
+	glBindTexture(GL_TEXTURE_2D, depthBufferTexture);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT24, App->window->Width(), App->window->Height(), 0, GL_DEPTH_COMPONENT, GL_FLOAT, 0);
+	glBindTexture(GL_TEXTURE_2D, 0);
+
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, sceneTexture, 0);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthBufferTexture, 0);
+
+	// --- DEPTH & STENCIL BUFFERS ---
+	glGenRenderbuffers(1, (GLuint*)&depthBuffer);
+	glBindRenderbuffer(GL_RENDERBUFFER, depthBuffer);
+
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, App->window->Width(), App->window->Height());
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthBuffer);
+	glBindRenderbuffer(GL_RENDERBUFFER, 0);
+
+	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+	{
+		LOG("[ERROR] Renderer 3D: Could not generate the scene's frame buffer! Error: %s", gluErrorString(glGetError()));
+	}
+
+
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+void ModuleRenderer3D::RenderFrameBufferTexture()
+{
+}
+
+
+void ModuleRenderer3D::DrawGrid()
+{
+
+	glColor4f(0.7f, 0.7f, 0.7f, 0.7f);
+	glLineWidth(2.0f);
+	glBegin(GL_LINES);
+	float z = 70.0f;
+	for (float x = -70; x <= z; x += 2.0f)
+	{
+		glVertex3f(x, -1.0f, -z);
+		glVertex3f(x, -1.0f, z);
+		glVertex3f(-z, -1.0f, x);
+		glVertex3f(z, -1.0f, x);
+	}
+	glEnd();
+	glLineWidth(1.0f);
+	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+}
+
+void ModuleRenderer3D::DrawGameCamera()
+{
+	if (App->camera->gameCamera != nullptr) {
+		glColor4f(0.1f, 0.7f, 0.7f, 0.7f);
+		glBegin(GL_LINES);
+		glLineWidth(2.0f);
+		vec* frustum_corners;
+		frustum_corners = App->camera->gameCamera->GetFrustumPoints();
+		DrawCuboid(frustum_corners, App->editor->frustumColor);
+		glEnd();
+		glLineWidth(1.0f);
+		glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+	}
+
+	
+}
 
 void ModuleRenderer3D::OnResize(int width, int height)
 {
-	//Only do if cameras are up and running
 	glViewport(0, 0, width, height);
 	
 	if (App->camera->currentCamera != nullptr) {
@@ -235,6 +308,9 @@ void ModuleRenderer3D::OnResize(int width, int height)
 		App->camera->currentCamera->SetAspectRatio((float)width / (float)height);
 	}
 
+	UpdateProjectionMatrix();
+
+	SetUpFrameBuffers();
 }
 
 
