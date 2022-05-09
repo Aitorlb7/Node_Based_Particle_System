@@ -5,7 +5,8 @@ Window::Window(const char* name, bool isActive):
 name(name),
 isActive(isActive),
 isHovered(false),
-isClicked(false)
+isClicked(false),
+windowSize(float2::zero)
 {
 }
 

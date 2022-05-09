@@ -2,7 +2,7 @@
 #define __WINDOW_H__
 
 #include "Globals.h"
-
+#include "Dependencies/MathGeoLib/include/Math/float2.h"
 class Window
 {
 public:
@@ -30,6 +30,7 @@ public:
 	bool isActive = true;
 	bool isHovered = false;
 	bool isClicked = false;
+	float2 windowSize;
 };
 
 #endif // !__WINDOW_H__

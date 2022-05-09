@@ -55,4 +55,6 @@ private:
 
 	bool					sceneFocused;
 
+	bool					cameraSettingsNeedUpdate;
+
 };

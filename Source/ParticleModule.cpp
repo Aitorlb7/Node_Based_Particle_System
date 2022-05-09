@@ -164,7 +164,7 @@ void EmitterSpawn::Update(EmitterInstance* emitter, Node* emitterNode)
 
 void EmitterSpawn::UpdateWithNode(EmitterInstance* emitter, Node* emitterNode)
 {
-	PinFloat* pin = (PinFloat*)emitterNode->GetInputPinByName("Spawn");
+	PinFloat* pin = (PinFloat*)emitterNode->GetInputPinByName("Spawn Rate");
 
 	if (pin)
 	{

@@ -1451,20 +1451,31 @@ void WindowNodeEditor::DrawTextureNode(NodeBuilder& builder, Node* node)
 
     ImGui::PushStyleVar(ImGuiStyleVar_Alpha, alpha);
 
-    
 
     if (!tempPinTex->pinTexture)
     {
         tempPinTex->pinTexture = tempTexNode->GetDefaultParticleTex();
     }
-
-    ImGui::PushItemWidth(200);
     
     //TODO: Choose texture
 
-    ImGui::ImageButton((ImTextureID)tempPinTex->pinTexture->id, ImVec2(80, 80), ImVec2(0.0f, 1.0f), ImVec2(1.0f, 0.0f));
+    ImGui::Image((ImTextureID)tempPinTex->pinTexture->id, ImVec2(80, 80), ImVec2(0.0f, 1.0f), ImVec2(1.0f, 0.0f));
 
-    ImGui::PopItemWidth();
+    if (ImGui::BeginDragDropTarget())
+    {
+        if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("Asset"))
+        {
+            uint32 UID = *(const uint32*)payload->Data;
+            Resource* resource = App->resources->GetResourceInMemory(UID);
+            if (resource->type == ResourceType::Texture)
+            {
+                tempPinTex->pinTexture = (ResourceTexture*)App->resources->LoadResource(UID);
+                node->updateLinks = true;
+            }
+        }
+
+        ImGui::EndDragDropTarget();
+    }
 
     ImGui::SameLine();
 
@@ -1519,7 +1530,7 @@ void WindowNodeEditor::DrawAlignmentNode(NodeBuilder& builder, Node* node)
     ImGui::SetColumnWidth(ImGui::GetColumnIndex(), 70);
  
     static int selected = -1;
-    for (int i = 0; i < 9; i++)
+    for (int i = 1; i < 9; i++)
     {
 
         if (ImGui::Selectable(alignmentNode->aligmentArray[i], selected == i))

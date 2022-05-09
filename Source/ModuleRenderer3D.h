@@ -44,7 +44,7 @@ public:
 	bool CleanUp();
 
 	void SetUpFrameBuffers();
-	void RenderFrameBufferTexture();
+	void UpdateFrameBufferSize();
 
 	void DrawGrid();
 	void DrawGameCamera();

@@ -258,8 +258,17 @@ void ModuleRenderer3D::SetUpFrameBuffers()
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-void ModuleRenderer3D::RenderFrameBufferTexture()
+void ModuleRenderer3D::UpdateFrameBufferSize()
 {
+	//Update texture size
+	glBindTexture(GL_TEXTURE_2D, sceneTexture);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, App->window->Width(), App->window->Height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
+	glBindTexture(GL_TEXTURE_2D, 0);
+
+	//Update depth & stencil buffer size
+	glBindRenderbuffer(GL_RENDERBUFFER, depthBuffer);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, App->window->Width(), App->window->Height());
+	glBindRenderbuffer(GL_RENDERBUFFER, 0);
 }
 
 
