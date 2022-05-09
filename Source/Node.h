@@ -14,7 +14,11 @@ enum class NodeType
     Tree,
     Comment,
     Houdini,
-    Velocity
+    Float3,
+    Color,
+    Velocity,
+    Texture,
+    Alignment
 };
 
 enum class IconType : ImU32 

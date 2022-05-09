@@ -17,7 +17,9 @@
 
 #include "Dependencies/ImGUI/imgui.h"
 
-ComponentCamera::ComponentCamera(GameObject* owner) : active_camera(false), Component(owner)
+ComponentCamera::ComponentCamera(GameObject* owner) : Component(owner),
+active_camera(false),
+looking_at(float3::zero)
 {
 	frustum.SetKind(FrustumSpaceGL, FrustumRightHanded);
 	frustum.SetPos(float3(0, 0, 0));
@@ -193,6 +195,20 @@ void ComponentCamera::Look(float3& point_to_look)
 
 	frustum.SetFront(mat.MulDir(frustum.Front()).Normalized());
 	frustum.SetUp(mat.MulDir(frustum.Up()).Normalized());
+
+	ComponentTransform* transform = (ComponentTransform*)gameObject->GetComponent(ComponentType::Transform);
+	transform->SetLocalTransform(frustum.WorldMatrix());
+
+	//float3 fwd = direction.Normalized();
+	//float3 right = float3::unitY.Cross(fwd).Normalized();
+	//float3 up = fwd.Cross(right).Normalized();
+
+
+	//transform->GetLocalTransform().SetCol3(0, right);
+	//transform->GetLocalTransform().SetCol3(1, up);
+	//transform->GetLocalTransform().SetCol3(2, fwd);
+	//transform->SetLocalTransform(transform->GetLocalTransform());
+
 }
 
 void ComponentCamera::Match(ComponentCamera* reference)
@@ -213,51 +229,91 @@ void ComponentCamera::Pan(float motion_x, float motion_y)
 	App->camera->reference += Y_add;
 
 	frustum.SetPos(frustum.Pos() + X_add + Y_add);
+
+
+	ComponentTransform* transform = (ComponentTransform*)gameObject->GetComponent(ComponentType::Transform);
+	transform->SetPosition(transform->GetPosition() + X_add + Y_add);
 }
 
 void ComponentCamera::Orbit(float motion_x, float motion_y)
 {
-	float3 point = looking_at;
 
 	if(App->scene->selected_object != nullptr)
 	{
 		looking_at = App->scene->selected_object->transform->GetPosition();
 	}
 
-	float3 focus = frustum.Pos() - point;
+	float3 focus = frustum.Pos() - looking_at;
 
-	Quat y = Quat(frustum.Up(), motion_x);
-	Quat x = Quat(frustum.WorldRight(), motion_y);
 
-	focus = x.Transform(focus);
-	focus = y.Transform(focus);
+	if (motion_x != 0.0f)
+	{
+		Quat newX = Quat(frustum.Up(), -motion_x );
+		focus = newX.Transform(focus);
+	}
 
-	frustum.SetPos(focus+point);
+	if (motion_y != 0.0f)
+	{
+		Quat newY = Quat(frustum.WorldRight(), -motion_y );
+		focus = newY.Transform(focus);
+	}
 
-	Look(point);
+
+	//Quat y = Quat(frustum.Up(), motion_x );
+	//Quat x = Quat(frustum.WorldRight(), motion_y );
+
+	//focus = x.Transform(focus);
+	//focus = y.Transform(focus);
+
+
+	ComponentTransform* transform = (ComponentTransform*)gameObject->GetComponent(ComponentType::Transform);
+	transform->SetPosition(focus + looking_at);
+
+
+
+	//frustum.SetPos(focus+ looking_at);
+
+
+
+	Look(looking_at);
+
+
 }
 
 void ComponentCamera::Zoom(float motion_z)
 {
+	float dist = 0;
 	if (!looking) 
 	{
-		float dist = looking_at.Distance(frustum.Pos());
+		dist = looking_at.Distance(frustum.Pos());
 	}
 
 	float3 vec = frustum.Front() * motion_z;
 	frustum.SetPos(frustum.Pos()+vec);
+
+
+	ComponentTransform* transform = (ComponentTransform*)gameObject->GetComponent(ComponentType::Transform);
+	transform->SetPosition(transform->GetPosition() + transform->local_transform.WorldZ() * motion_z );
 }
 
 void ComponentCamera::LookAt(float motion_x, float motion_y)
 {
 	looking = false;
 
+
+	ComponentTransform* transform = (ComponentTransform*)gameObject->GetComponent(ComponentType::Transform);
+
 	// x motion rotates in Y absolute axis
 	if(motion_x != 0.f)
 	{
 		Quat q = Quat::RotateY(motion_x);
+
+		float3 new_Axis = q.Mul(frustum.Up().Normalized());
+
 		frustum.SetFront(q.Mul(frustum.Front()).Normalized());
 		frustum.SetUp(q.Mul(frustum.Up()).Normalized());
+
+		
 	}
 	
 	// y motion rotates in X local axis, with tops
@@ -267,13 +323,20 @@ void ComponentCamera::LookAt(float motion_x, float motion_y)
 
 		float3 new_yAxis = q.Mul(frustum.Up().Normalized());
 		
+
+		frustum.SetUp(new_yAxis);
+		frustum.SetFront(q.Mul(frustum.Front().Normalized()));
+
+
 		//Avoid upside down camera movement 
-		if(new_yAxis.y > 0.0f)
+	/*	if(new_yAxis.y > 0.0f)
 		{
 			frustum.SetUp(new_yAxis);
 			frustum.SetFront(q.Mul(frustum.Front().Normalized()));
-		}
+		}*/
 	}
+
+	transform->SetLocalTransform(frustum.WorldMatrix());
 }
 
 void ComponentCamera::OnClick(float2 mousePOs)

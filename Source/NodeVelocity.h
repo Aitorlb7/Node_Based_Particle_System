@@ -5,13 +5,13 @@
 #include "Dependencies/MathGeoLib/include/Math/float3.h"
 #include "Dependencies/MathGeoLib/include/Math/float4.h"
 
-class VelocityNode : public Node
+class NodeVelocity : public Node
 {
 public:
 
-    VelocityNode(int id, const char* name, ImColor color = ImColor(255, 255, 255));
+    NodeVelocity(int id, const char* name, ImColor color = ImColor(255, 255, 255));
 
-    ~VelocityNode();
+    ~NodeVelocity();
 
     float4 ComputeVelocity();
 
@@ -22,10 +22,7 @@ public:
     float4 initialVelocity1;
     float4 initialVelocity2;
 
-    /*float speed1;
-    float speed2;*/
 
-    //float4 finalVelocity;
 
 };
 

@@ -28,10 +28,10 @@ void EmitterInstance::Init(Emitter* emitterReference, ComponentParticleSystem* c
 	this->emitterReference = emitterReference;
 	this->component = component;
 
-	particles.resize(emitterReference->maxParticleCount);
-	particleIndices = new unsigned int[emitterReference->maxParticleCount];
+	particles.resize(emitterReference->maxParticleOnScreen);
+	particleIndices = new unsigned int[emitterReference->maxParticleOnScreen];
 
-	for (uint i = 0; i < emitterReference->maxParticleCount; ++i)
+	for (uint i = 0; i < emitterReference->maxParticleOnScreen; ++i)
 	{
 		particleIndices[i] = i;
 	}
@@ -94,7 +94,7 @@ void EmitterInstance::KillDeadParticles()
 		Particle* particle = &particles[particleIndex];
 
 		//Sending the particle to the end of the list (nice unreal trick here)
-		if (particle->normalizedLifetime >= 1.0f)
+		if (particle->relativeLifetime >= 1.0f)
 		{
 			particleIndices[i] = particleIndices[activeParticles - 1]; //We swap the last alive particle with the new dead one
 			particleIndices[activeParticles - 1] = particleIndex;

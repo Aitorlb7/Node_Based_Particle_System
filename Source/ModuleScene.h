@@ -32,6 +32,8 @@ public:
 
 	GameObject* CreateGameCamera();
 
+	GameObject* CreateEditorCamera();
+
 	void TestGameObjectSelection(const LineSegment& ray);
 	//void ImGuizmoHandling();
 

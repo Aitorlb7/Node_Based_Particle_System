@@ -26,10 +26,10 @@ bool ModuleCamera3D::Start()
 	LOG("Setting up the camera");
 	bool ret = true;
 
-	editorCamera = currentCamera = new ComponentCamera(nullptr);
+	//editorCamera = currentCamera = new ComponentCamera(nullptr);
 
-	editorCamera->frustum.SetPos(vec(120.0f, 120.0f, 120.0f));
-	editorCamera->Look(float3(0.0f, 0.0f, 0.0f));
+	//editorCamera->frustum.SetPos(vec(120.0f, 120.0f, 120.0f));
+	//editorCamera->Look(float3(0.0f, 0.0f, 0.0f));
 
 	gameCamera = nullptr;
 
@@ -89,6 +89,8 @@ update_status ModuleCamera3D::Update(float dt)
 			if (App->input->GetMouseButton(SDL_BUTTON_RIGHT))
 			{
 				currentCamera->LookAt(-dx*.3f, -dy*.3f); 
+				//currentCamera->Orbit(-dx * .3f, -dy * .3f);
+
 			}
 		}
 

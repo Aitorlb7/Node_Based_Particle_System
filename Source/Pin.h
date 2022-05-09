@@ -16,6 +16,7 @@ enum class PinType
     String,
     Float3,
     Float4,
+    Texture,
     Delegate,
 };
 

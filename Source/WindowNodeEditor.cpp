@@ -7,7 +7,11 @@
 #include <imgui_internal.h>
 #include <imgui_impl_dx11.h>
 
-#include "VelocityNode.h"
+#include "NodeVelocity.h"
+#include "NodeFloat3.h"
+#include "NodeTexture.h"
+#include "NodeAlignment.h"
+#include "NodeColor.h"
 
 #include "PinFloat3.h"
 #include "PinFloat4.h"
@@ -15,6 +19,7 @@
 #include "PinInt.h"
 #include "PinFloat.h"
 #include "PinBool.h"
+#include "PinTexture.h"
 
 #include "Dependencies/MathGeoLib/include/Math/float3.h"
 
@@ -150,7 +155,12 @@ void WindowNodeEditor::Draw()
             {
             case NodeType::Simple: DrawSimpleNode(builder, node); break;
             case NodeType::Blueprint: DrawBlueprintNode(builder, node); break;
+            case NodeType::Float3: DrawFloat3Node(builder, node); break;
             case NodeType::Velocity: DrawVelocityNode(builder, node); break;
+            case NodeType::Texture: DrawTextureNode(builder, node); break;
+            case NodeType::Alignment: DrawAlignmentNode(builder, node); break;
+            case NodeType::Color: DrawColorNode(builder, node); break;
+
             }
 
            
@@ -608,6 +618,7 @@ ImColor WindowNodeEditor::GetIconColor(PinType type)
     case PinType::String:   return ImColor(220, 80, 80);
     case PinType::Float3: return ImColor(220, 80, 80);
     case PinType::Float4:   return ImColor(220, 80, 80);
+    case PinType::Texture:   return ImColor(220, 80, 80);
     case PinType::Delegate: return ImColor(255, 48, 48);
     }
 }
@@ -847,6 +858,7 @@ void WindowNodeEditor::DrawPinIcon(const Pin* pin, bool connected, int alpha)
 	case PinType::String:   iconType = IconType::Circle; break;
     case PinType::Float3: iconType = IconType::Circle; break;
     case PinType::Float4: iconType = IconType::Circle; break;
+    case PinType::Texture:   iconType = IconType::RoundSquare; break;
 	case PinType::Delegate: iconType = IconType::Square; break;
 	default:
 		return;
@@ -1206,7 +1218,7 @@ void WindowNodeEditor::DrawVelocityNode(NodeBuilder& builder, Node* node)
     //Inputs------------------------------------
 
     PinFloat4* tempPinFloat4 = nullptr;
-    VelocityNode* tempVelNode = (VelocityNode*)node;
+    NodeVelocity* tempVelNode = (NodeVelocity*)node;
 
     if (!tempVelNode)
         return;
@@ -1315,7 +1327,7 @@ void WindowNodeEditor::DrawVelocityNode(NodeBuilder& builder, Node* node)
 
     ImGui::PushStyleVar(ImGuiStyleVar_Alpha, alpha);
 
-    ed::BeginPin(tempPinFloat4->ID, ed::PinKind::Input);
+    
 
     static bool wasActive = false;
 
@@ -1334,6 +1346,7 @@ void WindowNodeEditor::DrawVelocityNode(NodeBuilder& builder, Node* node)
         if (linkedPin && tempPinFloat4)
             UpdateNodeLinks(tempPinFloat4, linkedPin);
     }
+    ed::BeginPin(tempPinFloat4->ID, ed::PinKind::Input);
 
     DrawPinIcon(tempPinFloat4, IsPinLinked(tempPinFloat4->ID), (int)(alpha * 255));
 
@@ -1342,6 +1355,319 @@ void WindowNodeEditor::DrawVelocityNode(NodeBuilder& builder, Node* node)
     ed::EndPin();
 
     ImGui::EndColumns();
+}
+
+void WindowNodeEditor::DrawFloat3Node(NodeBuilder& builder, Node* node)
+{
+
+    //Header------------------------------------
+
+    builder.Header(node->Color);
+    builder.SetCustomNode();
+    ImGui::Spring(0);
+    ImGui::TextUnformatted(node->Name.c_str());
+    ImGui::Spring(1);
+    ImGui::Dummy(ImVec2(0, 28));
+    ImGui::Spring(0);
+    builder.EndHeader();
+
+    //Output------------------------------------
+
+    PinFloat3* tempPinFloat3 = (PinFloat3*)node->Outputs[0];
+
+    if (!tempPinFloat3) return;
+
+    auto alpha = ImGui::GetStyle().Alpha;
+    if (newLinkPin && !CanCreateLink(newLinkPin, tempPinFloat3) && tempPinFloat3 != newLinkPin)
+        alpha = alpha * (48.0f / 255.0f);
+
+    ImGui::PushStyleVar(ImGuiStyleVar_Alpha, alpha);
+
+    
+
+
+    ImGui::PushItemWidth(80);
+
+    if (ImGui::DragFloat("X", &tempPinFloat3->pinFloat3.x, 0.1f)) node->updateLinks = true;
+
+    ImGui::SameLine();
+
+    if (ImGui::DragFloat("Y", &tempPinFloat3->pinFloat3.y, 0.1f)) node->updateLinks = true;
+
+    ImGui::SameLine();
+
+    if (ImGui::DragFloat("Z", &tempPinFloat3->pinFloat3.z, 0.1f)) node->updateLinks = true;
+
+
+    ImGui::PopItemWidth();
+
+    ImGui::SameLine();
+
+    ed::BeginPin(tempPinFloat3->ID, ed::PinKind::Output);
+
+    DrawPinIcon(tempPinFloat3, IsPinLinked(tempPinFloat3->ID), (int)(alpha * 255));
+
+    ImGui::PopStyleVar();
+
+    ed::EndPin();
+
+    if (node->updateLinks)
+    {
+        node->updateLinks = false;
+
+        Pin* linkedPin = GetPinLinkedTo(tempPinFloat3->ID);
+
+        if (linkedPin && tempPinFloat3)
+            UpdateNodeLinks(tempPinFloat3, linkedPin);
+    }
+
+
+}
+
+void WindowNodeEditor::DrawTextureNode(NodeBuilder& builder, Node* node)
+{
+
+    //Header------------------------------------
+
+    builder.Header(node->Color);
+    builder.SetCustomNode();
+    ImGui::Spring(0);
+    ImGui::TextUnformatted(node->Name.c_str());
+    ImGui::Spring(1);
+    ImGui::Dummy(ImVec2(0, 28));
+    ImGui::Spring(0);
+    builder.EndHeader();
+
+    //Output------------------------------------
+
+    NodeTexture* tempTexNode = (NodeTexture*)node;
+    PinTexture* tempPinTex = (PinTexture*)node->Outputs[0];
+
+    if (!tempPinTex) return;
+
+    auto alpha = ImGui::GetStyle().Alpha;
+    if (newLinkPin && !CanCreateLink(newLinkPin, tempPinTex) && tempPinTex != newLinkPin)
+        alpha = alpha * (48.0f / 255.0f);
+
+    ImGui::PushStyleVar(ImGuiStyleVar_Alpha, alpha);
+
+    
+
+    if (!tempPinTex->pinTexture)
+    {
+        tempPinTex->pinTexture = tempTexNode->GetDefaultParticleTex();
+    }
+
+    ImGui::PushItemWidth(200);
+    
+    //TODO: Choose texture
+
+    ImGui::ImageButton((ImTextureID)tempPinTex->pinTexture->id, ImVec2(80, 80), ImVec2(0.0f, 1.0f), ImVec2(1.0f, 0.0f));
+
+    ImGui::PopItemWidth();
+
+    ImGui::SameLine();
+
+    ed::BeginPin(tempPinTex->ID, ed::PinKind::Output);
+
+    DrawPinIcon(tempPinTex, IsPinLinked(tempPinTex->ID), (int)(alpha * 255));
+
+    ImGui::PopStyleVar();
+
+    ed::EndPin();
+
+    if (node->updateLinks)
+    {
+        node->updateLinks = false;
+
+        Pin* linkedPin = GetPinLinkedTo(tempPinTex->ID);
+
+        if (linkedPin && tempPinTex) UpdateNodeLinks(tempPinTex, linkedPin);
+    }
+}
+
+void WindowNodeEditor::DrawAlignmentNode(NodeBuilder& builder, Node* node)
+{
+    //Header------------------------------------
+
+    builder.Header(node->Color);
+    builder.SetCustomNode();
+    ImGui::Spring(0);
+    ImGui::TextUnformatted(node->Name.c_str());
+    ImGui::Spring(1);
+    ImGui::Dummy(ImVec2(0, 28));
+    ImGui::Spring(0);
+    builder.EndHeader();
+
+    //Output------------------------------------
+
+    NodeAlignment* alignmentNode = (NodeAlignment*)node;
+    
+    PinInt* pinInt = (PinInt*)node->Outputs[0];
+
+    if (!pinInt) return;
+
+    auto alpha = ImGui::GetStyle().Alpha;
+    if (newLinkPin && !CanCreateLink(newLinkPin, pinInt) && pinInt != newLinkPin)
+        alpha = alpha * (48.0f / 255.0f);
+
+    ImGui::PushStyleVar(ImGuiStyleVar_Alpha, alpha);
+
+    //TODO Set default selcetd
+
+    ImGui::BeginColumns("Columns", 2, ImGuiColumnsFlags_NoBorder);
+    ImGui::SetColumnWidth(ImGui::GetColumnIndex(), 70);
+ 
+    static int selected = -1;
+    for (int i = 0; i < 9; i++)
+    {
+
+        if (ImGui::Selectable(alignmentNode->aligmentArray[i], selected == i))
+        {
+            pinInt->pinInt = i;
+            node->updateLinks = true;
+            selected = i;
+        }
+    }
+
+    ImGui::NextColumn();
+
+    ImGui::SetColumnWidth(ImGui::GetColumnIndex(), 40);
+
+    ImGui::Dummy(ImVec2(0, 50));
+    
+    ed::BeginPin(pinInt->ID, ed::PinKind::Output);
+
+    DrawPinIcon(pinInt, IsPinLinked(pinInt->ID), (int)(alpha * 255));
+
+    ImGui::PopStyleVar();
+
+    ed::EndPin();
+
+    ImGui::EndColumns();
+
+    if (node->updateLinks)
+    {
+        node->updateLinks = false;
+
+        Pin* linkedPin = GetPinLinkedTo(pinInt->ID);
+
+        if (linkedPin && pinInt) UpdateNodeLinks(pinInt, linkedPin);
+    }
+
+
+}
+
+void WindowNodeEditor::DrawColorNode(NodeBuilder& builder, Node* node)
+{
+    //Header------------------------------------
+
+    builder.Header(node->Color);
+    builder.SetCustomNode();
+    ImGui::Spring(0);
+    ImGui::TextUnformatted(node->Name.c_str());
+    ImGui::Spring(1);
+    ImGui::Dummy(ImVec2(0, 28));
+    ImGui::Spring(0);
+    builder.EndHeader();
+
+    //Output------------------------------------
+
+    NodeColor* colorNode = (NodeColor*)node;
+
+    PinFloat4* pinFloat4 = nullptr;
+
+    auto alpha = ImGui::GetStyle().Alpha;
+
+    ImGui::BeginColumns("Columns", 2, ImGuiColumnsFlags_NoBorder);
+    ImGui::SetColumnWidth(ImGui::GetColumnIndex(), 450);
+
+
+    for (Pin* input : colorNode->Inputs)
+    {
+        pinFloat4 = ((PinFloat4*)input);
+
+        if (!pinFloat4)
+            continue;
+
+       
+        if (newLinkPin && !CanCreateLink(newLinkPin, input) && input != newLinkPin)
+            alpha = alpha * (48.0f / 255.0f);
+
+        ed::BeginPin(input->ID, ed::PinKind::Input);
+
+        ImGui::PushStyleVar(ImGuiStyleVar_Alpha, alpha);
+
+        if (!input->Name.empty())
+        {
+            ImGui::TextUnformatted(input->Name.c_str());
+            ImGui::SameLine();
+            ImGui::Spacing();
+            ImGui::SameLine();
+
+        }
+
+        if (pinFloat4->Name == "Color1")
+        {
+            if (ImGui::ColorEdit4(pinFloat4->Name.c_str(), (float*)&pinFloat4->pinFloat4, ImGuiColorEditFlags_DisplayRGB | ImGuiColorEditFlags_NoPicker | ImGuiColorEditFlags_NoOptions))
+            {
+                colorNode->color1 = pinFloat4->pinFloat4;
+            }
+        }
+        else if (pinFloat4->Name == "Color2")
+        {
+            if (ImGui::ColorEdit4(pinFloat4->Name.c_str(), (float*)&pinFloat4->pinFloat4, ImGuiColorEditFlags_DisplayRGB | ImGuiColorEditFlags_NoPicker | ImGuiColorEditFlags_NoOptions))
+            {
+                colorNode->color2 = pinFloat4->pinFloat4;
+            }
+        }
+
+
+        ImGui::PopStyleVar();
+
+        ed::EndPin();
+    }
+
+    ImGui::NextColumn();
+
+    ImGui::SetColumnWidth(ImGui::GetColumnIndex(), 40);
+
+    ImGui::Dummy(ImVec2(0, 10));
+
+    pinFloat4 = (PinFloat4*)colorNode->Outputs[0];
+
+    if (!pinFloat4)
+        return;
+
+
+    if (newLinkPin && !CanCreateLink(newLinkPin, pinFloat4) && pinFloat4 != newLinkPin)
+        alpha = alpha * (48.0f / 255.0f);
+
+    ImGui::PushStyleVar(ImGuiStyleVar_Alpha, alpha);   
+
+    ed::BeginPin(pinFloat4->ID, ed::PinKind::Output);
+
+    DrawPinIcon(pinFloat4, IsPinLinked(pinFloat4->ID), (int)(alpha * 255));
+
+    ImGui::PopStyleVar();
+
+    ed::EndPin();
+
+    ImGui::EndColumns();
+
+
+    //Update Node Links
+
+    if (pinFloat4)
+    {
+        pinFloat4->pinFloat4 = colorNode->ComputeColor();
+    }
+
+    Pin* linkedPin = GetPinLinkedTo(pinFloat4->ID);
+
+    if (linkedPin && pinFloat4)
+        UpdateNodeLinks(pinFloat4, linkedPin);
+
 }
 
 
@@ -1911,12 +2237,14 @@ Node* WindowNodeEditor::CreateEmiterNode()
 {
     newNode = new Node(GetNextId(), "Emitter", ImColor(128, 195, 248));
    
-    newNode->Inputs.emplace_back(new PinFloat(GetNextId(), "Spawn"));
+    newNode->Inputs.emplace_back(new PinFloat(GetNextId(), "Spawn Rate"));
     newNode->Inputs.emplace_back(new PinFloat3(GetNextId(), "Initial Position"));
     newNode->Inputs.emplace_back(new PinFloat4(GetNextId(), "Velocity"));
     newNode->Inputs.emplace_back(new PinFloat(GetNextId(), "Lifetime"));
     newNode->Inputs.emplace_back(new PinFloat3(GetNextId(), "Size"));
-    newNode->Inputs.emplace_back(new PinFloat3(GetNextId(), "Color"));
+    newNode->Inputs.emplace_back(new PinFloat4(GetNextId(), "Color"));
+    newNode->Inputs.emplace_back(new PinInt(GetNextId(), "Alignment"));
+    newNode->Inputs.emplace_back(new PinTexture(GetNextId(), "Texture"));
     newNode->Inputs.emplace_back(new PinBool(GetNextId(), "Active"));
 
     nodes.emplace_back(newNode);
@@ -1928,22 +2256,26 @@ Node* WindowNodeEditor::CreateEmiterNode()
 Node* WindowNodeEditor::CreateParticleSystem()
 {
 
-    Node* activeBool = CreateBoolNode(); ed::SetNodePosition(activeBool->ID, ImVec2(0, 100));
-    Node* rateFloat = CreateFloatNode(); ed::SetNodePosition(rateFloat->ID, ImVec2(0, 0));
-    Node* velocityNode = CreateVelocityNode(); ed::SetNodePosition(velocityNode->ID, ImVec2(0, 0));
-    Node* lifetimeFloat = CreateFloatNode(); ed::SetNodePosition(lifetimeFloat->ID, ImVec2(0, -100));
-    Node* sizeFloat3 = CreateFloat3Node(); ed::SetNodePosition(sizeFloat3->ID, ImVec2(0, -300));
-    Node* colorFloat3 = CreateFloat3Node(); ed::SetNodePosition(colorFloat3->ID, ImVec2(0, -400));
-    Node* emitterNode = CreateEmiterNode(); ed::SetNodePosition(emitterNode->ID, ImVec2(300, 0));
+    Node* rateNode = CreateFloatNode(); ed::SetNodePosition(rateNode->ID, ImVec2(0, 0));
+    Node* velocityNode = CreateVelocityNode(); ed::SetNodePosition(velocityNode->ID, ImVec2(-150, 50));
+    Node* lifetimeFloat = CreateFloatNode(); ed::SetNodePosition(lifetimeFloat->ID, ImVec2(0, 150));
+    Node* sizeFloat3 = CreateFloat3Node("Size"); ed::SetNodePosition(sizeFloat3->ID, ImVec2(0, 200));
+    Node* colorNode = CreateColorNode(); ed::SetNodePosition(colorNode->ID, ImVec2(0, 300));
+    Node* alignmentNode = CreateAlignmentNode(); ed::SetNodePosition(alignmentNode->ID, ImVec2(0, 400));
+    Node* textureNode = CreateTextureNode(); ed::SetNodePosition(textureNode->ID, ImVec2(0, 600));
+    Node* activeNode = CreateBoolNode(); ed::SetNodePosition(activeNode->ID, ImVec2(0, 700));
+    Node* emitterNode = CreateEmiterNode(); ed::SetNodePosition(emitterNode->ID, ImVec2(500, 300));
 
     ed::NavigateToContent();
 
-    links.push_back(Link(GetNextLinkId(), rateFloat->Outputs[0]->ID, emitterNode->Inputs[0]->ID));
+    links.push_back(Link(GetNextLinkId(), rateNode->Outputs[0]->ID, emitterNode->Inputs[0]->ID));
     links.push_back(Link(GetNextLinkId(), velocityNode->Outputs[0]->ID, emitterNode->Inputs[2]->ID));
     links.push_back(Link(GetNextLinkId(), lifetimeFloat->Outputs[0]->ID, emitterNode->Inputs[3]->ID));
     links.push_back(Link(GetNextLinkId(), sizeFloat3->Outputs[0]->ID, emitterNode->Inputs[4]->ID));
-    links.push_back(Link(GetNextLinkId(), colorFloat3->Outputs[0]->ID, emitterNode->Inputs[5]->ID));
-    links.push_back(Link(GetNextLinkId(), activeBool->Outputs[0]->ID, emitterNode->Inputs[6]->ID));
+    links.push_back(Link(GetNextLinkId(), colorNode->Outputs[0]->ID, emitterNode->Inputs[5]->ID));
+    links.push_back(Link(GetNextLinkId(), alignmentNode->Outputs[0]->ID, emitterNode->Inputs[6]->ID));
+    links.push_back(Link(GetNextLinkId(), textureNode->Outputs[0]->ID, emitterNode->Inputs[7]->ID));
+    links.push_back(Link(GetNextLinkId(), activeNode->Outputs[0]->ID, emitterNode->Inputs[8]->ID));
 
 
 
@@ -1951,11 +2283,13 @@ Node* WindowNodeEditor::CreateParticleSystem()
     return emitterNode;
 }
 
+//TODO: Unify all functions below in a single Function
+
 Node* WindowNodeEditor::CreateVelocityNode()
 {
     //TODO:: Allow dynamically allocate more velocities???
 
-    newNode = new VelocityNode(GetNextId(), "Velocity", ImColor(128, 195, 248));
+    newNode = new NodeVelocity(GetNextId(), "Velocity", ImColor(128, 195, 248));
   
     nodes.emplace_back(newNode);
     BuildNode(newNode);
@@ -1963,19 +2297,49 @@ Node* WindowNodeEditor::CreateVelocityNode()
     return newNode;
 }
 
-Node* WindowNodeEditor::CreateFloat3Node()
+Node* WindowNodeEditor::CreateFloat3Node(std::string name)
 {
-    newNode = new Node(GetNextId(), "", ImColor(128, 195, 248));
-
-    newNode->Type = NodeType::Simple;
-    newNode->Outputs.emplace_back(new PinFloat3(GetNextId(), "Float3"));
+    newNode = new NodeFloat3(GetNextId(), name.c_str(), ImColor(128, 195, 248));
 
     nodes.emplace_back(newNode);
     BuildNode(newNode);
 
-    
     return newNode;
 }
+
+Node* WindowNodeEditor::CreateTextureNode()
+{
+    newNode = new NodeTexture(GetNextId(), "Texture", ImColor(128, 195, 248));
+
+    nodes.emplace_back(newNode);
+    BuildNode(newNode);
+
+    return newNode;
+}
+
+Node* WindowNodeEditor::CreateAlignmentNode()
+{
+    newNode = new NodeAlignment(GetNextId(), "Alignment", ImColor(128, 195, 248));
+
+    nodes.emplace_back(newNode);
+    BuildNode(newNode);
+
+    return newNode;
+}
+
+//Node* WindowNodeEditor::CreateFloat3Node()
+//{
+//    newNode = new Node(GetNextId(), "", ImColor(128, 195, 248));
+//
+//    newNode->Type = NodeType::Simple;
+//    newNode->Outputs.emplace_back(new PinFloat3(GetNextId(), "Float3"));
+//
+//    nodes.emplace_back(newNode);
+//    BuildNode(newNode);
+//
+//    
+//    return newNode;
+//}
 
 Node* WindowNodeEditor::CreateFloatNode()
 {
@@ -2007,12 +2371,12 @@ Node* WindowNodeEditor::CreateBoolNode()
 Node* WindowNodeEditor::CreateColorNode()
 {
 
-  /*  nodes.emplace_back(GetNextId(), "", ImColor(128, 195, 248));
-    nodes.back().Type = NodeType::Simple;
-    nodes.back().Outputs.emplace_back(GetNextId(), "Color", PinType::Color);
-    BuildNode(&nodes.back());*/
+    newNode = new NodeColor(GetNextId(), "Color", ImColor(128, 195, 248));
 
-    return nodes.back();
+    nodes.emplace_back(newNode);
+    BuildNode(newNode);
+
+    return newNode;
 
 }
 
@@ -2040,6 +2404,12 @@ void WindowNodeEditor::RightClickMenu(Node* node)
         if (ImGui::MenuItem("Particle Emitter")) node = CreateEmiterNode();
 
         if (ImGui::MenuItem("Module Velocity"))  node = CreateVelocityNode();
+
+        if (ImGui::MenuItem("Module Texture"))  node = CreateTextureNode();
+
+        if (ImGui::MenuItem("Module Alignment"))  node = CreateAlignmentNode();
+
+        if (ImGui::MenuItem("Module Color"))  node = CreateColorNode();
 
         ImGui::EndMenu();
     }
@@ -2072,6 +2442,11 @@ void WindowNodeEditor::UpdateNodeLinks(Pin* startPin, Pin* endPin)
     case PinType::Bool:
         ((PinBool*)endPin)->pinBool = ((PinBool*)startPin)->pinBool;
         break;
+    case PinType::Int:
+        ((PinInt*)endPin)->pinInt = ((PinInt*)startPin)->pinInt;
+        break;
+    case PinType::String:
+        break;
     case PinType::Float:
         ((PinFloat*)endPin)->pinFloat = ((PinFloat*)startPin)->pinFloat;
         break;
@@ -2081,9 +2456,8 @@ void WindowNodeEditor::UpdateNodeLinks(Pin* startPin, Pin* endPin)
     case PinType::Float4:
         ((PinFloat4*)endPin)->pinFloat4 = ((PinFloat4*)startPin)->pinFloat4;
         break;
-    case PinType::Int:
-        break;
-    case PinType::String:
+    case PinType::Texture:
+        ((PinTexture*)endPin)->pinTexture = ((PinTexture*)startPin)->pinTexture;
         break;
     default:
         break;

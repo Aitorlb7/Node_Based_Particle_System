@@ -346,7 +346,19 @@
     <ClCompile Include="Pin.cpp">
       <Filter>Tools\NodeEditor</Filter>
     </ClCompile>
-    <ClCompile Include="VelocityNode.cpp">
+    <ClCompile Include="NodeVelocity.cpp">
+      <Filter>Tools\NodeEditor\Nodes</Filter>
+    </ClCompile>
+    <ClCompile Include="NodeFloat3.cpp">
+      <Filter>Tools\NodeEditor\Nodes</Filter>
+    </ClCompile>
+    <ClCompile Include="NodeTexture.cpp">
+      <Filter>Tools\NodeEditor\Nodes</Filter>
+    </ClCompile>
+    <ClCompile Include="NodeAlignment.cpp">
+      <Filter>Tools\NodeEditor\Nodes</Filter>
+    </ClCompile>
+    <ClCompile Include="NodeColor.cpp">
       <Filter>Tools\NodeEditor\Nodes</Filter>
     </ClCompile>
   </ItemGroup>
@@ -1189,11 +1201,26 @@
     <ClInclude Include="PinBool.h">
       <Filter>Tools\NodeEditor\Pins</Filter>
     </ClInclude>
-    <ClInclude Include="VelocityNode.h">
+    <ClInclude Include="NodeVelocity.h">
       <Filter>Tools\NodeEditor\Nodes</Filter>
     </ClInclude>
     <ClInclude Include="PinFloat4.h">
       <Filter>Tools\NodeEditor\Pins</Filter>
+    </ClInclude>
+    <ClInclude Include="NodeFloat3.h">
+      <Filter>Tools\NodeEditor\Nodes</Filter>
+    </ClInclude>
+    <ClInclude Include="NodeTexture.h">
+      <Filter>Tools\NodeEditor\Nodes</Filter>
+    </ClInclude>
+    <ClInclude Include="PinTexture.h">
+      <Filter>Tools\NodeEditor\Pins</Filter>
+    </ClInclude>
+    <ClInclude Include="NodeAlignment.h">
+      <Filter>Tools\NodeEditor\Nodes</Filter>
+    </ClInclude>
+    <ClInclude Include="NodeColor.h">
+      <Filter>Tools\NodeEditor\Nodes</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

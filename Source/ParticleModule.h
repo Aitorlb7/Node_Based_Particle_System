@@ -5,6 +5,8 @@
 #include "Dependencies/MathGeoLib/include/Math/float4.h"
 #include "Dependencies/MathGeoLib/include/Algorithm/Random/LCG.h"
 
+#include "NodeAlignment.h"
+
 class Particle;
 class Emitter;
 class EmitterInstance;
@@ -38,19 +40,6 @@ struct ParticleModule
 
 struct EmitterBase : ParticleModule
 {
-	enum Alignment
-	{
-		None,
-		Screen,
-		Camera,
-		AxisXY,
-		AxisXZ,
-		AxisYZ,
-		AxisYX,
-		AxisZX,
-		AxisZY,
-		Unknown
-	} alignment = Camera;
 
 	EmitterBase() : ParticleModule(Type::EmitterBase) {};
 
@@ -61,7 +50,11 @@ struct EmitterBase : ParticleModule
 	Quat GetParticleAlignment(const float3& position, const float4x4& cameraTransform);
 
 	float3 emitterOrigin = float3::zero;
+	Alignment alignment = Alignment::Camera;
+
 	//float3 emitterRotation;
+
+
 };
 
 struct EmitterSpawn : ParticleModule

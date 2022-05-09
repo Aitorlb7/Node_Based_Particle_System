@@ -667,7 +667,7 @@ ResourceTexture* ModuleResources::GetTexture(const char* name)
 		{
 			tempTexture = (ResourceTexture*)item->second;
 
-			if (tempTexture->id == 0)
+			if (tempTexture->id > MAX_TEXTURES)
 			{
 				tempTexture = (ResourceTexture*)App->resources->LoadResource(tempTexture->UID);
 

@@ -383,7 +383,7 @@ void ModuleRenderer3D::DrawAllMeshes()
 void ModuleRenderer3D::DrawMesh(ComponentMesh* componentMesh, float4x4 transform, ComponentMaterial* componentMaterial, GameObject* meshOwner)
 {
 	uint32 shaderProgram = 0;
-	if (App->camera->gameCamera->frustum_culling) 
+	if (App->camera->currentCamera->frustum_culling) 
 	{
 		if(!DoesIntersect(meshOwner->aabb))
 		{
@@ -602,16 +602,19 @@ void ModuleRenderer3D::DrawParticle(ParticleRenderInfo& particleInfo)
 
 	glUseProgram(shaderProgram);
 
-	if (!particleInfo.material->GetTexture()) 
+	if (!particleInfo.material->GetTexture())
+	{
 		particleInfo.material->SetTexture(defaultParticleTex);
+	}
+
 
 	particleInfo.material->GetShader()->SetUniform1i("hasTexture", (GLint)true);
-
+	
 	glBindTexture(GL_TEXTURE_2D, particleInfo.material->GetTextureId());
 
 	if (shaderProgram != 0)
 	{
-		particleInfo.material->GetShader()->SetUniformVec4f("inColor", (GLfloat*)&particleInfo.material->GetColor());
+		particleInfo.material->GetShader()->SetUniformVec4f("inColor", (GLfloat*)&particleInfo.particle->color);
 
 		particleInfo.material->GetShader()->SetUniformMatrix4("modelMatrix", transform.ptr());
 

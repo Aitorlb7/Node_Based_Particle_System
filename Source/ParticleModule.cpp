@@ -8,7 +8,10 @@
 
 #include "ComponentParticleSystem.h"
 #include "ComponentTransform.h"
+#include "ComponentMaterial.h"
 #include "ComponentCamera.h"
+
+#include "ResourceMaterial.h"
 
 #include "Node.h"
 #include "PinFloat.h"
@@ -16,6 +19,7 @@
 #include "PinFloat4.h"
 #include "PinInt.h"
 #include "PinBool.h"
+#include "PinTexture.h"
 
 #include "Dependencies/MathGeoLib/include/Math/float3x3.h"
 
@@ -29,10 +33,13 @@ void EmitterBase::Spawn(EmitterInstance* emitter, Particle* particle, Node* emit
 
 void EmitterBase::Update(EmitterInstance* emitter, Node* emitterNode)
 {
+	//TODO: Remake unnecessary 
+
 	ComponentTransform* cameraTransform = nullptr;
-	if (App->camera->gameCamera)
+
+	if (App->camera->currentCamera)
 	{
-		cameraTransform = (ComponentTransform*)App->camera->gameCamera->gameObject->GetComponent(ComponentType::Transform);
+		cameraTransform = (ComponentTransform*)App->camera->currentCamera->gameObject->GetComponent(ComponentType::Transform);
 	}
 
 	for (unsigned int i = 0; i < emitter->activeParticles; ++i)
@@ -41,18 +48,30 @@ void EmitterBase::Update(EmitterInstance* emitter, Node* emitterNode)
 		Particle* particle = &emitter->particles[particleIndex];
 
 		particle->worldRotation = GetParticleAlignment(particle->position, cameraTransform->GetLocalTransform());
+
 		particle->distanceToCamera = float3(cameraTransform->GetLocalTransform().TranslatePart() - particle->position).LengthSq();
 	}
 }
 
 void EmitterBase::UpdateWithNode(EmitterInstance* emitter, Node* emitterNode)
 {
-	PinBool* pin = (PinBool*)emitterNode->GetInputPinByName("Active");
+	//TODO: Split into several Modules
 
-	if (pin)
-	{
-		emitter->isActive = pin->pinBool;
-	}
+	//Set Active
+	PinBool* pinBool = (PinBool*)emitterNode->GetInputPinByName("Active");
+
+	if (pinBool) emitter->isActive = pinBool->pinBool;
+
+	//Set Texture
+	PinTexture* pinTex = (PinTexture*)emitterNode->GetInputPinByName("Texture");
+
+	if (pinTex) emitter->emitterReference->material->SetTexture(pinTex->pinTexture);
+
+	//Set Alignment
+	PinInt* pinint = (PinInt*)emitterNode->GetInputPinByName("Alignment");
+
+	if (pinint) alignment = (Alignment)pinint->pinInt;
+
 
 }
 
@@ -270,11 +289,11 @@ void ParticleColor::Update(EmitterInstance* emitter, Node* emitterNode)
 
 void ParticleColor::UpdateWithNode(EmitterInstance* emitter, Node* emitterNode)
 {
-	PinFloat3* pin = (PinFloat3*)emitterNode->GetInputPinByName("Color");
+	PinFloat4* pin = (PinFloat4*)emitterNode->GetInputPinByName("Color");
 
 	if (pin)
 	{
-		initialColor = float4(pin->pinFloat3, initialColor.w);
+		initialColor = pin->pinFloat4;
 	}
 }
 
@@ -291,7 +310,6 @@ void ParticleLifetime::Spawn(EmitterInstance* emitter, Particle* particle, Node*
 
 
 	particle->normalizedLifetime = 1.0f / lifetime;
-	particle->maxLifetime = lifetime;
 	particle->relativeLifetime = 0.0f;
 }
 
