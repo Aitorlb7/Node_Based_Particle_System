@@ -1,7 +1,9 @@
 #include "Emitter.h"
 #include "ResourceMaterial.h"
 
-Emitter::Emitter()
+Emitter::Emitter():
+	name("Particle Emitter"),
+	maxParticleOnScreen(500)
 {
 	material = new ResourceMaterial();
 }

@@ -26,6 +26,8 @@ namespace Random
 	uint32 GenerateRandomIntRange(int first, int last);
 	uint32 GenerateRandomInt();
 
+	float GenerateRandomFloatRange(float first, float last);
+
 	float3 GenerateRandomFloat3(const float3& a, const float3& b);
 	float4 GenerateRandomFloat4(const float4& a, const float4& b);
 

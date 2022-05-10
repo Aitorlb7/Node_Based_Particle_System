@@ -58,7 +58,13 @@ public:
 	void DrawHoudiniNode(Pin* newLinkPin, Node* node);
 	void DrawTreeNode(Pin* newLinkPin, Node* node);
 
+	//TODO: Replace these draw inside functions or own nodes classes
+
 	void DrawVelocityNode(NodeBuilder& builder, Node* node);
+	void DrawFloat3Node(NodeBuilder& builder, Node* node);
+	void DrawTextureNode(NodeBuilder& builder, Node* node);
+	void DrawAlignmentNode(NodeBuilder& builder, Node* node);
+	void DrawColorNode(NodeBuilder& builder, Node* node);
 
 
 	//Particle Nodes
@@ -73,7 +79,11 @@ public:
 
 	//Basic variable container Nodes
 
-	Node* CreateFloat3Node();
+	Node* CreateFloat3Node(std::string name = "");
+	Node* CreateTextureNode();
+	Node* CreateAlignmentNode();
+
+	//Node* CreateFloat3Node();
 	Node* CreateFloatNode();
 	Node* CreateBoolNode();
 	Node* CreateColorNode();

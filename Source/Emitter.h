@@ -19,10 +19,10 @@ public:
 	ParticleModule* AddModuleFromType(ParticleModule::Type type);
 
 public:
-	std::string name = "Particle Emitter";
+	std::string name ;
 	std::vector<ParticleModule*> modules;
 	ResourceMaterial* material; 
-	int maxParticleCount = 100;
+	int maxParticleOnScreen;
 };
 
 #endif // !__EMITTER_H__

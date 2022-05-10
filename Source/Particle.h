@@ -22,8 +22,6 @@ public:
 	Quat worldRotation;
 
 	float relativeLifetime;
-	float maxLifetime;
-	float currentLifetime;
 	float normalizedLifetime;
 	float rotation;
 

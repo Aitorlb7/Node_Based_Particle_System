@@ -23,8 +23,10 @@ cursorPos({ 0.0f, 0.0f }),
 guizmoOperation(ImGuizmo::OPERATION::TRANSLATE),
 guizmoMode(ImGuizmo::MODE::WORLD),
 usingGuizmo(false),
-sceneFocused(false)
+sceneFocused(false),
+cameraSettingsNeedUpdate(true)
 {
+	
 }
 
 WindowViewport::~WindowViewport()
@@ -82,15 +84,33 @@ float2 WindowViewport::GetWorldMouseMotion()
 
 void WindowViewport::AdaptTextureToWindowSize()
 {
-	textureSize = ImVec2((float)App->window->Width(), (float)App->window->Height());
-	ImVec2 winSize = ImGui::GetWindowSize() * 0.975f;									
 
-	float widthRatio = (textureSize.x / winSize.x);										
-	float heightRatio = (textureSize.y / winSize.y);									
+	float2 currentSize = float2(ImGui::GetWindowWidth(), ImGui::GetWindowHeight());
+	
+	if (!currentSize.Equals(windowSize))
+	{
+		windowSize = currentSize;
 
-	textureSize = textureSize.x > winSize.x ? textureSize / widthRatio : textureSize;
+		textureSize.x = windowSize.x - 1;
+		textureSize.y = windowSize.y - 1;
 
-	textureSize = textureSize.y > winSize.y ? textureSize / heightRatio : textureSize;
+		App->camera->currentCamera->frustum.SetVerticalFovAndAspectRatio(App->camera->currentCamera->frustum.VerticalFov(), textureSize.x / textureSize.y);
+	
+		App->renderer3D->UpdateFrameBufferSize();
+	}
+
+
+
+
+	//textureSize = ImVec2((float)App->window->Width(), (float)App->window->Height());
+	//ImVec2 winSize = ImGui::GetWindowSize() * 0.975f;									
+
+	//float widthRatio = (textureSize.x / winSize.x);										
+	//float heightRatio = (textureSize.y / winSize.y);									
+
+	//textureSize = textureSize.x > winSize.x ? textureSize / widthRatio : textureSize;
+
+	//textureSize = textureSize.y > winSize.y ? textureSize / heightRatio : textureSize;
 
 }
 

@@ -49,8 +49,8 @@ bool ModuleScene::Start()
 	LOG("Loading Intro assets");
 	bool ret = true;
 
-	CreateGameCamera();
-
+	//CreateGameCamera();
+	CreateEditorCamera();
 
 	//Load the Default scene with the Street and the Water plane with the Water Shader
 	//std::map<uint32, Resource*>::iterator it = App->resources->importedResources.begin();
@@ -186,6 +186,31 @@ GameObject* ModuleScene::CreateGameCamera() {
 	ret->AddComponent((Component*)new ComponentCamera(ret));
 
 	App->camera->gameCamera = (ComponentCamera*)ret->GetComponent(ComponentType::Camera);
+
+	return ret;
+}
+
+
+GameObject* ModuleScene::CreateEditorCamera() {
+
+	GameObject* ret = new GameObject("Editor Camera");
+
+	AddGameObject(ret);
+
+	ret->SetParent(root_object);
+
+	ret->AddComponent(new ComponentCamera(ret));
+
+	App->camera->editorCamera = (ComponentCamera*)ret->GetComponent(ComponentType::Camera);
+
+	//App->camera->editorCamera->frustum.SetPos(vec(0.0f, 40.0f, -160.0f));
+
+	ComponentTransform* transform = (ComponentTransform*)ret->GetComponent(ComponentType::Transform);
+	transform->SetPosition(float3(0.0f, 40.0f, -160.0f));
+	
+	//App->camera->editorCamera->Look(float3(0.0f, 0.0f, 0.0f));
+
+	App->camera->currentCamera = App->camera->editorCamera;
 
 	return ret;
 }
