@@ -585,6 +585,8 @@ void ModuleRenderer3D::DrawAllParticles()
 {
 	if (particles.empty()) return;
 
+	App->editor->configWindow->particlesInScreen = particles.size();
+
 	std::map<float, ParticleRenderInfo>::reverse_iterator it;
 
 	for (it = particles.rbegin(); it != particles.rend(); ++it)
