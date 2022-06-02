@@ -1323,6 +1323,9 @@
     <Filter Include="Tools\NodeEditor\Nodes">
       <UniqueIdentifier>{1fcac068-d77b-424f-844e-73d61e70b9f0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Shaders">
+      <UniqueIdentifier>{4d713333-bb22-4252-82a7-5cad44660b61}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="Dependencies\MathGeoLib\include\Geometry\KDTree.inl">
@@ -1378,6 +1381,24 @@
     </None>
     <None Include="Dependencies\NodeEditor\imgui_node_editor_internal.inl">
       <Filter>Dependencies\NodeEditor</Filter>
+    </None>
+    <None Include="..\Output\Assets\Shaders\DefaultShader.shader">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="..\Output\Assets\Shaders\ParticleShader.shader">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="..\Output\Assets\Shaders\ReflectionShader.shader">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="..\Output\Assets\Shaders\RefractionShader.shader">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="..\Output\Assets\Shaders\SkyBoxShader.shader">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="..\Output\Assets\Shaders\WaterShader.shader">
+      <Filter>Shaders</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
