@@ -133,7 +133,7 @@ private:
 	//float* particleColData = nullptr;
 
 	std::vector<float4x4> particleTransformData;
-	std::vector<Color> particleColData;
+	std::vector<float4> particleColData;
 
 
 	ResourceTexture* defaultParticleTex;

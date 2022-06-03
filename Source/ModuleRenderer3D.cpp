@@ -117,7 +117,7 @@ bool ModuleRenderer3D::Init()
 		glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, MaterialDiffuse);
 
 		lights[0].Active(true);
-		SetDepthtest(false);
+		SetDepthtest(true);
 		SetColormaterial(false);
 
 		
@@ -550,56 +550,47 @@ void ModuleRenderer3D::SetPolygonssmooth(bool state) {
 
 void ModuleRenderer3D::SetUpParticlesBuffer()
 {
-	
-	particleVertices = { -0.5f, -0.5f, 0.0f, 0.5f, 0.5f, 0.0f, -0.5f, 0.5f, 0.0f,
-						-0.5f, -0.5f, 0.0f, 0.5f, -0.5f, 0.0f, 0.5f, 0.5f, 0.0f };
-
-	particleUVs = { 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f,
-					0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f };
 
 
-	// TODO: Remake this into Instancing
+	particleVertices = {
+		 -0.5f, -0.5f, 0.0f,
+		 0.5f, -0.5f, 0.0f,
+		 -0.5f, 0.5f, 0.0f,
+		 0.5f, 0.5f, 0.0f,
+			};
 
-	//glGenVertexArrays(1, &particleVAO);
-	//glBindVertexArray(particleVAO);
+
+	particleUVs = { 0.0f, 0.0f, 0.0f, 1.0f,
+					 1.0f, 0.0f, 1.0f, 1.0f};
+
 
 	glGenBuffers(1, &particleVertexBuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, particleVertexBuffer);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 18, particleVertices.data(), GL_STATIC_DRAW);
-
-	//glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-	//glEnableVertexAttribArray(0);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 12, particleVertices.data(), GL_STATIC_DRAW);
 
 	glGenBuffers(1, &particleUVBuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, particleUVBuffer);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 12, particleUVs.data(), GL_STATIC_DRAW);
-
-	//glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
-	//glEnableVertexAttribArray(1);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 8, particleUVs.data(), GL_STATIC_DRAW);
 
 
 	glGenBuffers(1, &particlePosMatBuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, particlePosMatBuffer);
-	// Initialize with empty (NULL) buffer : it will be updated later, each frame.
-	glBufferData(GL_ARRAY_BUFFER, 10000 * sizeof(float4x4), NULL, GL_STREAM_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, MAX_PARTICLES * sizeof(float4x4), NULL, GL_STREAM_DRAW);
 
 
 	glGenBuffers(1, &particleColorBuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, particleColorBuffer);
-	// Initialize with empty (NULL) buffer : it will be updated later, each frame.
-	glBufferData(GL_ARRAY_BUFFER, 10000 *  sizeof(float4), NULL, GL_STREAM_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, MAX_PARTICLES *  sizeof(float4), NULL, GL_STREAM_DRAW);
 
-
-	glBindVertexArray(0);
 }
 void ModuleRenderer3D::UpdateParticlesBuffer(int activeParticles)
 {
 	glBindBuffer(GL_ARRAY_BUFFER, particlePosMatBuffer);
-	glBufferData(GL_ARRAY_BUFFER, 10000 * sizeof(float4x4), NULL, GL_STREAM_DRAW); // Buffer orphaning
+	glBufferData(GL_ARRAY_BUFFER, MAX_PARTICLES * sizeof(float4x4), NULL, GL_STREAM_DRAW); // Buffer orphaning
 	glBufferSubData(GL_ARRAY_BUFFER, 0, activeParticles * sizeof(float4x4), particleTransformData.data());
 
 	glBindBuffer(GL_ARRAY_BUFFER, particleColorBuffer);
-	glBufferData(GL_ARRAY_BUFFER, 10000 * sizeof(float4), NULL, GL_STREAM_DRAW); // Buffer orphaning
+	glBufferData(GL_ARRAY_BUFFER, MAX_PARTICLES * sizeof(float4), NULL, GL_STREAM_DRAW); // Buffer orphaning
 	glBufferSubData(GL_ARRAY_BUFFER, 0, activeParticles * sizeof(float4), particleColData.data());
 }
 
@@ -610,7 +601,8 @@ void ModuleRenderer3D::FillParticlesBuffers(ParticleRenderInfo& particleInfo)
 										   float3(particleInfo.particle->size)).Transposed();
 
 	particleTransformData.push_back(transform);
-	particleColData.push_back(particleInfo.material->GetColor());
+
+	particleColData.push_back(particleInfo.particle->color);
 
 }
 
@@ -651,9 +643,6 @@ void ModuleRenderer3D::DrawAllParticles()
 	for (; it != particles.rend(); ++it)
 	{
 		FillParticlesBuffers((*it).second);
-
-
-		//DrawParticle((*it).second);
 	}
 
 	UpdateParticlesBuffer(particles.size());
@@ -663,9 +652,6 @@ void ModuleRenderer3D::DrawAllParticles()
 	
 
 	//TODO: Draw particles after asigning all buffers
-	//glBindVertexArray(particleVAO);
-
-
 
 	glEnableVertexAttribArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, particleVertexBuffer);
@@ -681,88 +667,36 @@ void ModuleRenderer3D::DrawAllParticles()
 	// 2rd attribute buffer : particles' colors
 	glEnableVertexAttribArray(2);
 	glBindBuffer(GL_ARRAY_BUFFER, particleColorBuffer);
-	glVertexAttribPointer(2, 4, GL_UNSIGNED_BYTE, GL_TRUE, 0, (void*)0);
+	glVertexAttribPointer(2, 4, GL_FLOAT, GL_TRUE, 0, (void*)0);
 	glVertexAttribDivisor(2, 1);
 
 	// 3rd attribute buffer : positions of particles' centers
 
-
 	glEnableVertexAttribArray(3);
 	glBindBuffer(GL_ARRAY_BUFFER, particlePosMatBuffer);
-	glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, sizeof(float4x4), (void*)0); //GL_TRUE??
+	glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, sizeof(float4x4), (void*)0);
 	glVertexAttribDivisor(3, 1);
 
 	glEnableVertexAttribArray(4);
 	glBindBuffer(GL_ARRAY_BUFFER, particlePosMatBuffer);
-	glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, sizeof(float4x4), (void*)(1 * sizeof(float4))); //GL_TRUE??
+	glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, sizeof(float4x4), (void*)(1 * sizeof(float4))); 
 	glVertexAttribDivisor(4, 1);
 
 	glEnableVertexAttribArray(5);
 	glBindBuffer(GL_ARRAY_BUFFER, particlePosMatBuffer);
-	glVertexAttribPointer(5, 4, GL_FLOAT, GL_FALSE, sizeof(float4x4), (void*)(2 * sizeof(float4))); //GL_TRUE??
+	glVertexAttribPointer(5, 4, GL_FLOAT, GL_FALSE, sizeof(float4x4), (void*)(2 * sizeof(float4))); 
 	glVertexAttribDivisor(5, 1);
 
 	glEnableVertexAttribArray(6);
 	glBindBuffer(GL_ARRAY_BUFFER, particlePosMatBuffer);
-	glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, sizeof(float4x4), (void*)(3 * sizeof(float4))); //GL_TRUE??
+	glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, sizeof(float4x4), (void*)(3 * sizeof(float4)));
 	glVertexAttribDivisor(6, 1);
 
-
-
-
-
-	glDrawArraysInstanced(GL_TRIANGLES, 0, 6, particles.size());
+	glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 4, particles.size());
 	
 	glBindTexture(GL_TEXTURE_2D, 0);
 	particles.clear();
-	//glBindVertexArray(0);
-
 	glUseProgram(0);
-}
-
-void ModuleRenderer3D::DrawParticle(ParticleRenderInfo& particleInfo)
-{
-	uint32 shaderProgram = 0;
-	float4x4 transform = float4x4::FromTRS(particleInfo.particle->position, 
-										   particleInfo.particle->worldRotation, 
-										   float3(particleInfo.particle->size)).Transposed();
-
-	if (particleInfo.material->GetShader()) 
-		shaderProgram = particleInfo.material->GetShaderProgramID();
-
-	shaderProgram ? shaderProgram : shaderProgram = SetDefaultShader(particleInfo.material);
-
-	glUseProgram(shaderProgram);
-
-	if (!particleInfo.material->GetTexture())
-	{
-		particleInfo.material->SetTexture(defaultParticleTex);
-	}
-
-
-	particleInfo.material->GetShader()->SetUniform1i("hasTexture", (GLint)true);
-	
-	glBindTexture(GL_TEXTURE_2D, particleInfo.material->GetTextureId());
-
-	if (shaderProgram != 0)
-	{
-		particleInfo.material->GetShader()->SetUniformVec4f("inColor", (GLfloat*)&particleInfo.particle->color);
-
-		particleInfo.material->GetShader()->SetUniformMatrix4("modelMatrix", transform.ptr());
-
-		particleInfo.material->GetShader()->SetUniformMatrix4("viewMatrix", App->camera->GetRawViewMatrix());
-
-		particleInfo.material->GetShader()->SetUniformMatrix4("projectionMatrix", App->camera->GetProjectionMatrix());
-
-		//Importer::ShaderImporter::SetShaderUniforms(particleInfo.material->GetShader());
-	}
-
-	glBindVertexArray(particleVAO);
-
-	glDrawArrays(GL_TRIANGLES, 0, 6);
-
-	glBindTexture(GL_TEXTURE_2D, 0);
-	glBindVertexArray(0);
 }
 
 bool ModuleRenderer3D::DoesIntersect(const AABB& aabb) {
