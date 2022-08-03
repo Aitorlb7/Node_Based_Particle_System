@@ -32,6 +32,7 @@
 
 #pragma comment (lib, "Dependencies/Glew/libx86/Release/Win32/glew32.lib")
 
+
 ModuleRenderer3D::ModuleRenderer3D(bool start_enabled) : Module(start_enabled), context()
 {
 }
@@ -48,6 +49,7 @@ bool ModuleRenderer3D::Init()
 	
 	//Create context
 	context = SDL_GL_CreateContext(App->window->window);
+	glewExperimental = GL_TRUE;
 	glewInit();
 
 	if(context == NULL)
@@ -115,7 +117,7 @@ bool ModuleRenderer3D::Init()
 		glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, MaterialDiffuse);
 
 		lights[0].Active(true);
-		SetDepthtest(false);
+		SetDepthtest(true);
 		SetColormaterial(false);
 
 		
@@ -142,6 +144,8 @@ bool ModuleRenderer3D::Start()
 	SetUpParticlesBuffer();
 
 	SetUpFrameBuffers();
+
+	particleShader = App->resources->GetShader("ParticleShader");
 
 	//defaultSkyBox.SetUpSkyBoxBuffers();
 
@@ -546,34 +550,60 @@ void ModuleRenderer3D::SetPolygonssmooth(bool state) {
 
 void ModuleRenderer3D::SetUpParticlesBuffer()
 {
-	// Purely temporal as we port particles to shaders
-	particleVertices = { -0.5f, -0.5f, 0.0f, 0.5f, 0.5f, 0.0f, -0.5f, 0.5f, 0.0f,
-						-0.5f, -0.5f, 0.0f, 0.5f, -0.5f, 0.0f, 0.5f, 0.5f, 0.0f };
-
-	particleUVs = { 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f,
-					0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f };
 
 
-	// TODO: Remake this into Instancing
+	particleVertices = {
+		 -0.5f, -0.5f, 0.0f,
+		 0.5f, -0.5f, 0.0f,
+		 -0.5f, 0.5f, 0.0f,
+		 0.5f, 0.5f, 0.0f,
+			};
 
-	glGenVertexArrays(1, &particleVAO);
-	glBindVertexArray(particleVAO);
+
+	particleUVs = { 0.0f, 0.0f, 0.0f, 1.0f,
+					 1.0f, 0.0f, 1.0f, 1.0f};
+
 
 	glGenBuffers(1, &particleVertexBuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, particleVertexBuffer);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 18, particleVertices.data(), GL_STATIC_DRAW);
-
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-	glEnableVertexAttribArray(0);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 12, particleVertices.data(), GL_STATIC_DRAW);
 
 	glGenBuffers(1, &particleUVBuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, particleUVBuffer);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 12, particleUVs.data(), GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 8, particleUVs.data(), GL_STATIC_DRAW);
 
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
-	glEnableVertexAttribArray(1);
 
-	glBindVertexArray(0);
+	glGenBuffers(1, &particlePosMatBuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, particlePosMatBuffer);
+	glBufferData(GL_ARRAY_BUFFER, MAX_PARTICLES * sizeof(float4x4), NULL, GL_STREAM_DRAW);
+
+
+	glGenBuffers(1, &particleColorBuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, particleColorBuffer);
+	glBufferData(GL_ARRAY_BUFFER, MAX_PARTICLES *  sizeof(float4), NULL, GL_STREAM_DRAW);
+
+}
+void ModuleRenderer3D::UpdateParticlesBuffer(int activeParticles)
+{
+	glBindBuffer(GL_ARRAY_BUFFER, particlePosMatBuffer);
+	glBufferData(GL_ARRAY_BUFFER, MAX_PARTICLES * sizeof(float4x4), NULL, GL_STREAM_DRAW); // Buffer orphaning
+	glBufferSubData(GL_ARRAY_BUFFER, 0, activeParticles * sizeof(float4x4), particleTransformData.data());
+
+	glBindBuffer(GL_ARRAY_BUFFER, particleColorBuffer);
+	glBufferData(GL_ARRAY_BUFFER, MAX_PARTICLES * sizeof(float4), NULL, GL_STREAM_DRAW); // Buffer orphaning
+	glBufferSubData(GL_ARRAY_BUFFER, 0, activeParticles * sizeof(float4), particleColData.data());
+}
+
+void ModuleRenderer3D::FillParticlesBuffers(ParticleRenderInfo& particleInfo)
+{
+	float4x4 transform = float4x4::FromTRS(particleInfo.particle->position,
+										   particleInfo.particle->worldRotation,
+										   float3(particleInfo.particle->size)).Transposed();
+
+	particleTransformData.push_back(transform);
+
+	particleColData.push_back(particleInfo.particle->color);
+
 }
 
 void ModuleRenderer3D::AddParticle(Particle* particle, ResourceMaterial* material)
@@ -585,61 +615,88 @@ void ModuleRenderer3D::DrawAllParticles()
 {
 	if (particles.empty()) return;
 
-	std::map<float, ParticleRenderInfo>::reverse_iterator it;
+	std::map<float, ParticleRenderInfo>::reverse_iterator it = particles.rbegin();
 
-	for (it = particles.rbegin(); it != particles.rend(); ++it)
+	App->editor->configWindow->particlesInScreen = particles.size();
+
+
+
+	glUseProgram(particleShader->shaderProgramID);
+
+	if ((*it).second.material->GetTexture())
 	{
-		DrawParticle((*it).second);
+		glBindTexture(GL_TEXTURE_2D, (*it).second.material->GetTextureId());
+
 	}
+	else
+	{
+		glBindTexture(GL_TEXTURE_2D, defaultParticleTex->id);
+	}
+
+	particleShader->SetUniformMatrix4("viewMatrix", App->camera->GetRawViewMatrix());
+
+	particleShader->SetUniformMatrix4("projectionMatrix", App->camera->GetProjectionMatrix());
+
 	
-	particles.clear();
 
-	glUseProgram(0);
-}
 
-void ModuleRenderer3D::DrawParticle(ParticleRenderInfo& particleInfo)
-{
-	uint32 shaderProgram = 0;
-	float4x4 transform = float4x4::FromTRS(particleInfo.particle->position, 
-										   particleInfo.particle->worldRotation, 
-										   float3(particleInfo.particle->size)).Transposed();
-
-	if (particleInfo.material->GetShader()) 
-		shaderProgram = particleInfo.material->GetShaderProgramID();
-
-	shaderProgram ? shaderProgram : shaderProgram = SetDefaultShader(particleInfo.material);
-
-	glUseProgram(shaderProgram);
-
-	if (!particleInfo.material->GetTexture())
+	for (; it != particles.rend(); ++it)
 	{
-		particleInfo.material->SetTexture(defaultParticleTex);
+		FillParticlesBuffers((*it).second);
 	}
 
-
-	particleInfo.material->GetShader()->SetUniform1i("hasTexture", (GLint)true);
+	UpdateParticlesBuffer(particles.size());
 	
-	glBindTexture(GL_TEXTURE_2D, particleInfo.material->GetTextureId());
+	particleTransformData.clear();
+	particleColData.clear();
+	
 
-	if (shaderProgram != 0)
-	{
-		particleInfo.material->GetShader()->SetUniformVec4f("inColor", (GLfloat*)&particleInfo.particle->color);
+	//TODO: Draw particles after asigning all buffers
 
-		particleInfo.material->GetShader()->SetUniformMatrix4("modelMatrix", transform.ptr());
+	glEnableVertexAttribArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, particleVertexBuffer);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+	glVertexAttribDivisor(0, 0); 
 
-		particleInfo.material->GetShader()->SetUniformMatrix4("viewMatrix", App->camera->GetRawViewMatrix());
+	glEnableVertexAttribArray(1);
+	glBindBuffer(GL_ARRAY_BUFFER, particleUVBuffer);
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (void*)0);
+	glVertexAttribDivisor(1, 0);
 
-		particleInfo.material->GetShader()->SetUniformMatrix4("projectionMatrix", App->camera->GetProjectionMatrix());
 
-		//Importer::ShaderImporter::SetShaderUniforms(particleInfo.material->GetShader());
-	}
+	// 2rd attribute buffer : particles' colors
+	glEnableVertexAttribArray(2);
+	glBindBuffer(GL_ARRAY_BUFFER, particleColorBuffer);
+	glVertexAttribPointer(2, 4, GL_FLOAT, GL_TRUE, 0, (void*)0);
+	glVertexAttribDivisor(2, 1);
 
-	glBindVertexArray(particleVAO);
+	// 3rd attribute buffer : positions of particles' centers
 
-	glDrawArrays(GL_TRIANGLES, 0, 6);
+	glEnableVertexAttribArray(3);
+	glBindBuffer(GL_ARRAY_BUFFER, particlePosMatBuffer);
+	glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, sizeof(float4x4), (void*)0);
+	glVertexAttribDivisor(3, 1);
 
+	glEnableVertexAttribArray(4);
+	glBindBuffer(GL_ARRAY_BUFFER, particlePosMatBuffer);
+	glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, sizeof(float4x4), (void*)(1 * sizeof(float4))); 
+	glVertexAttribDivisor(4, 1);
+
+	glEnableVertexAttribArray(5);
+	glBindBuffer(GL_ARRAY_BUFFER, particlePosMatBuffer);
+	glVertexAttribPointer(5, 4, GL_FLOAT, GL_FALSE, sizeof(float4x4), (void*)(2 * sizeof(float4))); 
+	glVertexAttribDivisor(5, 1);
+
+	glEnableVertexAttribArray(6);
+	glBindBuffer(GL_ARRAY_BUFFER, particlePosMatBuffer);
+	glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, sizeof(float4x4), (void*)(3 * sizeof(float4)));
+	glVertexAttribDivisor(6, 1);
+
+	glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 4, particles.size());
+	
 	glBindTexture(GL_TEXTURE_2D, 0);
-	glBindVertexArray(0);
+	particles.clear();
+	glUseProgram(0);
 }
 
 bool ModuleRenderer3D::DoesIntersect(const AABB& aabb) {

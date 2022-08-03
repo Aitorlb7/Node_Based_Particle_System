@@ -503,6 +503,12 @@
     <ClCompile Include="WindowViewport.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\Output\Assets\Shaders\DefaultShader.shader" />
+    <None Include="..\Output\Assets\Shaders\ParticleShader.shader" />
+    <None Include="..\Output\Assets\Shaders\ReflectionShader.shader" />
+    <None Include="..\Output\Assets\Shaders\RefractionShader.shader" />
+    <None Include="..\Output\Assets\Shaders\SkyBoxShader.shader" />
+    <None Include="..\Output\Assets\Shaders\WaterShader.shader" />
     <None Include="Dependencies\Assimp\include\color4.inl" />
     <None Include="Dependencies\Assimp\include\material.inl" />
     <None Include="Dependencies\Assimp\include\matrix3x3.inl" />

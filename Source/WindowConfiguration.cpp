@@ -55,6 +55,16 @@ void WindowConfiguration::Draw()
 		ImGui::PlotHistogram("##framerate", &App->GetFps()[0], App->GetFps().size(), 0, title, 0.0f, 100.0f, ImVec2(310, 100));
 		sprintf_s(title, 25, "Milliseconds %0.1f", App->GetMs()[App->GetMs().size() - 1]);
 		ImGui::PlotHistogram("##milliseconds", &App->GetMs()[0], App->GetMs().size(), 0, title, 0.0f, 40.0f, ImVec2(310, 100));
+
+		ImGui::Separator();
+
+		if (particlesInScreen > 0)
+		{
+			ImGui::Text("Particles In Screen: ");
+			ImGui::SameLine();
+			ImGui::TextColored(GREEN, "%d", particlesInScreen);
+		}
+
 	}
 	if (ImGui::CollapsingHeader("Window"))
 	{
@@ -182,6 +192,8 @@ void WindowConfiguration::Draw()
 			else LOG("Something went wrong when swapping cameras");
 		}
 	}
+
+	ImGui::End();
 }
 
 const char* WindowConfiguration::GetSystemCaps()

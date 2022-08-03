@@ -74,6 +74,10 @@ public:
 	//Particles
 	void SetUpParticlesBuffer();
 
+	void FillParticlesBuffers(ParticleRenderInfo& particleInfo);
+
+	void UpdateParticlesBuffer(int activeParticles);
+
 	void AddParticle(Particle* particle, ResourceMaterial* material);
 
 	void DrawAllParticles();
@@ -98,6 +102,7 @@ public:
 
 	Skybox defaultSkyBox;
 	ResourceShader* defaultShader = nullptr;
+	ResourceShader* particleShader = nullptr;
 
 	bool drawboundingboxes = false;
 
@@ -121,6 +126,15 @@ private:
 	uint particleVAO;
 	uint particleVertexBuffer;
 	uint particleUVBuffer;
+	uint particlePosMatBuffer;
+	uint particleColorBuffer;
+
+	//float* particleTransformData = nullptr;
+	//float* particleColData = nullptr;
+
+	std::vector<float4x4> particleTransformData;
+	std::vector<float4> particleColData;
+
 
 	ResourceTexture* defaultParticleTex;
 

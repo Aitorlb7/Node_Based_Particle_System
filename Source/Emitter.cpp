@@ -3,7 +3,7 @@
 
 Emitter::Emitter():
 	name("Particle Emitter"),
-	maxParticleOnScreen(500)
+	maxParticleOnScreen(MAX_PARTICLES)
 {
 	material = new ResourceMaterial();
 }
