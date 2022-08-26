@@ -48,24 +48,6 @@ public:
 	void CreateNewLink(Pin* newLinkPin, Pin* newNodeLinkPin, bool& createNewNode);
 	void DeleteNodeOrLink();
 
-	//Draw Nodes
-
-	void DrawSimpleNode(NodeBuilder& builder, Node* node);
-	void DrawBlueprintNode(NodeBuilder& builder, Node* node);
-	void SimpleAndBlueprintPins(NodeBuilder& builder, Node* node);
-
-	void DrawCommentNode(Node* node);
-	void DrawHoudiniNode(Pin* newLinkPin, Node* node);
-	void DrawTreeNode(Pin* newLinkPin, Node* node);
-
-	//TODO: Replace these draw inside functions or own nodes classes
-
-	void DrawVelocityNode(NodeBuilder& builder, Node* node);
-	void DrawFloat3Node(NodeBuilder& builder, Node* node);
-	void DrawTextureNode(NodeBuilder& builder, Node* node);
-	void DrawAlignmentNode(NodeBuilder& builder, Node* node);
-	void DrawColorNode(NodeBuilder& builder, Node* node);
-
 
 	//Particle Nodes
 	void RightClickMenu(Node* node);
@@ -73,21 +55,8 @@ public:
 
 	Node* CreateParticleSystem();
 
-	Node* CreateEmiterNode();
-	Node* CreateVelocityNode();
+	Node* CreateNode(NodeType type, std::string name = "");
 
-
-	//Basic variable container Nodes
-
-	Node* CreateFloat3Node(std::string name = "");
-	Node* CreateTextureNode();
-	Node* CreateAlignmentNode();
-
-	//Node* CreateFloat3Node();
-	Node* CreateFloatNode();
-	Node* CreateBoolNode();
-	Node* CreateColorNode();
-	Node* CreateContainerNode();
 
 public:
 	std::vector<Node*> nodes;
@@ -95,9 +64,11 @@ public:
 	const float          touchTime = 1.0f;
 	std::map<ed::NodeId, float, NodeIdLess> nodeTouchTime;
 
+	const int pinIconSize = 24;
+	Pin* newLinkPin = nullptr;
+
 private:
 	int nextId = 1;
-	const int pinIconSize = 24;
 	ed::NodeId contextNodeId = 0;
 	ed::LinkId contextLinkId = 0;
 	ed::PinId  contextPinId = 0;
@@ -105,7 +76,6 @@ private:
 	bool isSimple = false;
 	bool hasOutputDelegates = false;
 	Pin* newNodeLinkPin = nullptr;
-	Pin* newLinkPin = nullptr;
 
 	float leftPaneWidth = 400.0f;
 	float rightPaneWidth = 800.0f;
@@ -114,9 +84,6 @@ private:
 	std::vector<Link> links;
 	ed::EditorContext* contextEditor = nullptr;
 	ImTextureID      headerBackground = nullptr;
-
-	Node* newNode;
-
 
 }; 
 #endif /* WINDOW_NODE_EDITOR_H */

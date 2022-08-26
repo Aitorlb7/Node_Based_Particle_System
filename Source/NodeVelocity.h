@@ -15,7 +15,9 @@ public:
 
     float4 ComputeVelocity();
 
+protected:
 
+    void Draw(NodeBuilder& builder, WindowNodeEditor* nodeEditorWindow) override;
 
 public:
 

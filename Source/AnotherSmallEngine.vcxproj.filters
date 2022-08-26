@@ -361,6 +361,27 @@
     <ClCompile Include="NodeColor.cpp">
       <Filter>Tools\NodeEditor\Nodes</Filter>
     </ClCompile>
+    <ClCompile Include="NodeColorOvertime.cpp">
+      <Filter>Tools\NodeEditor\Nodes</Filter>
+    </ClCompile>
+    <ClCompile Include="NodeGravity.cpp">
+      <Filter>Tools\NodeEditor\Nodes</Filter>
+    </ClCompile>
+    <ClCompile Include="NodeEmitter.cpp">
+      <Filter>Tools\NodeEditor\Nodes</Filter>
+    </ClCompile>
+    <ClCompile Include="NodeGravitationalPull.cpp">
+      <Filter>Tools\NodeEditor\Nodes</Filter>
+    </ClCompile>
+    <ClCompile Include="NodeFloat.cpp">
+      <Filter>Tools\NodeEditor\Nodes</Filter>
+    </ClCompile>
+    <ClCompile Include="NodeComment.cpp">
+      <Filter>Tools\NodeEditor\Nodes</Filter>
+    </ClCompile>
+    <ClCompile Include="NodeBool.cpp">
+      <Filter>Tools\NodeEditor\Nodes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ModuleWindow.h">
@@ -1220,6 +1241,33 @@
       <Filter>Tools\NodeEditor\Nodes</Filter>
     </ClInclude>
     <ClInclude Include="NodeColor.h">
+      <Filter>Tools\NodeEditor\Nodes</Filter>
+    </ClInclude>
+    <ClInclude Include="NodeColorOvertime.h">
+      <Filter>Tools\NodeEditor\Nodes</Filter>
+    </ClInclude>
+    <ClInclude Include="PinFloat4Array.h">
+      <Filter>Tools\NodeEditor\Pins</Filter>
+    </ClInclude>
+    <ClInclude Include="NodeGravity.h">
+      <Filter>Tools\NodeEditor\Nodes</Filter>
+    </ClInclude>
+    <ClInclude Include="PinFlow.h">
+      <Filter>Tools\NodeEditor\Pins</Filter>
+    </ClInclude>
+    <ClInclude Include="NodeEmitter.h">
+      <Filter>Tools\NodeEditor\Nodes</Filter>
+    </ClInclude>
+    <ClInclude Include="NodeGravitationalPull.h">
+      <Filter>Tools\NodeEditor\Nodes</Filter>
+    </ClInclude>
+    <ClInclude Include="NodeFloat.h">
+      <Filter>Tools\NodeEditor\Nodes</Filter>
+    </ClInclude>
+    <ClInclude Include="NodeComment.h">
+      <Filter>Tools\NodeEditor\Nodes</Filter>
+    </ClInclude>
+    <ClInclude Include="NodeBool.h">
       <Filter>Tools\NodeEditor\Nodes</Filter>
     </ClInclude>
   </ItemGroup>

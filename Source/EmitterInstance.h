@@ -40,6 +40,8 @@ public:
 	ComponentParticleSystem* component;		//A reference to the particle system component
 
 	Node* emitterNode;
+
+	float3 forceVector;
 };
 
 #endif 

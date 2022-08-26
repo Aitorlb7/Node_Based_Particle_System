@@ -12,7 +12,9 @@ public:
 
     ~NodeFloat3();
 
-    //float4 ComputeVelocity();
+protected:
+
+    void Draw(NodeBuilder& builder, WindowNodeEditor* nodeEditorWindow) override;
 
 };
 

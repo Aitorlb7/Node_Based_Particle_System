@@ -11,9 +11,12 @@
 #include "ModuleEditor.h"
 #include "WindowNodeEditor.h"
 #include <map>
-EmitterInstance::EmitterInstance() : 
+
+#include "PinFlow.h"
+EmitterInstance::EmitterInstance() :
 	emitterNode(nullptr),
-	isActive(false)
+	isActive(false),
+	forceVector(float3::zero)
 {
 }
 
@@ -23,6 +26,10 @@ void EmitterInstance::Init(Emitter* emitterReference, ComponentParticleSystem* c
 	if (App->editor->nodeEditorWindow)
 	{
 		emitterNode = App->editor->nodeEditorWindow->CreateParticleSystem();
+		
+		PinFlow* pin = (PinFlow*)emitterNode->Outputs[0];
+
+		pin->emitterInstance = this;
 	}
 
 	this->emitterReference = emitterReference;

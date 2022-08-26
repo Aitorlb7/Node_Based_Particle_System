@@ -1,19 +1,20 @@
-#include "NodeColor.h"
+#include "NodeColorOvertime.h"
 #include "Application.h"
 #include "ModuleEditor.h"
 #include "WindowNodeEditor.h"
+
+#include "Random.h"
+#include "PinFloat4.h"
+#include "PinFloat4Array.h"
+#include "PinFloat.h"
 
 #include "Dependencies/ImGui/imgui_internal.h"
 #include <imgui_internal.h>
 #include <imgui_impl_dx11.h>
 
-#include "Random.h"
-#include "PinFloat4.h"
-
-NodeColor::NodeColor(int id, const char* name, ImColor color) : Node(id, name, color, NodeType::Color),
-color1(float4::one),
-color2(float4::one)
+NodeColorOvertime::NodeColorOvertime(int id, const char* name, ImColor color) : Node(id, name, color, NodeType::ColorOverTime)
 {
+
 	PinFloat4* newPin = new PinFloat4(App->editor->nodeEditorWindow->GetNextId(), "Color1");
 
 	newPin->pinFloat4 = float4::one;
@@ -28,23 +29,20 @@ color2(float4::one)
 
 
 
-	Outputs.emplace_back(new PinFloat4(App->editor->nodeEditorWindow->GetNextId(), "Color"));
+	PinFloat4Array* outputPin = new PinFloat4Array(App->editor->nodeEditorWindow->GetNextId(), "Color");
+
+	outputPin->float4Array[0] = float4::one;
+	outputPin->float4Array[1] = float4::one;
+
+	Outputs.emplace_back(outputPin);
 
 }
 
-NodeColor::~NodeColor()
+NodeColorOvertime::~NodeColorOvertime()
 {
 }
 
-float4 NodeColor::ComputeColor()
-{
-	return float4(Random::GenerateRandomFloatRange(color1.x, color2.x),
-		Random::GenerateRandomFloatRange(color1.y, color2.y),
-		Random::GenerateRandomFloatRange(color1.z, color2.z),
-		Random::GenerateRandomFloatRange(color1.w, color2.w));
-}
-
-void NodeColor::Draw(NodeBuilder& builder, WindowNodeEditor* nodeEditorWindow)
+void NodeColorOvertime::Draw(NodeBuilder& builder, WindowNodeEditor* nodeEditorWindow)
 {
     //Header------------------------------------
 
@@ -57,9 +55,17 @@ void NodeColor::Draw(NodeBuilder& builder, WindowNodeEditor* nodeEditorWindow)
     ImGui::Spring(0);
     builder.EndHeader();
 
+
     //Output------------------------------------
 
+
+
     PinFloat4* pinFloat4 = nullptr;
+
+    PinFloat4Array* pinFloat4Array = nullptr;
+
+
+    pinFloat4Array = (PinFloat4Array*)Outputs[0];
 
     auto alpha = ImGui::GetStyle().Alpha;
 
@@ -95,14 +101,14 @@ void NodeColor::Draw(NodeBuilder& builder, WindowNodeEditor* nodeEditorWindow)
         {
             if (ImGui::ColorEdit4(pinFloat4->Name.c_str(), (float*)&pinFloat4->pinFloat4, ImGuiColorEditFlags_DisplayRGB | ImGuiColorEditFlags_NoPicker | ImGuiColorEditFlags_NoOptions))
             {
-                color1 = pinFloat4->pinFloat4;
+                pinFloat4Array->float4Array[0] = pinFloat4->pinFloat4;
             }
         }
         else if (pinFloat4->Name == "Color2")
         {
             if (ImGui::ColorEdit4(pinFloat4->Name.c_str(), (float*)&pinFloat4->pinFloat4, ImGuiColorEditFlags_DisplayRGB | ImGuiColorEditFlags_NoPicker | ImGuiColorEditFlags_NoOptions))
             {
-                color2 = pinFloat4->pinFloat4;
+                pinFloat4Array->float4Array[1] = pinFloat4->pinFloat4;
             }
         }
 
@@ -118,20 +124,19 @@ void NodeColor::Draw(NodeBuilder& builder, WindowNodeEditor* nodeEditorWindow)
 
     ImGui::Dummy(ImVec2(0, 10));
 
-    pinFloat4 = (PinFloat4*)Outputs[0];
 
-    if (!pinFloat4)
+    if (!pinFloat4Array)
         return;
 
 
-    if (nodeEditorWindow->newLinkPin && !nodeEditorWindow->CanCreateLink(nodeEditorWindow->newLinkPin, pinFloat4) && pinFloat4 != nodeEditorWindow->newLinkPin)
+    if (nodeEditorWindow->newLinkPin && !nodeEditorWindow->CanCreateLink(nodeEditorWindow->newLinkPin, pinFloat4Array) && pinFloat4Array != nodeEditorWindow->newLinkPin)
         alpha = alpha * (48.0f / 255.0f);
 
     ImGui::PushStyleVar(ImGuiStyleVar_Alpha, alpha);
 
-    ed::BeginPin(pinFloat4->ID, ed::PinKind::Output);
+    ed::BeginPin(pinFloat4Array->ID, ed::PinKind::Output);
 
-    nodeEditorWindow->DrawPinIcon(pinFloat4, nodeEditorWindow->IsPinLinked(pinFloat4->ID), (int)(alpha * 255));
+    nodeEditorWindow->DrawPinIcon(pinFloat4Array, nodeEditorWindow->IsPinLinked(pinFloat4Array->ID), (int)(alpha * 255));
 
     ImGui::PopStyleVar();
 
@@ -140,16 +145,10 @@ void NodeColor::Draw(NodeBuilder& builder, WindowNodeEditor* nodeEditorWindow)
     ImGui::EndColumns();
 
 
-    //Update Node Links
+    Pin* linkedPin = nodeEditorWindow->GetPinLinkedTo(pinFloat4Array->ID);
 
-    if (pinFloat4)
-    {
-        pinFloat4->pinFloat4 = ComputeColor();
-    }
-
-    Pin* linkedPin = nodeEditorWindow->GetPinLinkedTo(pinFloat4->ID);
-
-    if (linkedPin && pinFloat4)
-        nodeEditorWindow->UpdateNodeLinks(pinFloat4, linkedPin);
+    if (linkedPin && pinFloat4Array)
+        nodeEditorWindow->UpdateNodeLinks(pinFloat4Array, linkedPin);
 
 }
+

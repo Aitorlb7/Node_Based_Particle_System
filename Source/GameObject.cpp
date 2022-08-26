@@ -226,6 +226,18 @@ void GameObject::EraseComponents()
 	}
 }
 
+bool GameObject::HasComponentOfType(ComponentType type)
+{
+	if (components.empty()) return false;
+
+	for (uint i = 0; i < components.size(); ++i)
+	{
+		if (components[i]->type == type) return true;
+	}
+
+	return false;
+}
+
 GameObject* GameObject::AddChildren(GameObject* children) 
 {
 	if (this->parent != nullptr)

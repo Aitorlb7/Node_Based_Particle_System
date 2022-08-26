@@ -193,7 +193,7 @@ void WindowViewport::HandleGuizmos()
 	{
 		usingGuizmo = true;
 
-		worldTransform = worldTransform.Transposed();
+ 		worldTransform = worldTransform.Transposed();
 		selectedTransform->SetLocalTransform(worldTransform);
 	}
 

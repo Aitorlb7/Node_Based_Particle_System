@@ -235,47 +235,47 @@ void ComponentCamera::Pan(float motion_x, float motion_y)
 	transform->SetPosition(transform->GetPosition() + X_add + Y_add);
 }
 
-void ComponentCamera::Orbit(float motion_x, float motion_y)
+void ComponentCamera::Orbit(float motion_x, float motion_y, float3 reference)
 {
 
-	if(App->scene->selected_object != nullptr)
+	/*if(App->scene->selected_object != nullptr)
 	{
 		looking_at = App->scene->selected_object->transform->GetPosition();
-	}
+	}*/
 
-	float3 focus = frustum.Pos() - looking_at;
-
-
-	if (motion_x != 0.0f)
-	{
-		Quat newX = Quat(frustum.Up(), -motion_x );
-		focus = newX.Transform(focus);
-	}
-
-	if (motion_y != 0.0f)
-	{
-		Quat newY = Quat(frustum.WorldRight(), -motion_y );
-		focus = newY.Transform(focus);
-	}
+	float3 focus = frustum.Pos() - reference;
 
 
-	//Quat y = Quat(frustum.Up(), motion_x );
-	//Quat x = Quat(frustum.WorldRight(), motion_y );
+	//if (motion_x != 0.0f)
+	//{
+	//	Quat newX = Quat(frustum.Up(), -motion_x );
+	//	focus = newX.Transform(focus);
+	//}
 
-	//focus = x.Transform(focus);
-	//focus = y.Transform(focus);
+	//if (motion_y != 0.0f)
+	//{
+	//	Quat newY = Quat(frustum.WorldRight(), -motion_y );
+	//	focus = newY.Transform(focus);
+	//}
+
+
+	Quat y = Quat(frustum.Up(), motion_x );
+	Quat x = Quat(frustum.WorldRight(), motion_y );
+
+	focus = x.Transform(focus);
+	focus = y.Transform(focus);
 
 
 	ComponentTransform* transform = (ComponentTransform*)gameObject->GetComponent(ComponentType::Transform);
-	transform->SetPosition(focus + looking_at);
+	transform->SetPosition(focus + reference);
 
 
 
 	//frustum.SetPos(focus+ looking_at);
 
 
+	Look(reference);
 
-	Look(looking_at);
 
 
 }
@@ -304,22 +304,28 @@ void ComponentCamera::LookAt(float motion_x, float motion_y)
 	ComponentTransform* transform = (ComponentTransform*)gameObject->GetComponent(ComponentType::Transform);
 
 	// x motion rotates in Y absolute axis
-	if(motion_x != 0.f)
+	if(motion_x < 50.f && motion_x > -50.f)
 	{
 		Quat q = Quat::RotateY(motion_x);
 
 		float3 new_Axis = q.Mul(frustum.Up().Normalized());
-
-		frustum.SetFront(q.Mul(frustum.Front()).Normalized());
-		frustum.SetUp(q.Mul(frustum.Up()).Normalized());
-
+		float3 front = q.Mul(frustum.Front().Normalized());
 		
+
+
+		frustum.SetFront(front);
+		frustum.SetUp(new_Axis);
+
+
+
 	}
 	
-	// y motion rotates in X local axis, with tops
-	if (motion_y != 0.f)
+	 //y motion rotates in X local axis, with tops
+	if (motion_y < 50.f && motion_y > -50.f)
 	{
-		Quat q = Quat::RotateAxisAngle(frustum.WorldRight(), motion_y);
+		//Quat q = Quat::RotateAxisAngle(frustum.WorldRight(), motion_y);
+
+		Quat q = Quat::RotateX(motion_y);
 
 		float3 new_yAxis = q.Mul(frustum.Up().Normalized());
 		
@@ -327,13 +333,14 @@ void ComponentCamera::LookAt(float motion_x, float motion_y)
 		frustum.SetUp(new_yAxis);
 		frustum.SetFront(q.Mul(frustum.Front().Normalized()));
 
+		//
+		//if(new_yAxis.y > 0.0f)
+		//{
+		//	frustum.SetUp(new_yAxis);
+		//	frustum.SetFront(q.Mul(frustum.Front().Normalized()));
+		//}
 
-		//Avoid upside down camera movement 
-	/*	if(new_yAxis.y > 0.0f)
-		{
-			frustum.SetUp(new_yAxis);
-			frustum.SetFront(q.Mul(frustum.Front().Normalized()));
-		}*/
+
 	}
 
 	transform->SetLocalTransform(frustum.WorldMatrix());
