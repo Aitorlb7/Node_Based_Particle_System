@@ -28,9 +28,6 @@ public:
 	void DrawMesh(ComponentMesh* component);
 	void DrawMaterial(ComponentMaterial* component);
 	void DrawCamera(ComponentCamera* component);
-	void DrawParticleSystem(ComponentParticleSystem* component);
-
-	std::string GetModuleName(const ParticleModule* module) const;
 
 	void CleanUp() override;
 

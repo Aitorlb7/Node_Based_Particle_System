@@ -57,7 +57,7 @@ public:
 	void Match(ComponentCamera* reference);
 	
 	void Pan(float motion_x, float motion_y);
-	void Orbit(float motion_x, float motion_y);
+	void Orbit(float motion_x, float motion_y, float3 reference);
 	void Zoom(float motion_z);
 	void LookAt(float motion_x, float motion_y);
 

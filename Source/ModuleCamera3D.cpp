@@ -61,21 +61,23 @@ update_status ModuleCamera3D::Update(float dt)
 	if (App->editor->viewportWindow->IsHovered())
 	{
 
-		if (App->scene->selected_object != nullptr)
+		if (App->scene->selected_object != nullptr && !App->scene->selected_object->HasComponentOfType(ComponentType::Camera))
 		{
 			reference = App->scene->selected_object->transform->GetGlobalPosition();
 		}
-		else reference = float3(0.0f, 0.0f, 0.0f);
+		else
+		{
+			reference = float3(0.0f, 0.0f, 0.0f);
+		}
 
+		float x = App->editor->viewportWindow->GetWorldMouseMotion().x;
+		float y = App->editor->viewportWindow->GetWorldMouseMotion().y;
 
-		int x = App->editor->viewportWindow->GetWorldMouseMotion().x;
-		int y = App->editor->viewportWindow->GetWorldMouseMotion().y;
-
-		if (App->input->GetKey(SDL_SCANCODE_LALT) && (x != 0 || y != 0))
+		if (App->input->GetKey(SDL_SCANCODE_LALT) && (x != 0.0f || y != 0.0f))
 		{
 
-			float dx = (float)x * dt;
-			float dy = (float)y * dt;
+			float dx = x * dt;
+			float dy = y * dt;
 
 
 			//TODO: Add Magic Numbers as Control Settings via IMGUI
@@ -88,8 +90,8 @@ update_status ModuleCamera3D::Update(float dt)
 			//Rotate
 			if (App->input->GetMouseButton(SDL_BUTTON_RIGHT))
 			{
-				currentCamera->LookAt(-dx*.3f, -dy*.3f); 
-				//currentCamera->Orbit(-dx * .3f, -dy * .3f);
+				currentCamera->LookAt(-dx * .1f, -dy * .1f);
+				//currentCamera->Orbit(-dx * .3f, -dy * .3f, reference);
 
 			}
 		}

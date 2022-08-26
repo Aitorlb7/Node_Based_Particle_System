@@ -61,6 +61,8 @@ public:
 	Component* GetComponent(ComponentType type);
 	std::vector<Component*> GetComponents(ComponentType type);
 	void EraseComponents();
+	bool HasComponentOfType(ComponentType type);
+
 
 	//Children handling
 	GameObject* AddChildren(GameObject* children);

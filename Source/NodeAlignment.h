@@ -27,6 +27,10 @@ public:
 
 	std::string GetStringBasedOnAlignment(Alignment alignment);
 
+protected:
+
+	void Draw(NodeBuilder& builder, WindowNodeEditor* nodeEditorWindow) override;
+
 public:
 
 	const char* aligmentArray[(uint)Alignment::Unknown] = { "None", "Screen", "Camera", "AxisXY", "AxisXZ", "AxisYZ", "AxisYX", "AxisZX", "AxisZY" };

@@ -15,6 +15,10 @@ public:
 
     ResourceTexture* GetDefaultParticleTex();
 
+protected:
+
+    void Draw(NodeBuilder& builder, WindowNodeEditor* nodeEditorWindow) override;
+
 };
 
 

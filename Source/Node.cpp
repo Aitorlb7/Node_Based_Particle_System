@@ -6,7 +6,8 @@ Node::Node(int id, const char* name, ImColor color, NodeType type):
     Color(color), 
     Type(type),
     Size(0, 0),
-    updateLinks(false)
+    updateLinks(false),
+    isActive(false)
 {
 }
 

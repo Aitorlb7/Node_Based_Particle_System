@@ -14,6 +14,9 @@ public:
 
 	float4 ComputeColor();
 
+protected:
+
+	void Draw(NodeBuilder& builder, WindowNodeEditor* nodeEditorWindow) override;
 
 public:
 

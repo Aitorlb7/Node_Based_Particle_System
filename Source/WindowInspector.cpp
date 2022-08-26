@@ -198,7 +198,6 @@ void WindowInspector::DrawComponent(Component* component)
 	case ComponentType::Material: DrawMaterial((ComponentMaterial*)component); break;
 	case ComponentType::Mesh: DrawMesh((ComponentMesh*)component); break;
 	case ComponentType::Transform: DrawTransform((ComponentTransform*)component); break;
-	case ComponentType::ParticleSystem: DrawParticleSystem((ComponentParticleSystem*)component); break;
 	}
 }
 
@@ -412,82 +411,6 @@ void WindowInspector::DrawCamera(ComponentCamera* component)
 	}
 }
 
-void WindowInspector::DrawParticleSystem(ComponentParticleSystem* component)
-{
-	Emitter* _selectedEmitter = selectedEmitter;
-	ParticleModule* _selectedModule = selectedModule;
-
-	if (ImGui::CollapsingHeader("Component Particle System"), ImGuiTreeNodeFlags_DefaultOpen)
-	{
-		if (component->GetParticleSystem()->emitters.size() > 0)
-		{
-			ImGui::Columns(component->GetParticleSystem()->emitters.size());
-
-			for (uint i = 0; i < component->GetParticleSystem()->emitters.size(); ++i)
-			{
-				Emitter* emitter = &component->GetParticleSystem()->emitters[i];
-				ImGui::PushID(emitter);
-				if (ImGui::Selectable(component->GetParticleSystem()->emitters[i].name.c_str(), _selectedEmitter == emitter))
-					_selectedEmitter = emitter;
-				ImGui::PopID();
-				ImGui::NextColumn();
-			}
-			ImGui::Separator();
-			bool moduleDrawn = true;
-			for (uint m = 0; moduleDrawn == true; ++m)
-			{
-				moduleDrawn = false;
-				for (uint e = 0; e < component->GetParticleSystem()->emitters.size(); ++e)
-				{
-					Emitter* emitter = &component->GetParticleSystem()->emitters[e];
-					if (emitter->modules.size() > m)
-					{
-						moduleDrawn = true;
-						ParticleModule* module = emitter->modules[m];
-						ImGui::PushID(emitter);
-						if (ImGui::Selectable(GetModuleName(module).c_str(), selectedModule == module))
-						{
-							_selectedEmitter = selectedEmitter = emitter;
-							_selectedModule = selectedModule = module;
-						}
-						ImGui::PopID();
-					}
-					ImGui::NextColumn();
-				}
-			}
-			ImGui::Columns(1);
-			ImGui::Separator();
-		}
-
-		/*if (ImGui::Button("Add Emitter"))
-		{
-			component->emitters.front(->AddDefaultEmitter();
-			particleSystem->needs_save = true;
-		}*/
-
-		//ImGui::End();
-		
-	}
-
-
-}
-
-std::string WindowInspector::GetModuleName(const ParticleModule* module) const
-{
-	switch (module->type)
-	{
-	case(ParticleModule::Type::EmitterBase): return "Base";
-	case(ParticleModule::Type::EmitterSpawn): return "Spawn";
-	case(ParticleModule::Type::EmitterArea): return "Area";
-	case(ParticleModule::Type::ParticlePosition): return "Position";
-	case(ParticleModule::Type::ParticleRotation): return "Rotation";
-	case(ParticleModule::Type::ParticleSize): return "Size";
-	case(ParticleModule::Type::ParticleColor): return "Color";
-	case(ParticleModule::Type::ParticleLifetime): return "Lifetime";
-	case(ParticleModule::Type::ParticleVelocity): return "Velocity";
-	}
-	return "Unknown";
-}
 void WindowInspector::CleanUp()
 {
 }

@@ -92,6 +92,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="NodeBool.h" />
+    <ClInclude Include="NodeComment.h" />
+    <ClInclude Include="NodeEmitter.h" />
+    <ClInclude Include="NodeFloat.h" />
+    <ClInclude Include="NodeGravitationalPull.h" />
+    <ClInclude Include="NodeGravity.h" />
     <ClInclude Include="NodeAlignment.h" />
     <ClInclude Include="Application.h" />
     <ClInclude Include="Color.h" />
@@ -319,6 +325,7 @@
     <ClInclude Include="Emitter.h" />
     <ClInclude Include="EmitterInstance.h" />
     <ClInclude Include="NodeColor.h" />
+    <ClInclude Include="NodeColorOvertime.h" />
     <ClInclude Include="NodeFloat3.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="glmath.h" />
@@ -342,6 +349,8 @@
     <ClInclude Include="PinFloat.h" />
     <ClInclude Include="PinFloat3.h" />
     <ClInclude Include="PinFloat4.h" />
+    <ClInclude Include="PinFloat4Array.h" />
+    <ClInclude Include="PinFlow.h" />
     <ClInclude Include="PinInt.h" />
     <ClInclude Include="PinString.h" />
     <ClInclude Include="PinTexture.h" />
@@ -450,8 +459,15 @@
     <ClCompile Include="Dependencies\Parson\parson.c" />
     <ClCompile Include="Emitter.cpp" />
     <ClCompile Include="EmitterInstance.cpp" />
+    <ClCompile Include="NodeBool.cpp" />
+    <ClCompile Include="NodeComment.cpp" />
+    <ClCompile Include="NodeEmitter.cpp" />
+    <ClCompile Include="NodeFloat.cpp" />
+    <ClCompile Include="NodeGravitationalPull.cpp" />
+    <ClCompile Include="NodeGravity.cpp" />
     <ClCompile Include="NodeAlignment.cpp" />
     <ClCompile Include="NodeColor.cpp" />
+    <ClCompile Include="NodeColorOvertime.cpp" />
     <ClCompile Include="NodeFloat3.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="glmath.cpp" />

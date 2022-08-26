@@ -218,7 +218,7 @@ GameObject* ModuleScene::CreateEditorCamera() {
 void ModuleScene::TestGameObjectSelection(const LineSegment& ray)
 {
 	std::map<float, GameObject*> game_object_candidates;
-	selected_object = nullptr;
+	//selected_object = nullptr;
 
 	for (uint i = 0; i < game_objects.size(); i++)
 	{

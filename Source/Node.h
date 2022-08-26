@@ -6,19 +6,25 @@
 
 namespace ed = ax::NodeEditor;
 
+class NodeBuilder;
+class WindowNodeEditor;
+class Node;
 
 enum class NodeType
 {
-    Blueprint,
-    Simple,
-    Tree,
     Comment,
-    Houdini,
+    Emitter,
+    Bool,
+    Float,
     Float3,
     Color,
+    ColorOverTime,
     Velocity,
     Texture,
-    Alignment
+    Alignment,
+    Gravity,
+    GravitationalPull,
+    Default
 };
 
 enum class IconType : ImU32 
@@ -30,9 +36,6 @@ enum class IconType : ImU32
     RoundSquare, 
     Diamond 
 };
-
-class Node;
-
 
 struct Link
 {
@@ -60,11 +63,14 @@ struct NodeIdLess
 class Node
 {
 public:
-    Node(int id, const char* name, ImColor color = ImColor(255, 255, 255), NodeType type = NodeType::Blueprint);
+    Node(int id, const char* name, ImColor color = ImColor(255, 255, 255), NodeType type = NodeType::Default);
     ~Node();
+
 
     const Pin* GetInputPinByName(std::string pinName) const;
     const Pin* GetOutputPinByName(std::string pinName) const;
+
+    virtual void Draw(NodeBuilder& builder, WindowNodeEditor* nodeEditorWindow) = 0;
 
 public:
     ed::NodeId ID;
@@ -80,6 +86,9 @@ public:
 
     bool updateLinks;
     bool updateEmitter;
+
+    //TODO: Is really necesary????
+    bool isActive;
 };
 
 #endif //_NODE_

@@ -17,6 +17,7 @@
 #include "PinFloat.h"
 #include "PinFloat3.h"
 #include "PinFloat4.h"
+#include "PinFloat4Array.h"
 #include "PinInt.h"
 #include "PinBool.h"
 #include "PinTexture.h"
@@ -289,12 +290,28 @@ void ParticleColor::Update(EmitterInstance* emitter, Node* emitterNode)
 
 void ParticleColor::UpdateWithNode(EmitterInstance* emitter, Node* emitterNode)
 {
-	PinFloat4* pin = (PinFloat4*)emitterNode->GetInputPinByName("Color");
+	PinFloat4Array* pin = (PinFloat4Array*)emitterNode->GetInputPinByName("ColorOvertime");
 
-	if (pin)
+	if (!pin->float4Array[0].Equals(pin->float4Array[1]))
 	{
-		initialColor = pin->pinFloat4;
+		for (unsigned int i = 0; i < emitter->activeParticles; ++i)
+		{
+			emitter->particles[emitter->particleIndices[i]].color = Lerp(pin->float4Array[0], pin->float4Array[1], emitter->particles[emitter->particleIndices[i]].relativeLifetime);
+		}
+
 	}
+	else
+	{
+		PinFloat4* pinFloat = (PinFloat4*)emitterNode->GetInputPinByName("Color");
+
+		if (pinFloat)
+		{
+			initialColor = pinFloat->pinFloat4;
+		}
+	}
+
+
+
 }
 
 #pragma endregion
@@ -347,9 +364,12 @@ void ParticleVelocity::Update(EmitterInstance* emitter, Node* emitterNode)
 {
 	for (int i = emitter->activeParticles - 1; i >= 0; --i)
 	{
+		//Get gravity and pulling forces and compute them
+
+
 		Particle* particle = &emitter->particles[emitter->particleIndices[i]];
 
-		particle->position += particle->velocity.Float3Part() * particle->velocity.w * App->GetDT();
+		particle->position += particle->velocity.Float3Part().Add(emitter->forceVector * particle->relativeLifetime) * particle->velocity.w * App->GetDT();
 	}
 }
 
