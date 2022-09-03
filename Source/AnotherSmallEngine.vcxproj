@@ -96,7 +96,7 @@
     <ClInclude Include="NodeComment.h" />
     <ClInclude Include="NodeEmitter.h" />
     <ClInclude Include="NodeFloat.h" />
-    <ClInclude Include="NodeGravitationalPull.h" />
+    <ClInclude Include="NodeGravitationalField.h" />
     <ClInclude Include="NodeGravity.h" />
     <ClInclude Include="NodeAlignment.h" />
     <ClInclude Include="Application.h" />
@@ -340,6 +340,7 @@
     <ClInclude Include="ModuleResource.h" />
     <ClInclude Include="Node.h" />
     <ClInclude Include="NodeBuilder.h" />
+    <ClInclude Include="NodeSpawnArea.h" />
     <ClInclude Include="Particle.h" />
     <ClInclude Include="ParticleModule.h" />
     <ClInclude Include="PathNode.h" />
@@ -351,6 +352,7 @@
     <ClInclude Include="PinFloat4.h" />
     <ClInclude Include="PinFloat4Array.h" />
     <ClInclude Include="PinFlow.h" />
+    <ClInclude Include="PinGameObject.h" />
     <ClInclude Include="PinInt.h" />
     <ClInclude Include="PinString.h" />
     <ClInclude Include="PinTexture.h" />
@@ -463,7 +465,7 @@
     <ClCompile Include="NodeComment.cpp" />
     <ClCompile Include="NodeEmitter.cpp" />
     <ClCompile Include="NodeFloat.cpp" />
-    <ClCompile Include="NodeGravitationalPull.cpp" />
+    <ClCompile Include="NodeGravitationalField.cpp" />
     <ClCompile Include="NodeGravity.cpp" />
     <ClCompile Include="NodeAlignment.cpp" />
     <ClCompile Include="NodeColor.cpp" />
@@ -483,6 +485,7 @@
     <ClCompile Include="ModuleResource.cpp" />
     <ClCompile Include="Node.cpp" />
     <ClCompile Include="NodeBuilder.cpp" />
+    <ClCompile Include="NodeSpawnArea.cpp" />
     <ClCompile Include="Particle.cpp" />
     <ClCompile Include="ParticleModule.cpp" />
     <ClCompile Include="Pin.cpp" />

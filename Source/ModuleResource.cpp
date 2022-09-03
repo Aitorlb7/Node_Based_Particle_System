@@ -636,6 +636,25 @@ Resource* ModuleResources::GetResourceInMemory(uint32 UID)
 	return resource;
 }
 
+ResourceModel* ModuleResources::GetModel(const char* name)
+{
+
+
+	ResourceModel* tempMesh = new ResourceModel();
+	std::map<uint32, Resource*>::iterator item;
+
+	for (item = importedResources.begin(); item != importedResources.end(); item++)
+	{
+		if (item->second->type == ResourceType::Model && item->second->name == name)
+		{
+			return (ResourceModel*)App->resources->LoadResource(item->second->UID);
+		}
+
+	}
+
+	return nullptr;
+}
+
 ResourceShader* ModuleResources::GetShader(const char* name)
 {
 

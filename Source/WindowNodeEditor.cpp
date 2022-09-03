@@ -18,8 +18,9 @@
 #include "NodeColor.h"
 #include "NodeColorOvertime.h"
 #include "NodeGravity.h"
-#include "NodeGravitationalPull.h"
+#include "NodeGravitationalField.h"
 #include "NodeEmitter.h"
+#include "NodeSpawnArea.h"
 
 #include "PinFloat3.h"
 #include "PinFloat4.h"
@@ -30,6 +31,7 @@
 #include "PinBool.h"
 #include "PinTexture.h"
 #include "PinFlow.h"
+#include "PinGameObject.h"
 
 #include "Dependencies/MathGeoLib/include/Math/float3.h"
 
@@ -599,6 +601,7 @@ ImColor WindowNodeEditor::GetIconColor(PinType type)
     case PinType::Float4:   return ImColor(220, 80, 80);
     case PinType::Float4Array:   return ImColor(220, 80, 80);
     case PinType::Texture:   return ImColor(220, 80, 80);
+    case PinType::GameObject: return ImColor(220, 80, 80);
     case PinType::Delegate: return ImColor(255, 48, 48);
     }
 }
@@ -840,6 +843,7 @@ void WindowNodeEditor::DrawPinIcon(const Pin* pin, bool connected, int alpha)
     case PinType::Float4: iconType = IconType::Circle; break;
     case PinType::Float4Array: iconType = IconType::Circle; break;
     case PinType::Texture:   iconType = IconType::RoundSquare; break;
+    case PinType::GameObject:   iconType = IconType::Diamond; break;
 	case PinType::Delegate: iconType = IconType::Square; break;
 	default:
 		return;
@@ -1159,34 +1163,56 @@ void WindowNodeEditor::DeleteNodeOrLink()
         {
             auto id = std::find_if(nodes.begin(), nodes.end(), [nodeId](Node* node) { return node->ID == nodeId; });
             if (id != nodes.end())
+            {
+                //(*id)->~Node();
+                delete* id;
                 nodes.erase(id);
+            }
+
         }
     }
 }
 
 Node* WindowNodeEditor::CreateParticleSystem()
 {
+    Node* emitterNode = CreateNode(NodeType::Emitter); ed::SetNodePosition(emitterNode->ID, ImVec2(700, 300));
 
-    Node* rateNode = CreateNode(NodeType::Float,"SpawnRate"); ed::SetNodePosition(rateNode->ID, ImVec2(0, 0));
-    Node* velocityNode = CreateNode(NodeType::Velocity); ed::SetNodePosition(velocityNode->ID, ImVec2(-150, 50));
-    Node* lifetimeFloat = CreateNode(NodeType::Float, "Lifetime"); ed::SetNodePosition(lifetimeFloat->ID, ImVec2(0, 150));
-    Node* sizeFloat3 = CreateNode(NodeType::Float,"Size"); ed::SetNodePosition(sizeFloat3->ID, ImVec2(0, 200));
-    Node* colorNode = CreateNode(NodeType::Color); ed::SetNodePosition(colorNode->ID, ImVec2(0, 300));
-    Node* alignmentNode = CreateNode(NodeType::Alignment); ed::SetNodePosition(alignmentNode->ID, ImVec2(0, 400));
-    Node* textureNode = CreateNode(NodeType::Texture); ed::SetNodePosition(textureNode->ID, ImVec2(0, 600));
-    Node* activeNode = CreateNode(NodeType::Bool, "Active"); ed::SetNodePosition(activeNode->ID, ImVec2(0, 700));
-    Node* emitterNode = CreateNode(NodeType::Emitter); ed::SetNodePosition(emitterNode->ID, ImVec2(500, 300));
+    Node* node = CreateNode(NodeType::Float,"SpawnRate"); ed::SetNodePosition(node->ID, ImVec2(0, 0));
+    ((PinFloat*)node->GetOutputPinByName("Float"))->pinFloat = 0.3f;
+    node->updateLinks = true;
+    links.push_back(Link(GetNextLinkId(), node->Outputs[0]->ID, emitterNode->Inputs[0]->ID));
+     
+    node = CreateNode(NodeType::Float, "Lifetime"); ed::SetNodePosition(node->ID, ImVec2(0, 75));
+    ((PinFloat*)node->GetOutputPinByName("Float"))->pinFloat = 7.0f;
+    node->updateLinks = true;
+    links.push_back(Link(GetNextLinkId(), node->Outputs[0]->ID, emitterNode->Inputs[1]->ID));
+
+    node = CreateNode(NodeType::Float,"Size"); ed::SetNodePosition(node->ID, ImVec2(0, 150));
+    ((PinFloat*)node->GetOutputPinByName("Float"))->pinFloat = 1.5f;
+    node->updateLinks = true;
+    links.push_back(Link(GetNextLinkId(), node->Outputs[0]->ID, emitterNode->Inputs[2]->ID));
+
+    node = CreateNode(NodeType::Velocity); ed::SetNodePosition(node->ID, ImVec2(-150, 225));
+    links.push_back(Link(GetNextLinkId(), node->Outputs[0]->ID, emitterNode->Inputs[3]->ID));
+
+    node = CreateNode(NodeType::ColorOverTime); ed::SetNodePosition(node->ID, ImVec2(-150, 325));
+    links.push_back(Link(GetNextLinkId(), node->Outputs[0]->ID, emitterNode->Inputs[4]->ID));
+
+    node = CreateNode(NodeType::Alignment); ed::SetNodePosition(node->ID, ImVec2(0, 425));
+    links.push_back(Link(GetNextLinkId(), node->Outputs[0]->ID, emitterNode->Inputs[5]->ID));
+
+    node = CreateNode(NodeType::Texture); ed::SetNodePosition(node->ID, ImVec2(0, 625));
+    links.push_back(Link(GetNextLinkId(), node->Outputs[0]->ID, emitterNode->Inputs[6]->ID));
+
+    node = CreateNode(NodeType::SpawnArea); ed::SetNodePosition(node->ID, ImVec2(150, 625));
+    links.push_back(Link(GetNextLinkId(), node->Outputs[1]->ID, emitterNode->Inputs[7]->ID));
+
+    node = CreateNode(NodeType::Bool, "Active"); ed::SetNodePosition(node->ID, ImVec2(400, 675));
+    links.push_back(Link(GetNextLinkId(), node->Outputs[0]->ID, emitterNode->Inputs[8]->ID));
+
 
     ed::NavigateToContent();
 
-    links.push_back(Link(GetNextLinkId(), rateNode->Outputs[0]->ID, emitterNode->Inputs[0]->ID));
-    links.push_back(Link(GetNextLinkId(), velocityNode->Outputs[0]->ID, emitterNode->Inputs[2]->ID));
-    links.push_back(Link(GetNextLinkId(), lifetimeFloat->Outputs[0]->ID, emitterNode->Inputs[3]->ID));
-    links.push_back(Link(GetNextLinkId(), sizeFloat3->Outputs[0]->ID, emitterNode->Inputs[4]->ID));
-    links.push_back(Link(GetNextLinkId(), colorNode->Outputs[0]->ID, emitterNode->Inputs[5]->ID));
-    links.push_back(Link(GetNextLinkId(), alignmentNode->Outputs[0]->ID, emitterNode->Inputs[7]->ID));
-    links.push_back(Link(GetNextLinkId(), textureNode->Outputs[0]->ID, emitterNode->Inputs[8]->ID));
-    links.push_back(Link(GetNextLinkId(), activeNode->Outputs[0]->ID, emitterNode->Inputs[9]->ID));
 
     return emitterNode;
 }
@@ -1209,7 +1235,8 @@ Node* WindowNodeEditor::CreateNode(NodeType type, std::string name)
     case NodeType::Texture: newNode = new NodeTexture(GetNextId(), "Texture", ImColor(128, 195, 248)); break;
     case NodeType::Alignment: newNode = new NodeAlignment(GetNextId(), "Alignment", ImColor(128, 195, 248)); break;
     case NodeType::Gravity: newNode = new NodeGravity(GetNextId(), "Gravity", ImColor(128, 195, 248)); break;
-    case NodeType::GravitationalPull: newNode = new NodeGravitationalPull(GetNextId(), "GravitationalPull", ImColor(128, 195, 248)); break;
+    case NodeType::GravitationalField: newNode = new NodeGravitationalField(GetNextId(), "GravitationalPull", ImColor(128, 195, 248)); break;
+    case NodeType::SpawnArea: newNode = new NodeSpawnArea(GetNextId(), "SpawnArea", ImColor(128, 195, 248)); break;
     default: break;
     }
 
@@ -1231,31 +1258,33 @@ void WindowNodeEditor::RightClickMenu(Node* node)
         
         if (ImGui::MenuItem("Particle Emitter")) node = CreateNode(NodeType::Emitter);
 
-        if (ImGui::MenuItem("Module Velocity"))  node = CreateNode(NodeType::Velocity);
+        if (ImGui::MenuItem("Velocity"))  node = CreateNode(NodeType::Velocity);
 
-        if (ImGui::MenuItem("Module Texture"))  node = CreateNode(NodeType::Texture);
+        if (ImGui::MenuItem("Texture"))  node = CreateNode(NodeType::Texture);
 
-        if (ImGui::MenuItem("Module Alignment"))  node = CreateNode(NodeType::Alignment);
+        if (ImGui::MenuItem("Alignment"))  node = CreateNode(NodeType::Alignment);
 
-        if (ImGui::MenuItem("Module Color"))  node = CreateNode(NodeType::Color);
+        if (ImGui::MenuItem("Color"))  node = CreateNode(NodeType::Color);
 
-        if (ImGui::MenuItem("Module ColorOverTime"))  node = CreateNode(NodeType::ColorOverTime);
+        if (ImGui::MenuItem("ColorOverTime"))  node = CreateNode(NodeType::ColorOverTime);
 
         if (ImGui::MenuItem("Gravity"))  node = CreateNode(NodeType::Gravity);
 
-        if (ImGui::MenuItem("GravitationalPull"))  node = CreateNode(NodeType::GravitationalPull);
+        if (ImGui::MenuItem("Gravitational Field"))  node = CreateNode(NodeType::GravitationalField);
+
+        if (ImGui::MenuItem("Spawn From Model"))  node = CreateNode(NodeType::SpawnArea);
 
         ImGui::EndMenu();
     }
     if (ImGui::BeginMenu("Base Nodes"))
     {
-        if (ImGui::MenuItem("Container"))  node = CreateNode(NodeType::Comment);
+        //if (ImGui::MenuItem("Container"))  node = CreateNode(NodeType::Comment);
 
-        else if (ImGui::MenuItem("Boolean")) node = CreateNode(NodeType::Bool);
+        if (ImGui::MenuItem("Boolean")) node = CreateNode(NodeType::Bool, "Boolean");
         
-        else if (ImGui::MenuItem("Float")) node = CreateNode(NodeType::Float);
+        else if (ImGui::MenuItem("Float")) node = CreateNode(NodeType::Float, "Float");
 
-        else if (ImGui::MenuItem("Float3")) node = CreateNode(NodeType::Float3);
+        else if (ImGui::MenuItem("Float3")) node = CreateNode(NodeType::Float3, "Vector3");
 
         ImGui::EndMenu();
     }
@@ -1301,6 +1330,9 @@ void WindowNodeEditor::UpdateNodeLinks(Pin* startPin, Pin* endPin)
         ((PinFloat4Array*)endPin)->float4Array[0] = ((PinFloat4Array*)startPin)->float4Array[0];
         ((PinFloat4Array*)endPin)->float4Array[1] = ((PinFloat4Array*)startPin)->float4Array[1];
         break;
+    case PinType::GameObject:
+        ((PinGameObject*)endPin)->gameObject = ((PinGameObject*)startPin)->gameObject;
+
     default:
         break;
     }

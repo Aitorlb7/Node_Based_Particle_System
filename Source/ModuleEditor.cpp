@@ -14,6 +14,7 @@
 #include "ComponentMaterial.h"
 #include "ComponentMesh.h"
 #include "ComponentTransform.h"
+#include "ComponentParticleSystem.h"
 
 #include "WindowAbout.h"
 #include "WindowAssetExplorer.h"
@@ -43,6 +44,8 @@
 #include "Dependencies/Devil/Include/ilut.h"
 #include "Dependencies/ImGuizmo/ImGuizmo.h"
 
+#include "PinFlow.h"
+
 #include <map>
 
 #include "Dependencies/Glew/include/GL/glew.h"
@@ -54,7 +57,7 @@ ModuleEditor::ModuleEditor(bool start_enabled) : Module(start_enabled)
 {
 	aboutWindow = new WindowAbout(false);
 	explorerWindow = new WindowAssetExplorer(true);
-	configWindow = new WindowConfiguration(false);
+	configWindow = new WindowConfiguration(true);
 	consoleWindow = new WindowConsole(true);
 	hirearchyWindow = new WindowHirearchy(true);
 	inspectorWindow = new WindowInspector(true);
@@ -660,11 +663,31 @@ bool ModuleEditor::MainMenuBar()
 		}
 		if (ImGui::BeginMenu("Add"))
 		{	
-			if (ImGui::MenuItem("Create Game Object")) App->scene->CreateGameObject("New_Empty_", App->scene->root_object);
+			if (ImGui::MenuItem("Create Game Object")) App->scene->CreateGameObject("",App->scene->root_object, false);
 			
 			if (App->scene->selected_object != nullptr)
 			{
-				if (ImGui::MenuItem("Create Children Object")) App->scene->CreateGameObject("New_EmptyChildren_", App->scene->selected_object);
+				if (ImGui::MenuItem("Create Children Object")) App->scene->CreateGameObject("",App->scene->selected_object, true);
+			}
+
+			if (ImGui::MenuItem("Create Default ParticleSystem"))
+			{
+				GameObject* newGameObject = App->scene->CreateGameObject("Default ParticleSystem", App->scene->root_object);
+
+				App->scene->SelectObject(newGameObject);
+				
+				ComponentParticleSystem* newComponent = new ComponentParticleSystem(newGameObject);
+
+				newGameObject->AddComponent(newComponent);
+
+				Node* emitterNode = App->editor->nodeEditorWindow->CreateParticleSystem();
+
+				newComponent->SetResourceProperties(newComponent->GetParticleSystem(), emitterNode);
+
+				PinFlow* pin = (PinFlow*)emitterNode->Outputs[0];
+
+				pin->emitterInstance = &newComponent->emitters.back();
+
 			}
 
 			ImGui::EndMenu();

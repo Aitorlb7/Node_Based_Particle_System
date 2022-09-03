@@ -7,7 +7,7 @@ public:
 
     NodeGravity(int id, const char* name, ImColor color = ImColor(255, 255, 255));
 
-    ~NodeGravity();
+    ~NodeGravity() override;
 
 protected:
 

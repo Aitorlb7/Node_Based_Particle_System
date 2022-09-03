@@ -18,6 +18,7 @@ enum class PinType
     Float4,
     Float4Array,
     Texture,
+    GameObject,
     Delegate,
 };
 

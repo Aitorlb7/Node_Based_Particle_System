@@ -27,6 +27,7 @@ void ResourceParticleSystem::CreateDefaultSystem()
 
     emitters.back().modules.push_back(new EmitterBase());
     emitters.back().modules.push_back(new EmitterSpawn());
+    emitters.back().modules.push_back(new ParticlePosition());
     emitters.back().modules.push_back(new ParticleLifetime());
     emitters.back().modules.push_back(new ParticleVelocity());
     emitters.back().modules.push_back(new ParticleSize());

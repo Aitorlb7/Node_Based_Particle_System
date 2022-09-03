@@ -101,7 +101,7 @@ enum update_status
 #define GREEN ImVec4(0.1f, 1.0f, 0.0f, 1.0f)
 #define YELLOW ImVec4(1.0f, 1.0f, 0.0f, 1.0f)
 
-#define MAX_PARTICLES 2000
+#define MAX_PARTICLES 10000
 
 class Application;
 

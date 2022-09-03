@@ -1,7 +1,10 @@
 #include "NodeEmitter.h"
 #include "Application.h"
+#include "GameObject.h"
+#include "ModuleScene.h"
 #include "ModuleEditor.h"
 #include "WindowNodeEditor.h"
+#include "ComponentParticleSystem.h"
 
 #include "PinFloat3.h"
 #include "PinFloat4.h"
@@ -12,23 +15,45 @@
 #include "PinBool.h"
 #include "PinTexture.h"
 #include "PinFlow.h"
+#include "PinGameObject.h"
 
 NodeEmitter::NodeEmitter(int id, const char* name, ImColor color) : Node(id, name, color, NodeType::Emitter)
 {
-    this->isActive = true;
+
+
+
 
     Outputs.emplace_back(new PinFlow(App->editor->nodeEditorWindow->GetNextId(), ""));
 
     Inputs.emplace_back(new PinFloat(App->editor->nodeEditorWindow->GetNextId(), "Spawn Rate"));
-    Inputs.emplace_back(new PinFloat3(App->editor->nodeEditorWindow->GetNextId(), "Initial Position"));
-    Inputs.emplace_back(new PinFloat4(App->editor->nodeEditorWindow->GetNextId(), "Velocity"));
     Inputs.emplace_back(new PinFloat(App->editor->nodeEditorWindow->GetNextId(), "Lifetime"));
     Inputs.emplace_back(new PinFloat(App->editor->nodeEditorWindow->GetNextId(), "Size"));
-    Inputs.emplace_back(new PinFloat4(App->editor->nodeEditorWindow->GetNextId(), "Color"));
-    Inputs.emplace_back(new PinFloat4Array(App->editor->nodeEditorWindow->GetNextId(), "ColorOvertime"));
+    Inputs.emplace_back(new PinFloat4Array(App->editor->nodeEditorWindow->GetNextId(), "Velocity"));
+    Inputs.emplace_back(new PinFloat4Array(App->editor->nodeEditorWindow->GetNextId(), "Color"));
     Inputs.emplace_back(new PinInt(App->editor->nodeEditorWindow->GetNextId(), "Alignment"));
     Inputs.emplace_back(new PinTexture(App->editor->nodeEditorWindow->GetNextId(), "Texture"));
+    Inputs.emplace_back(new PinGameObject(App->editor->nodeEditorWindow->GetNextId(), "Spawn From Model"));
     Inputs.emplace_back(new PinBool(App->editor->nodeEditorWindow->GetNextId(), "Active"));
+
+
+    ComponentParticleSystem* newComponent = (ComponentParticleSystem*)App->scene->game_objects.back()->GetComponent(ComponentType::ParticleSystem);
+
+    if (!newComponent)
+    {
+        GameObject* newGameObject = App->scene->CreateGameObject("", App->scene->root_object);
+
+        newComponent = new ComponentParticleSystem(newGameObject);
+
+        newGameObject->AddComponent(newComponent);
+
+        newComponent->SetResourceProperties(newComponent->GetParticleSystem(), this);
+
+        PinFlow* pin = (PinFlow*)Outputs[0];
+
+        pin->emitterInstance = &newComponent->emitters.back();
+
+        App->scene->SelectObject(newGameObject);
+    }
 }
 
 NodeEmitter::~NodeEmitter()

@@ -10,7 +10,7 @@ public:
 
 	NodeColor(int id, const char* name, ImColor color = ImColor(255, 255, 255));
 
-	~NodeColor();
+	~NodeColor() override;
 
 	float4 ComputeColor();
 
@@ -20,11 +20,8 @@ protected:
 
 public:
 
-
 	float4 color1;
 	float4 color2;
-
-
 
 };
 

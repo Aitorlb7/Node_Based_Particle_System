@@ -112,11 +112,18 @@ update_status ModuleScene::PostUpdate(float dt)
 }
 
 
-GameObject* ModuleScene::CreateGameObject(string name, GameObject* parent)
+GameObject* ModuleScene::CreateGameObject(string name, GameObject* parent, bool isChildren)
 {
 	std::string fullName = name;
 
-	fullName += std::to_string(game_objects.size());
+	if (name == "")
+	{
+		if (isChildren) fullName = "GameObjectChildren_";
+
+		else  fullName = "GameObject_";
+
+		fullName += std::to_string(game_objects.size());
+	}
 
 	GameObject* tempObject = new GameObject(fullName);
 
@@ -135,8 +142,6 @@ GameObject* ModuleScene::CreateGameObject(string name, GameObject* parent)
 			tempObject->SetParent(parent);
 		}
 	}
-
-	game_objects.push_back(tempObject);
 	
 	return tempObject;
 }
@@ -173,6 +178,19 @@ void ModuleScene::DeleteGameObject(GameObject* object)
 	}
 }
 
+
+GameObject* ModuleScene::GetGameObjectByName(std::string name)
+{
+	if (game_objects.empty()) return nullptr;
+
+	for (uint i = 0; i < game_objects.size(); ++i)
+	{
+		if (game_objects[i]->name == name) return game_objects[i];
+	}
+
+
+	return nullptr;
+}
 
 GameObject* ModuleScene::CreateGameCamera() {
 

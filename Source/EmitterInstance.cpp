@@ -13,6 +13,8 @@
 #include <map>
 
 #include "PinFlow.h"
+#include "NodeGravitationalField.h"
+
 EmitterInstance::EmitterInstance() :
 	emitterNode(nullptr),
 	isActive(false),
@@ -23,10 +25,12 @@ EmitterInstance::EmitterInstance() :
 void EmitterInstance::Init(Emitter* emitterReference, ComponentParticleSystem* component)
 {
 	//TODO Reallocate to Modules creator
-	if (App->editor->nodeEditorWindow)
+	if (!emitterNode)
 	{
-		emitterNode = App->editor->nodeEditorWindow->CreateParticleSystem();
+		//emitterNode = App->editor->nodeEditorWindow->CreateParticleSystem();
 		
+		emitterNode = App->editor->nodeEditorWindow->CreateNode(NodeType::Emitter, "Emitter");
+
 		PinFlow* pin = (PinFlow*)emitterNode->Outputs[0];
 
 		pin->emitterInstance = this;
@@ -91,6 +95,34 @@ void EmitterInstance::UpdateWithNode()
 	}
 
 	emitterNode->updateEmitter = false;
+}
+
+void EmitterInstance::AddGravitationalField(NodeGravitationalField* gravitationalField)
+{
+	if (!gravitationalField) return;
+
+	for (int i = 0; i < GravitationalFields.size(); ++i)
+	{
+		if (GravitationalFields[i] == gravitationalField) return;
+	}
+
+	GravitationalFields.push_back(gravitationalField);
+}
+
+void EmitterInstance::DeleteGravitationalField(NodeGravitationalField* gravitationalField)
+{
+	if (!gravitationalField) return;
+
+	std::vector<NodeGravitationalField*>::iterator it= GravitationalFields.begin();
+
+	for (; it != GravitationalFields.end(); ++it)
+	{
+		if (*it == gravitationalField)
+		{
+			GravitationalFields.erase(it);
+			return;
+		}
+	}
 }
 
 void EmitterInstance::KillDeadParticles()

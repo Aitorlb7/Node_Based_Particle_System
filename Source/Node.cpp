@@ -13,6 +13,7 @@ Node::Node(int id, const char* name, ImColor color, NodeType type):
 
 Node::~Node()
 {
+    isActive = false;
 }
 
 const Pin* Node::GetInputPinByName(std::string pinName) const

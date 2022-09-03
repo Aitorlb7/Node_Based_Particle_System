@@ -33,6 +33,8 @@ public:
 
 	float distanceToCamera;
 	bool usesBillboarding;
+
+	float lerpCounter;
 };
 
 #endif // !__PARTICLE_H__

@@ -370,7 +370,7 @@
     <ClCompile Include="NodeEmitter.cpp">
       <Filter>Tools\NodeEditor\Nodes</Filter>
     </ClCompile>
-    <ClCompile Include="NodeGravitationalPull.cpp">
+    <ClCompile Include="NodeGravitationalField.cpp">
       <Filter>Tools\NodeEditor\Nodes</Filter>
     </ClCompile>
     <ClCompile Include="NodeFloat.cpp">
@@ -380,6 +380,9 @@
       <Filter>Tools\NodeEditor\Nodes</Filter>
     </ClCompile>
     <ClCompile Include="NodeBool.cpp">
+      <Filter>Tools\NodeEditor\Nodes</Filter>
+    </ClCompile>
+    <ClCompile Include="NodeSpawnArea.cpp">
       <Filter>Tools\NodeEditor\Nodes</Filter>
     </ClCompile>
   </ItemGroup>
@@ -1258,7 +1261,7 @@
     <ClInclude Include="NodeEmitter.h">
       <Filter>Tools\NodeEditor\Nodes</Filter>
     </ClInclude>
-    <ClInclude Include="NodeGravitationalPull.h">
+    <ClInclude Include="NodeGravitationalField.h">
       <Filter>Tools\NodeEditor\Nodes</Filter>
     </ClInclude>
     <ClInclude Include="NodeFloat.h">
@@ -1269,6 +1272,12 @@
     </ClInclude>
     <ClInclude Include="NodeBool.h">
       <Filter>Tools\NodeEditor\Nodes</Filter>
+    </ClInclude>
+    <ClInclude Include="NodeSpawnArea.h">
+      <Filter>Tools\NodeEditor\Nodes</Filter>
+    </ClInclude>
+    <ClInclude Include="PinGameObject.h">
+      <Filter>Tools\NodeEditor\Pins</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

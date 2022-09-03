@@ -20,6 +20,9 @@ NodeGravity::NodeGravity(int id, const char* name, ImColor color) : Node(id, nam
 
 NodeGravity::~NodeGravity()
 {
+    PinFlow* inputPinFlow = (PinFlow*)Inputs[0];
+
+    inputPinFlow->emitterInstance->forceVector = float3(0.0, 0.0f, 0.0);
 }
 
 void NodeGravity::Draw(NodeBuilder& builder, WindowNodeEditor* nodeEditorWindow)
@@ -63,28 +66,21 @@ void NodeGravity::Draw(NodeBuilder& builder, WindowNodeEditor* nodeEditorWindow)
 
     if (ImGui::DragFloat("Float", &tempPinFloat->pinFloat, 0.1f)) updateLinks = true;
 
-    PinFlow* tempPinFlow = (PinFlow*)Inputs[0];
+    PinFlow* inputPinFlow = (PinFlow*)Inputs[0];
 
-    if (tempPinFlow->emitterInstance)
+    PinFlow* outputPinFlow = (PinFlow*)Outputs[0];
+
+    if (inputPinFlow->emitterInstance)
     {
-        tempPinFlow->emitterInstance->forceVector = float3(0.0, tempPinFloat->pinFloat, 0.0);
+        inputPinFlow->emitterInstance->forceVector = float3(0.0, tempPinFloat->pinFloat, 0.0);
+
+        outputPinFlow->emitterInstance = inputPinFlow->emitterInstance;
     }
-
-
-    //Set Gravity
-
 
     ImGui::PopItemWidth();
 
-    ImGui::SameLine();
-
-    ed::BeginPin(tempPinFloat->ID, ed::PinKind::Output);
-
-    nodeEditorWindow->DrawPinIcon(tempPinFloat, nodeEditorWindow->IsPinLinked(tempPinFloat->ID), (int)(alpha * 255));
-
     ImGui::PopStyleVar();
 
-    ed::EndPin();
 
     if (updateLinks)
     {

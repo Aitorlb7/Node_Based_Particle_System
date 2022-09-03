@@ -7,7 +7,7 @@ public:
 
     NodeBool(int id, const char* name, ImColor color = ImColor(255, 255, 255));
 
-    ~NodeBool();
+    ~NodeBool() override;
 
 protected:
 

@@ -11,7 +11,7 @@ public:
 
     NodeTexture(int id, const char* name, ImColor color = ImColor(255, 255, 255));
 
-    ~NodeTexture();
+    ~NodeTexture() override;
 
     ResourceTexture* GetDefaultParticleTex();
 

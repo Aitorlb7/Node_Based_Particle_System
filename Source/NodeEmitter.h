@@ -8,7 +8,7 @@ public:
 
 	NodeEmitter(int id, const char* name, ImColor color = ImColor(255, 255, 255));
 
-	~NodeEmitter();
+	~NodeEmitter() override;
 
 protected:
 

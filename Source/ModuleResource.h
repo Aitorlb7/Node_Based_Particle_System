@@ -49,6 +49,8 @@ public:
 
 	std::map<uint32, ResourceShader*> GetShadersInMemory();
 	std::map<uint32, ResourceTexture*>GetTexturesInMemory();
+	
+	ResourceModel* GetModel(const char* name);
 
 	ResourceShader* GetShader(const char* name);
 

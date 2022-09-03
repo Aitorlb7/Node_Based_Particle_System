@@ -117,7 +117,7 @@ bool ModuleRenderer3D::Init()
 		glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, MaterialDiffuse);
 
 		lights[0].Active(true);
-		SetDepthtest(true);
+		SetDepthtest(false);
 		SetColormaterial(false);
 
 		

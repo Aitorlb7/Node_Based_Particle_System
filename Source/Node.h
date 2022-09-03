@@ -23,7 +23,8 @@ enum class NodeType
     Texture,
     Alignment,
     Gravity,
-    GravitationalPull,
+    GravitationalField,
+    SpawnArea,
     Default
 };
 
@@ -64,7 +65,7 @@ class Node
 {
 public:
     Node(int id, const char* name, ImColor color = ImColor(255, 255, 255), NodeType type = NodeType::Default);
-    ~Node();
+    virtual ~Node();
 
 
     const Pin* GetInputPinByName(std::string pinName) const;

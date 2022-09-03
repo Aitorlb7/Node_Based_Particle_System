@@ -25,22 +25,17 @@ public:
 	void FillGameObjectsVector(std::unordered_map<uint32, GameObject*> gameObjectsMap);
 
 	void AddGameObject(GameObject* object);
-	GameObject* CreateGameObject(std::string name, GameObject* parent = nullptr);
+	GameObject* CreateGameObject(std::string name = "", GameObject* parent = nullptr, bool isChildren = false);
 	void SelectObject(GameObject* object);
 	void DeleteGameObject(GameObject* object);
 	void DeleteAllGameObjects();
 
+	GameObject* GetGameObjectByName(std::string name);
 	GameObject* CreateGameCamera();
 
 	GameObject* CreateEditorCamera();
 
 	void TestGameObjectSelection(const LineSegment& ray);
-	//void ImGuizmoHandling();
-
-private:
-
-	
-
 private:
 	std::vector<Primitive*> primitives;
 

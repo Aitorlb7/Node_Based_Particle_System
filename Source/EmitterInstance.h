@@ -6,6 +6,7 @@
 class Emitter;
 class ComponentParticleSystem;
 class Node;
+class NodeGravitationalField;
 
 class EmitterInstance
 {
@@ -21,6 +22,9 @@ public:
 	void SpawnParticle();
 
 	void UpdateWithNode();
+
+	void AddGravitationalField(NodeGravitationalField* gravitationalField);
+	void DeleteGravitationalField(NodeGravitationalField* gravitationalField);
 
 private:
 	void KillDeadParticles();
@@ -42,6 +46,8 @@ public:
 	Node* emitterNode;
 
 	float3 forceVector;
+
+	std::vector<NodeGravitationalField*> GravitationalFields;
 };
 
 #endif 

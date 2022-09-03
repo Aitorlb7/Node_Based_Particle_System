@@ -8,7 +8,7 @@
 #include <vector>
 
 class GameObject;
-
+class Node;
 
 class ComponentParticleSystem : public Component
 {
@@ -23,7 +23,7 @@ public:
 	void Disable() override;
 	void CleanUp() override;
 
-	void SetResourceProperties(ResourceParticleSystem* particleSystem);
+	void SetResourceProperties(ResourceParticleSystem* particleSystem, Node* emitterNode = nullptr);
 
 	uint32 GetResourceUID() const { return rParticleSystem->UID; }
 	ResourceParticleSystem* GetParticleSystem() const { return rParticleSystem; };

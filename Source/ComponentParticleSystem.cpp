@@ -65,7 +65,7 @@ void ComponentParticleSystem::CleanUp()
 	delete rParticleSystem;
 }
 
-void ComponentParticleSystem::SetResourceProperties(ResourceParticleSystem* particleSystem)
+void ComponentParticleSystem::SetResourceProperties(ResourceParticleSystem* particleSystem, Node* emitterNode)
 {
 	Reset();
 	emitters.clear();
@@ -73,6 +73,9 @@ void ComponentParticleSystem::SetResourceProperties(ResourceParticleSystem* part
 	for (uint i = 0; i < particleSystem->emitters.size(); ++i)
 	{
 		emitters.push_back(EmitterInstance());
+
+		if (emitterNode) emitters.back().emitterNode = emitterNode;
+
 		emitters.back().Init(&particleSystem->emitters[i], this);
 	}
 }

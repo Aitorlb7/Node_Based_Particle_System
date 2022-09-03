@@ -11,7 +11,7 @@ public:
 
     NodeVelocity(int id, const char* name, ImColor color = ImColor(255, 255, 255));
 
-    ~NodeVelocity();
+    ~NodeVelocity() override;
 
     float4 ComputeVelocity();
 

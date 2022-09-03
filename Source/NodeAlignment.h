@@ -23,7 +23,7 @@ public:
 
     NodeAlignment(int id, const char* name, ImColor color = ImColor(255, 255, 255));
 
-    ~NodeAlignment();
+    ~NodeAlignment() override;
 
 	std::string GetStringBasedOnAlignment(Alignment alignment);
 

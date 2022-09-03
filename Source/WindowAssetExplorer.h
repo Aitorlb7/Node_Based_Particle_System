@@ -29,8 +29,9 @@ public:
 
 	void AssetsExplorer(PathNode& assetFolder);
 
-private:
 	ResourceTexture* modelIcon = nullptr;
+
+private:
 	ResourceTexture* defaultIcon = nullptr;
 	ResourceTexture* folderIcon = nullptr;
 	ResourceTexture* returnIcon = nullptr;

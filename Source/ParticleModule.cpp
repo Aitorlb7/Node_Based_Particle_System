@@ -1,18 +1,23 @@
 #include "Application.h"
+#include "ModuleEditor.h"
+#include "ModuleScene.h"
 #include "ParticleModule.h"
 #include "EmitterInstance.h"
 #include "Random.h"
 #include "GameObject.h"
-
 #include "ModuleCamera3D.h"
+#include "WindowNodeEditor.h"
 
 #include "ComponentParticleSystem.h"
 #include "ComponentTransform.h"
 #include "ComponentMaterial.h"
 #include "ComponentCamera.h"
+#include "ComponentMesh.h"
 
+#include "ResourceMesh.h"
 #include "ResourceMaterial.h"
 
+#include "NodeGravitationalField.h"
 #include "Node.h"
 #include "PinFloat.h"
 #include "PinFloat3.h"
@@ -21,6 +26,7 @@
 #include "PinInt.h"
 #include "PinBool.h"
 #include "PinTexture.h"
+#include "PinGameObject.h"
 
 #include "Dependencies/MathGeoLib/include/Math/float3x3.h"
 
@@ -30,6 +36,8 @@ void EmitterBase::Spawn(EmitterInstance* emitter, Particle* particle, Node* emit
 {
 	ComponentTransform* emitterTransform = (ComponentTransform*)emitter->component->gameObject->GetComponent(ComponentType::Transform);
 	particle->position += emitterTransform->GetPosition() + emitterOrigin;
+
+	particle->lerpCounter = 0.0f;
 }
 
 void EmitterBase::Update(EmitterInstance* emitter, Node* emitterNode)
@@ -154,6 +162,16 @@ void EmitterSpawn::Spawn(EmitterInstance* emitter, Particle* particle, Node* emi
 
 void EmitterSpawn::Update(EmitterInstance* emitter, Node* emitterNode)
 {
+	if (spawnRatio < 1.0f)
+	{
+		for (int i = 0; i < (1.0f - spawnRatio) * 10.f; ++i)
+		{
+			emitter->SpawnParticle();
+		}
+
+		return;
+	}
+
 
 	currentTimer += App->GetDT();
 	if (currentTimer > spawnRatio)
@@ -196,11 +214,26 @@ void EmitterArea::UpdateWithNode(EmitterInstance* emitter, Node* emitterNode)
 
 void ParticlePosition::Spawn(EmitterInstance* emitter, Particle* particle, Node* emitterNode)
 {
-	particle->position += initialPosition;
+	PinGameObject* pinGameObject = (PinGameObject*)emitterNode->GetInputPinByName("Spawn From Model");
 
-	
-	//particle->position += Random::GenerateRandomFloat3(initialPosition1, initialPosition2);
+	if (!pinGameObject->gameObject)
+	{
+		particle->position += initialPosition;
+		return;
+	}
 
+	ResourceMesh* mesh = ((ComponentMesh*)pinGameObject->gameObject->GetComponent(ComponentType::Mesh))->GetMesh();
+
+	particle->position = pinGameObject->gameObject->transform->GetPosition();
+
+	int size = mesh->size[ResourceMesh::index];
+
+	int randomIndex = Random::GenerateRandomIntRange(0, size - 3);
+
+
+	particle->position.x += (mesh->vertices[(mesh->indices[randomIndex] * 3) + 1] * pinGameObject->gameObject->transform->GetScale().x);
+	particle->position.y += (mesh->vertices[(mesh->indices[randomIndex] * 3) + 2] * pinGameObject->gameObject->transform->GetScale().y);
+	particle->position.z += (mesh->vertices[(mesh->indices[randomIndex] * 3)] * pinGameObject->gameObject->transform->GetScale().z);
 
 }
 
@@ -278,9 +311,20 @@ void ParticleSize::UpdateWithNode(EmitterInstance* emitter, Node* emitterNode)
 
 void ParticleColor::Spawn(EmitterInstance* emitter, Particle* particle, Node* emitterNode)
 {
-	//particle->color = Random::GenerateRandomFloat4(initialColor, finalColor);
+	PinFloat4Array* pinFloatArray = (PinFloat4Array*)emitterNode->GetInputPinByName("Color");
 
-	particle->color = initialColor;
+	Pin* linkedPin = App->editor->nodeEditorWindow->GetPinLinkedTo(pinFloatArray->ID);
+
+	if (linkedPin)
+	{
+		particle->color = pinFloatArray->float4Array[0];
+	}
+	else
+	{
+		particle->color = float4::one;
+	}
+
+
 
 }
 
@@ -290,27 +334,19 @@ void ParticleColor::Update(EmitterInstance* emitter, Node* emitterNode)
 
 void ParticleColor::UpdateWithNode(EmitterInstance* emitter, Node* emitterNode)
 {
-	PinFloat4Array* pin = (PinFloat4Array*)emitterNode->GetInputPinByName("ColorOvertime");
+	PinFloat4Array* pinFloatArray = (PinFloat4Array*)emitterNode->GetInputPinByName("Color");
 
-	if (!pin->float4Array[0].Equals(pin->float4Array[1]))
+	Pin* linkedPin = App->editor->nodeEditorWindow->GetPinLinkedTo(pinFloatArray->ID);
+
+	if (!pinFloatArray || !linkedPin) return;
+
+	if (linkedPin->Name == "ColorOvertime" && !pinFloatArray->float4Array[0].Equals(pinFloatArray->float4Array[1]))
 	{
 		for (unsigned int i = 0; i < emitter->activeParticles; ++i)
 		{
-			emitter->particles[emitter->particleIndices[i]].color = Lerp(pin->float4Array[0], pin->float4Array[1], emitter->particles[emitter->particleIndices[i]].relativeLifetime);
-		}
-
-	}
-	else
-	{
-		PinFloat4* pinFloat = (PinFloat4*)emitterNode->GetInputPinByName("Color");
-
-		if (pinFloat)
-		{
-			initialColor = pinFloat->pinFloat4;
+			emitter->particles[emitter->particleIndices[i]].color = Lerp(pinFloatArray->float4Array[0], pinFloatArray->float4Array[1], emitter->particles[emitter->particleIndices[i]].relativeLifetime);
 		}
 	}
-
-
 
 }
 
@@ -357,20 +393,69 @@ void ParticleLifetime::UpdateWithNode(EmitterInstance* emitter, Node* emitterNod
 
 void ParticleVelocity::Spawn(EmitterInstance* emitter, Particle* particle, Node* emitterNode)
 {
-	particle->velocity = float4(initialVelocity);
+	PinFloat4Array* pinFloat4Array = (PinFloat4Array*)emitterNode->GetInputPinByName("Velocity");
+
+	if (pinFloat4Array)
+	{
+		particle->velocity = float4(Random::GenerateRandomFloat4(pinFloat4Array->float4Array[0], pinFloat4Array->float4Array[1]));
+	}
+	else
+	{
+		particle->velocity = float4(initialVelocity);
+	}
+
 }
 
 void ParticleVelocity::Update(EmitterInstance* emitter, Node* emitterNode)
 {
 	for (int i = emitter->activeParticles - 1; i >= 0; --i)
 	{
-		//Get gravity and pulling forces and compute them
-
-
 		Particle* particle = &emitter->particles[emitter->particleIndices[i]];
 
-		particle->position += particle->velocity.Float3Part().Add(emitter->forceVector * particle->relativeLifetime) * particle->velocity.w * App->GetDT();
+		if (emitter->GravitationalFields.empty())
+		{
+			particle->position += particle->velocity.Float3Part().Add(emitter->forceVector * particle->relativeLifetime) * particle->velocity.w * App->GetDT();
+		}
+		else
+		{
+			for (int h = 0; h < emitter->GravitationalFields.size(); h++)
+			{
+				float range = ((PinFloat*)emitter->GravitationalFields[h]->GetOutputPinByName("Range"))->pinFloat;
+
+				float intensity = ((PinFloat*)emitter->GravitationalFields[h]->GetOutputPinByName("Intensity"))->pinFloat;
+
+				GameObject* gravityFieldObject = emitter->GravitationalFields[h]->gameObject;
+
+				if (particle->position.Distance(gravityFieldObject->transform->GetPosition()) < range)
+				{
+					float3 newVector;
+
+					if (intensity > 0.0f)
+					{
+						newVector = particle->position - gravityFieldObject->transform->GetPosition();
+					}
+					else if (intensity < 0.0f)
+					{
+						newVector = gravityFieldObject->transform->GetPosition() - particle->position;
+						intensity *= -1.0f;
+					}
+
+
+					particle->lerpCounter += App->GetDT() / 10.0f;
+
+					newVector = float3::Lerp(particle->velocity.Float3Part(), newVector, particle->lerpCounter);
+
+					particle->position += particle->velocity.Float3Part().Add(newVector * intensity) * particle->velocity.w * App->GetDT();
+				}
+				else
+				{
+					particle->position += particle->velocity.Float3Part().Add(emitter->forceVector * particle->relativeLifetime) * particle->velocity.w * App->GetDT();
+				}
+			}
+		}
 	}
+
+
 }
 
 void ParticleVelocity::UpdateWithNode(EmitterInstance* emitter, Node* emitterNode)

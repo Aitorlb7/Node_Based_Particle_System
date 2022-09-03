@@ -8,6 +8,7 @@
 
 #include "Random.h"
 #include "PinFloat4.h"
+#include "PinFloat4Array.h"
 
 NodeVelocity::NodeVelocity(int id, const char* name, ImColor color) : Node(id, name, color, NodeType::Velocity),
 initialVelocity1(float4(1.0f,1.0f,1.0f,3.0f)),
@@ -25,9 +26,12 @@ initialVelocity2(float4(-1.0f, 1.0f, -1.0f, 5.0f))
 
 	Inputs.emplace_back(newPin);
 
+    PinFloat4Array* outputPin = new PinFloat4Array(App->editor->nodeEditorWindow->GetNextId(), "Velocity");
 
+    outputPin->float4Array[0] = initialVelocity1;
+    outputPin->float4Array[1] = initialVelocity2;
 
-    Outputs.emplace_back(new PinFloat4(App->editor->nodeEditorWindow->GetNextId(), "Velocity"));
+    Outputs.emplace_back(outputPin);
 
 }
 
@@ -66,6 +70,10 @@ void NodeVelocity::Draw(NodeBuilder& builder, WindowNodeEditor* nodeEditorWindow
     ImGui::BeginColumns("Columns", 2, ImGuiColumnsFlags_NoBorder);
     ImGui::SetColumnWidth(ImGui::GetColumnIndex(), 520);
 
+    PinFloat4Array* pinFloat4Array = (PinFloat4Array*)Outputs[0];
+
+    if (!pinFloat4Array)
+        return;
 
     for (Pin* input : Inputs)
     {
@@ -97,44 +105,44 @@ void NodeVelocity::Draw(NodeBuilder& builder, WindowNodeEditor* nodeEditorWindow
         {
             if (ImGui::DragFloat("X1", &tempPinFloat4->pinFloat4.x, 0.1f))
             {
-                initialVelocity1.x = tempPinFloat4->pinFloat4.x;
+                pinFloat4Array->float4Array[0].x = tempPinFloat4->pinFloat4.x;
             }
             ImGui::SameLine();
             if (ImGui::DragFloat("Y1", &tempPinFloat4->pinFloat4.y, 0.1f))
             {
-                initialVelocity1.y = tempPinFloat4->pinFloat4.y;
+                pinFloat4Array->float4Array[0].y = tempPinFloat4->pinFloat4.y;
             }
             ImGui::SameLine();
             if (ImGui::DragFloat("Z1", &tempPinFloat4->pinFloat4.z, 0.1f))
             {
-                initialVelocity1.z = tempPinFloat4->pinFloat4.z;
+                pinFloat4Array->float4Array[0].z = tempPinFloat4->pinFloat4.z;
             }
             ImGui::SameLine();
             if (ImGui::DragFloat("Speed1", &tempPinFloat4->pinFloat4.w, 0.1f))
             {
-                initialVelocity1.w = tempPinFloat4->pinFloat4.w;
+                pinFloat4Array->float4Array[0].w = tempPinFloat4->pinFloat4.w;
             }
         }
         else if (tempPinFloat4->Name == "Velocity2")
         {
             if (ImGui::DragFloat("X2", &tempPinFloat4->pinFloat4.x, 0.1f))
             {
-                initialVelocity2.x = tempPinFloat4->pinFloat4.x;
+                pinFloat4Array->float4Array[1].x = tempPinFloat4->pinFloat4.x;
             }
             ImGui::SameLine();
             if (ImGui::DragFloat("Y2", &tempPinFloat4->pinFloat4.y, 0.1f))
             {
-                initialVelocity2.y = tempPinFloat4->pinFloat4.y;
+                pinFloat4Array->float4Array[1].y = tempPinFloat4->pinFloat4.y;
             }
             ImGui::SameLine();
             if (ImGui::DragFloat("Z2", &tempPinFloat4->pinFloat4.z, 0.1f))
             {
-                initialVelocity2.z = tempPinFloat4->pinFloat4.z;
+                pinFloat4Array->float4Array[1].z = tempPinFloat4->pinFloat4.z;
             }
             ImGui::SameLine();
             if (ImGui::DragFloat("Speed2", &tempPinFloat4->pinFloat4.w, 0.1f))
             {
-                initialVelocity2.w = tempPinFloat4->pinFloat4.w;
+                pinFloat4Array->float4Array[1].w = tempPinFloat4->pinFloat4.w;
             }
         }
 
@@ -156,39 +164,17 @@ void NodeVelocity::Draw(NodeBuilder& builder, WindowNodeEditor* nodeEditorWindow
 
     ImGui::Dummy(ImVec2(0, 10));
 
-    tempPinFloat4 = (PinFloat4*)Outputs[0];
-
-    if (!tempPinFloat4)
-        return;
+    
 
     auto alpha = ImGui::GetStyle().Alpha;
-    if (nodeEditorWindow->newLinkPin && !nodeEditorWindow->CanCreateLink(nodeEditorWindow->newLinkPin, tempPinFloat4) && tempPinFloat4 != nodeEditorWindow->newLinkPin)
+    if (nodeEditorWindow->newLinkPin && !nodeEditorWindow->CanCreateLink(nodeEditorWindow->newLinkPin, pinFloat4Array) && pinFloat4Array != nodeEditorWindow->newLinkPin)
         alpha = alpha * (48.0f / 255.0f);
 
     ImGui::PushStyleVar(ImGuiStyleVar_Alpha, alpha);
 
+    ed::BeginPin(pinFloat4Array->ID, ed::PinKind::Input);
 
-
-    static bool wasActive = false;
-
-
-    if (updateLinks)
-    {
-        if (tempPinFloat4)
-        {
-            tempPinFloat4->pinFloat4 = ComputeVelocity();
-        }
-
-        updateLinks = false;
-
-        Pin* linkedPin = nodeEditorWindow->GetPinLinkedTo(tempPinFloat4->ID);
-
-        if (linkedPin && tempPinFloat4)
-            nodeEditorWindow->UpdateNodeLinks(tempPinFloat4, linkedPin);
-    }
-    ed::BeginPin(tempPinFloat4->ID, ed::PinKind::Input);
-
-    nodeEditorWindow->DrawPinIcon(tempPinFloat4, nodeEditorWindow->IsPinLinked(tempPinFloat4->ID), (int)(alpha * 255));
+    nodeEditorWindow->DrawPinIcon(pinFloat4Array, nodeEditorWindow->IsPinLinked(pinFloat4Array->ID), (int)(alpha * 255));
 
     ImGui::PopStyleVar();
 
@@ -196,5 +182,10 @@ void NodeVelocity::Draw(NodeBuilder& builder, WindowNodeEditor* nodeEditorWindow
 
     ImGui::EndColumns();
 
+
+    Pin* linkedPin = nodeEditorWindow->GetPinLinkedTo(pinFloat4Array->ID);
+
+    if (linkedPin && pinFloat4Array)
+        nodeEditorWindow->UpdateNodeLinks(pinFloat4Array, linkedPin);
 }
 

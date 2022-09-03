@@ -8,7 +8,7 @@ NodeFloat::NodeFloat(int id, const char* name, ImColor color) : Node(id, name, c
 {
 	Inputs.emplace_back(new PinFloat(App->editor->nodeEditorWindow->GetNextId(), "Float"));
 
-	Outputs.emplace_back(new PinFloat(App->editor->nodeEditorWindow->GetNextId(), "OutFloat"));
+	Outputs.emplace_back(new PinFloat(App->editor->nodeEditorWindow->GetNextId(), "Float"));
 }
 
 

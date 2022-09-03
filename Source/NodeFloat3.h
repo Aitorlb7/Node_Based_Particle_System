@@ -10,7 +10,7 @@ public:
 
     NodeFloat3(int id, const char* name, ImColor color = ImColor(255, 255, 255));
 
-    ~NodeFloat3();
+    ~NodeFloat3() override;
 
 protected:
 

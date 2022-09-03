@@ -198,6 +198,8 @@ void WindowInspector::DrawComponent(Component* component)
 	case ComponentType::Material: DrawMaterial((ComponentMaterial*)component); break;
 	case ComponentType::Mesh: DrawMesh((ComponentMesh*)component); break;
 	case ComponentType::Transform: DrawTransform((ComponentTransform*)component); break;
+	case ComponentType::ParticleSystem: DrawParticleSystem((ComponentParticleSystem*)component); break;
+
 	}
 }
 
@@ -409,6 +411,11 @@ void WindowInspector::DrawCamera(ComponentCamera* component)
 		//Add Toggle for frustum draw?
 
 	}
+}
+
+void WindowInspector::DrawParticleSystem(ComponentParticleSystem* component)
+{
+	ImGui::CollapsingHeader("Component Particle System");
 }
 
 void WindowInspector::CleanUp()

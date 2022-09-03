@@ -9,6 +9,7 @@
 
 #include "Random.h"
 #include "PinFloat4.h"
+#include "PinFloat4Array.h"
 
 NodeColor::NodeColor(int id, const char* name, ImColor color) : Node(id, name, color, NodeType::Color),
 color1(float4::one),
@@ -28,7 +29,7 @@ color2(float4::one)
 
 
 
-	Outputs.emplace_back(new PinFloat4(App->editor->nodeEditorWindow->GetNextId(), "Color"));
+	Outputs.emplace_back(new PinFloat4Array(App->editor->nodeEditorWindow->GetNextId(), "Color"));
 
 }
 
@@ -118,20 +119,20 @@ void NodeColor::Draw(NodeBuilder& builder, WindowNodeEditor* nodeEditorWindow)
 
     ImGui::Dummy(ImVec2(0, 10));
 
-    pinFloat4 = (PinFloat4*)Outputs[0];
+    PinFloat4Array* pinFloatArray = (PinFloat4Array*)Outputs[0];
 
-    if (!pinFloat4)
+    if (!pinFloatArray)
         return;
 
 
-    if (nodeEditorWindow->newLinkPin && !nodeEditorWindow->CanCreateLink(nodeEditorWindow->newLinkPin, pinFloat4) && pinFloat4 != nodeEditorWindow->newLinkPin)
+    if (nodeEditorWindow->newLinkPin && !nodeEditorWindow->CanCreateLink(nodeEditorWindow->newLinkPin, pinFloatArray) && pinFloatArray != nodeEditorWindow->newLinkPin)
         alpha = alpha * (48.0f / 255.0f);
 
     ImGui::PushStyleVar(ImGuiStyleVar_Alpha, alpha);
 
-    ed::BeginPin(pinFloat4->ID, ed::PinKind::Output);
+    ed::BeginPin(pinFloatArray->ID, ed::PinKind::Output);
 
-    nodeEditorWindow->DrawPinIcon(pinFloat4, nodeEditorWindow->IsPinLinked(pinFloat4->ID), (int)(alpha * 255));
+    nodeEditorWindow->DrawPinIcon(pinFloatArray, nodeEditorWindow->IsPinLinked(pinFloatArray->ID), (int)(alpha * 255));
 
     ImGui::PopStyleVar();
 
@@ -142,14 +143,14 @@ void NodeColor::Draw(NodeBuilder& builder, WindowNodeEditor* nodeEditorWindow)
 
     //Update Node Links
 
-    if (pinFloat4)
+    if (pinFloatArray)
     {
-        pinFloat4->pinFloat4 = ComputeColor();
+        pinFloatArray->float4Array[0] = ComputeColor();
     }
 
-    Pin* linkedPin = nodeEditorWindow->GetPinLinkedTo(pinFloat4->ID);
+    Pin* linkedPin = nodeEditorWindow->GetPinLinkedTo(pinFloatArray->ID);
 
-    if (linkedPin && pinFloat4)
-        nodeEditorWindow->UpdateNodeLinks(pinFloat4, linkedPin);
+    if (linkedPin && pinFloatArray)
+        nodeEditorWindow->UpdateNodeLinks(pinFloatArray, linkedPin);
 
 }

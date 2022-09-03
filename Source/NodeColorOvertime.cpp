@@ -29,7 +29,7 @@ NodeColorOvertime::NodeColorOvertime(int id, const char* name, ImColor color) : 
 
 
 
-	PinFloat4Array* outputPin = new PinFloat4Array(App->editor->nodeEditorWindow->GetNextId(), "Color");
+	PinFloat4Array* outputPin = new PinFloat4Array(App->editor->nodeEditorWindow->GetNextId(), "ColorOvertime");
 
 	outputPin->float4Array[0] = float4::one;
 	outputPin->float4Array[1] = float4::one;

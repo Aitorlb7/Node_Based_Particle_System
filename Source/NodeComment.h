@@ -6,7 +6,7 @@ public:
 
     NodeComment(int id, const char* name, ImColor color = ImColor(255, 255, 255));
 
-    ~NodeComment();
+    ~NodeComment() override;
 
 protected:
 

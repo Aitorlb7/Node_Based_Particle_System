@@ -8,7 +8,7 @@
 NodeBool::NodeBool(int id, const char* name, ImColor color) : Node(id, name, color, NodeType::Bool)
 {
 
-	Outputs.emplace_back(new PinBool(App->editor->nodeEditorWindow->GetNextId(), "OutFloat"));
+	Outputs.emplace_back(new PinBool(App->editor->nodeEditorWindow->GetNextId(), "OutBool"));
 }
 
 NodeBool::~NodeBool()

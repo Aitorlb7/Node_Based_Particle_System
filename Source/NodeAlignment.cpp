@@ -64,10 +64,12 @@ void NodeAlignment::Draw(NodeBuilder& builder, WindowNodeEditor* nodeEditorWindo
     ImGui::BeginColumns("Columns", 2, ImGuiColumnsFlags_NoBorder);
     ImGui::SetColumnWidth(ImGui::GetColumnIndex(), 70);
 
-    static int selected = -1;
+    static int selected = 2;
+    pinInt->pinInt = selected;
+    updateLinks = true;
+
     for (int i = 1; i < 9; i++)
     {
-
         if (ImGui::Selectable(aligmentArray[i], selected == i))
         {
             pinInt->pinInt = i;

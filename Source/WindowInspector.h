@@ -28,6 +28,7 @@ public:
 	void DrawMesh(ComponentMesh* component);
 	void DrawMaterial(ComponentMaterial* component);
 	void DrawCamera(ComponentCamera* component);
+	void DrawParticleSystem(ComponentParticleSystem* component);
 
 	void CleanUp() override;
 

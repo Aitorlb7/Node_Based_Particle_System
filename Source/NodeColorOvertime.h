@@ -10,7 +10,7 @@ public:
 
 	NodeColorOvertime(int id, const char* name, ImColor color = ImColor(255, 255, 255));
 
-	~NodeColorOvertime();
+	~NodeColorOvertime() override;
 
 protected:
 
