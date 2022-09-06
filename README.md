@@ -33,7 +33,7 @@ This project uses as a base engine our own 3D Engine [ASE](<https://github.com/p
 * **W:** Set Guizmo to Translate mode.
 * **E:** Set Guizmo to Rotate mode.
 * **R:** Set Guizmo to Scale mode.
-* Within Editor:
+* Within Shader Editor:
   * **Ctrl+C:** Copy.
   * **Ctrl+X:** Cut.
   * **Ctrl+V:** Paste.
@@ -45,7 +45,11 @@ This project uses as a base engine our own 3D Engine [ASE](<https://github.com/p
 * Saving and Loading an Scene
   * File -> Save Scene -> Write the Name of scene -> Press Enter
   * File -> Load Scene -> Open the expandable select the scene -> Press Load
-
+## Node Window and Particle System Usage
+* **Left click mouse:** Opens "Add Node" menu.
+* **Add -> Create Default Particle System:** Create a default node setup. 
+* **Texture Node and Spawn from Model Node allow drag and drop from asset window**.
+* **Left click mouse -> Focus:** Zoom or adjust to the current nodes.
 ****
 ## Libraries used
 * STL (Standard Template Library)
