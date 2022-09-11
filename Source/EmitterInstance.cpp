@@ -24,10 +24,9 @@ EmitterInstance::EmitterInstance() :
 
 void EmitterInstance::Init(Emitter* emitterReference, ComponentParticleSystem* component)
 {
-	//TODO Reallocate to Modules creator
+
 	if (!emitterNode)
 	{
-		//emitterNode = App->editor->nodeEditorWindow->CreateParticleSystem();
 		
 		emitterNode = App->editor->nodeEditorWindow->CreateNode(NodeType::Emitter, "Emitter");
 
@@ -46,8 +45,7 @@ void EmitterInstance::Init(Emitter* emitterReference, ComponentParticleSystem* c
 	{
 		particleIndices[i] = i;
 	}
-
-	//if (!this->emitterReference->material) this->emitterReference->material = new ResourceMaterial();
+;
 }
 
 void EmitterInstance::Update()
@@ -74,7 +72,7 @@ void EmitterInstance::Reset()
 
 void EmitterInstance::SpawnParticle()
 {
-	if (activeParticles == particles.size()) return;		//Ignoring spawn call by now when no more particles are available
+	if (activeParticles == particles.size()) return;
 
 	unsigned int particleIndex = particleIndices[activeParticles];
 	particles[particleIndex].position = float3::zero;
@@ -132,10 +130,9 @@ void EmitterInstance::KillDeadParticles()
 		unsigned int particleIndex = particleIndices[i];
 		Particle* particle = &particles[particleIndex];
 
-		//Sending the particle to the end of the list (nice unreal trick here)
 		if (particle->relativeLifetime >= 1.0f)
 		{
-			particleIndices[i] = particleIndices[activeParticles - 1]; //We swap the last alive particle with the new dead one
+			particleIndices[i] = particleIndices[activeParticles - 1]; 
 			particleIndices[activeParticles - 1] = particleIndex;
 			--activeParticles;
 		}

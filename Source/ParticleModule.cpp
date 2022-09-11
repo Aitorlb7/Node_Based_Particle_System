@@ -38,6 +38,23 @@ void EmitterBase::Spawn(EmitterInstance* emitter, Particle* particle, Node* emit
 	particle->position += emitterTransform->GetPosition() + emitterOrigin;
 
 	particle->lerpCounter = 0.0f;
+
+
+	ComponentTransform* cameraTransform = nullptr;
+
+	if (App->camera->currentCamera)
+	{
+		cameraTransform = (ComponentTransform*)App->camera->currentCamera->gameObject->GetComponent(ComponentType::Transform);
+	}
+	for (unsigned int i = 0; i < emitter->activeParticles; ++i)
+	{
+		unsigned int particleIndex = emitter->particleIndices[i];
+		Particle* particle = &emitter->particles[particleIndex];
+
+		particle->worldRotation = GetParticleAlignment(particle->position, cameraTransform->GetLocalTransform());
+
+		particle->distanceToCamera = float3(cameraTransform->GetLocalTransform().TranslatePart() - particle->position).LengthSq();
+	}
 }
 
 void EmitterBase::Update(EmitterInstance* emitter, Node* emitterNode)

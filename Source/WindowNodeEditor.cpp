@@ -1230,13 +1230,13 @@ Node* WindowNodeEditor::CreateNode(NodeType type, std::string name)
     case NodeType::Float: newNode = new NodeFloat(GetNextId(), name.c_str(), ImColor(128, 195, 248)); break;
     case NodeType::Float3: newNode = new NodeFloat3(GetNextId(), name.c_str(), ImColor(128, 195, 248)); break;
     case NodeType::Color: newNode = new NodeColor(GetNextId(), "Color", ImColor(128, 195, 248)); break;
-    case NodeType::ColorOverTime: newNode = new NodeColorOvertime(GetNextId(), "ColorOverTime", ImColor(128, 195, 248)); break;
+    case NodeType::ColorOverTime: newNode = new NodeColorOvertime(GetNextId(), "Color OverTime", ImColor(128, 195, 248)); break;
     case NodeType::Velocity: newNode = new NodeVelocity(GetNextId(), "Velocity", ImColor(128, 195, 248)); break;
     case NodeType::Texture: newNode = new NodeTexture(GetNextId(), "Texture", ImColor(128, 195, 248)); break;
     case NodeType::Alignment: newNode = new NodeAlignment(GetNextId(), "Alignment", ImColor(128, 195, 248)); break;
     case NodeType::Gravity: newNode = new NodeGravity(GetNextId(), "Gravity", ImColor(128, 195, 248)); break;
-    case NodeType::GravitationalField: newNode = new NodeGravitationalField(GetNextId(), "GravitationalPull", ImColor(128, 195, 248)); break;
-    case NodeType::SpawnArea: newNode = new NodeSpawnArea(GetNextId(), "SpawnArea", ImColor(128, 195, 248)); break;
+    case NodeType::GravitationalField: newNode = new NodeGravitationalField(GetNextId(), "Gravitational Field", ImColor(128, 195, 248)); break;
+    case NodeType::SpawnArea: newNode = new NodeSpawnArea(GetNextId(), "Spawn From Model", ImColor(128, 195, 248)); break;
     default: break;
     }
 

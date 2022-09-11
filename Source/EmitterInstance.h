@@ -34,14 +34,13 @@ private:
 public:
 	bool isActive;
 
-	float emitterTime = 0;					//Keeping emitter time count, useful later for looping
-
+	float emitterTime = 0;
 	unsigned int activeParticles = 0;
-	unsigned int* particleIndices;		//Ha ha, nice trick learnt from unreal, this is pure fun.
+	unsigned int* particleIndices;	
 	std::vector<Particle> particles;
 
-	Emitter* emitterReference;			//A reference to the emitter resource
-	ComponentParticleSystem* component;		//A reference to the particle system component
+	Emitter* emitterReference;
+	ComponentParticleSystem* component;	
 
 	Node* emitterNode;
 
