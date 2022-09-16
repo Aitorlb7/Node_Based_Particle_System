@@ -15,6 +15,8 @@ experience.
 The structure of the tool is built as a resemblance of already existing engines with
 node-based procedural generation tools such as Houdini and Unity.
 
+* [Video Showcase](https://drive.google.com/file/d/1X0vKVlSsJH3Y7mxXUOwSbhdcx0f8Jjfs/view?usp=sharing)
+* [Project Documentation](https://drive.google.com/file/d/1kqZw_GTogqC99-pt6-WXYCvwkVKCOxGt/view?usp=sharing)
 * [Repository](https://github.com/Aitorlb7/Node_Based_Particle_System)
 
 This project uses as a base engine our own 3D Engine [ASE](<https://github.com/paufiol/AnotherSmallEngine>) (Another Small Engine) developed alongside with [Pau Fiol](<https://github.com/paufiol>)
